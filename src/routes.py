@@ -20,7 +20,7 @@ def handle_item():
 def send_static(filename):
     """静的ファイルを返す
     """
-    return static_file(filename, root='')
+    return static_file(filename, root='./views/')
 
 @route('/static/css/<filename:path>')
 def send_static(filename):
