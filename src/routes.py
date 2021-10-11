@@ -4,7 +4,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
-@route('/', method=['GET', 'POST'])
+@route('/py', method=['GET', 'POST'])
 def handle_item():
     try:
         response.headers['Content-Type'] = 'text/html'
@@ -15,6 +15,12 @@ def handle_item():
     except:
         # internal server error
         abort(500)
+
+@route('/<filename:path>')
+def send_static(filename):
+    """静的ファイルを返す
+    """
+    return static_file(filename, root='')
 
 @route('/static/css/<filename:path>')
 def send_static(filename):
