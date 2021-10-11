@@ -7,9 +7,9 @@ services:
   bottle:
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./docker/bottle/Dockerfile
     ports:
-      - "8080:5000"
+      - ${PY_PORT}:5000
     volumes:
       - ./src:/usr/src/app
 
