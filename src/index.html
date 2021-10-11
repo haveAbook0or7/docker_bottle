@@ -1,0 +1,41 @@
+<!--
+    ホームページ
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>暇つぶし</title>
+        <meta charset="UTF-8">
+        <meta name = "authr" content="有本 和奏">
+        <!-- <link href="/static/css/index.css" rel="stylesheet" type="text/css"> -->
+        <script src="https://unpkg.com/vue"></script>
+        <script src="https://unpkg.com/http-vue-loader"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    </head>
+    <body>
+        <header>
+            <div>
+                <h1>暇つぶし</h1>
+            </div>
+        </header>
+        <main>
+            <br><br><br>
+            <h2>各リンク</h2>
+            <div id="con">
+                <!-- <a id="twst" href="Hobby_1/php/Hobby_1_1_home.php" target="_blank"><span>ツイステカード編成ツール</span></a>
+                <br><br>
+                <a id="twst" href="Hobby_1/php/Hobby_contents1.php" target="_blank"><span>てすと</span></a>
+                <br><br><br> -->
+                <select-own></select-own>
+            </div>
+        </main>
+        <script>
+            new Vue({
+                el: "#con",
+                components: {
+                    'select-own': httpVueLoader('/static/js/select-own.vue'),
+                },
+            });
+        </script>
+    </body>
+</html>
