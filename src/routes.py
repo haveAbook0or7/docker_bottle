@@ -3,7 +3,20 @@ from utils import *
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
-
+VIEWS_DIR = os.path.join(BASE_DIR, 'views')
+# index.html
+@route('/')
+def send_static():
+    return static_file('index.html', root=f'{VIEWS_DIR}')
+# その他のhtml系ファイル
+@route('/<filename>')
+def send_static(filename):
+    return static_file(filename, root=f'{VIEWS_DIR}')
+# css, js, imgファイルなど
+@route('/static/<filename:path>')
+def send_static(filename):
+    return static_file(filename, root=f'{STATIC_DIR}')
+# 以下python系設定
 @route('/py', method=['GET', 'POST'])
 def handle_item():
     try:
@@ -15,21 +28,3 @@ def handle_item():
     except:
         # internal server error
         abort(500)
-
-@route('/<filename:path>')
-def send_static(filename):
-    """静的ファイルを返す
-    """
-    return static_file(filename, root='./views/')
-
-@route('/static/css/<filename:path>')
-def send_static(filename):
-    """静的ファイルを返す
-    """
-    return static_file(filename, root=f'{STATIC_DIR}/css')
-
-@route('/static/js/<filename:path>')
-def send_static(filename):
-    """静的ファイルを返す
-    """
-    return static_file(filename, root=f'{STATIC_DIR}/js')
