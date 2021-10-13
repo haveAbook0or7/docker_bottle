@@ -9,4 +9,4 @@ RUN pip install mysql-connector-python
 WORKDIR /usr/src/app
 EXPOSE 5000
 
-CMD ["python3", "b.py"]
+CMD ["python3", "app.py"]
