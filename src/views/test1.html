@@ -16,21 +16,13 @@
 	<canvas id="coloring" width="400" height="300"></canvas>
 	<!-- 位置情報を取得 -->
 	<div id="mousePoint">位置情報</div>
-    <input type="button" id="btn1" value="ボタン" onclick="imageDraw();">
 </body>
 <script type="text/javascript">
 	// キャンバスを取得
 	var canvas = document.getElementById('coloring');
 	// コンテキストを取得
 	var ctx    = canvas.getContext('2d');
-    //画像オブジェクトを生成
-    var img = new Image();
-    img.src = "../static/img/canvas.jpg";
-    
-    //画像をcanvasに設定
-    img.onload = function(){
-        ctx.drawImage(img, 0, 0, 400, 300);  //400x300に縮小表示
-    }
+
 	// 位置情報
 	var mPoint = document.getElementById('mousePoint');
 
