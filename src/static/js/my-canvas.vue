@@ -22,6 +22,8 @@ module.exports = {
 	mounted() {
         // キャンバスサイズを取得
         this.baseSize = document.querySelector('#canvasBase').getBoundingClientRect();
+        console.log(this.baseSize.width);
+        console.log(this.baseSize.height);
         // オブジェクト取得後サイズを設定
 		this.drawCanvas = document.querySelector('#drawCanvas');
         this.drawCanvas.setAttribute("width", this.baseSize.width);

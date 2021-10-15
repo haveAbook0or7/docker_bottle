@@ -1,6 +1,19 @@
 <template>
 	<div id="paletteBase">
-        
+        <span id="color">
+            <input id="black" name="color" type="radio" v-model="penColor" value="#000000" @change="changeColor"><label for="black"></label>
+            <input id="one"   name="color" type="radio" v-model="penColor" value="#ff0000" @change="changeColor"><label for="one" class="upper"></label>
+            <input id="two"   name="color" type="radio" v-model="penColor" value="#00ff00" @change="changeColor"><label for="two"></label>
+            <input id="three" name="color" type="radio" v-model="penColor" value="#0000ff" @change="changeColor"><label for="three" class="upper"></label>
+			<input id="four"  name="color" type="radio" v-model="penColor" value="#ffff00" @change="changeColor"><label for="four"></label>
+            <input id="five"  name="color" type="radio" v-model="penColor" value="#ffffff" @change="changeColor"><label for="five" class="upper"></label>
+        </span>
+        <span id="pen">
+            <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen" checked><label for="marker"></label>
+            <input id="thinPen"  name="pens" type="radio" v-model="pen" value="thinPen"  @change="changePen"><label for="thinPen"></label>
+            <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen"><label for="thickPen"></label>
+            <!-- <input id="eraser"   type="button" value="" @change="clickEraser"><label for="eraser"></label> -->
+        </span>
     </div>
 </template>
 
@@ -13,18 +26,7 @@ module.exports = {
 		// mydbname: {default:"H1_2_DefaultDataMax"},
 	},
 	mounted() {
-        // キャンバスサイズを取得
-        this.baseSize = document.querySelector('#canvasBase').getBoundingClientRect();
-        // オブジェクト取得後サイズを設定
-		this.drawCanvas = document.querySelector('#drawCanvas');
-        this.drawCanvas.setAttribute("width", this.baseSize.width);
-        this.drawCanvas.setAttribute("height", this.baseSize.height);
-        this.previewCanvas = document.querySelector('#previewCanvas');
-        this.previewCanvas.setAttribute("width", this.baseSize.width);
-        this.previewCanvas.setAttribute("height", this.baseSize.height);
-        // コンテキスト取得
-        this.drawCxt = this.drawCanvas.getContext('2d');
-        this.previewCxt = this.previewCanvas.getContext('2d');
+        
 	},
 	computed: {
 		// showFlg: {
@@ -35,7 +37,8 @@ module.exports = {
 	},
 	data: function () {
 		return {
-            baseSize: null,
+            penColor: "#000000",
+            pen: "marker",
 			drawCanvas: null, drawCxt: null,
             previewCanvas: null, previewCxt: null,
             isClicked: false,
@@ -44,7 +47,15 @@ module.exports = {
 		}
 	},
 	methods: {
-		
+		changeColor(){
+
+        },
+        changePen(){
+
+        },
+        clickEraser(){
+
+        }
 
 	},
 }
@@ -58,25 +69,52 @@ module.exports = {
 		border: 0;
 		font-size: 13px;
 	}
-    div{
-        height: 100%;
+    #paletteBase{
+        background: #777777;
+        width: 450px;
+        height: 50px;
         position: relative;
         box-sizing: border-box;
-        margin: 0px 50px;
     }
-    #drawCanvas {
-        width: 100%;
-        height: 100%;
-        background: #ffffff;
-        box-sizing: border-box;
-        position: absolute;
-		border: solid 1px #cc77cc;
+    /* ラジオボタン */
+	input[type=radio]{
+		position: absolute;
+		z-index: -1;
+		opacity: 0;
 	}
-    #previewCanvas {
-        width: 100%;
-        height: 100%;
-        box-sizing: border-box;
-        position: absolute;
-        z-index: 2;
+	#color input[type=radio] + label{
+		position: relative;
+		display: inline-block;
+        margin: 15px 2px 5px 2px;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        background: beige;
 	}
+    .upper{
+        margin: 5px 2px 15px 2px !important;
+    }
+	#color input[type=radio]:checked + label{
+		background: goldenrod;
+	}
+
+    #pen input[type=radio] + label{
+		position: relative;
+		display: inline-block;
+        margin: 2.5px 2px;
+        width: 45px;
+        height: 45px;
+        background: beige;
+	}
+    #pen #marker + label{
+        mask: no-repeat center/70%;
+        -webkit-mask: no-repeat center/70%;
+        background: darkorange;
+        mask-image: url(../img/14743.png);
+        -webkit-mask-image: url(../img/14743.png);
+    }
+    #pen input[type=radio]:checked + label{
+		background: goldenrod !important;
+	}
+
 </style>
