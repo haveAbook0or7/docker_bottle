@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>試作品</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/http-vue-loader"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <style>
+
+        </style>
+    </head>
+    <body>
+        <div id="con" style="width: 900px; height: 900px; background-color: cadetblue;">
+            <my-palette></my-palette>
+            <my-canvas></my-canvas>
+        </div>
+        <script>
+            new Vue({
+                el: "#con",
+                components: {
+                    'my-canvas': httpVueLoader('../static/js/my-canvas.vue'),
+                    'my-palette': httpVueLoader('../static/js/my-palette.vue'),
+                },
+            });
+        </script>
+    </body>
+</html>
+
