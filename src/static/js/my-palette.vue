@@ -1,15 +1,15 @@
 <template>
-	<div id="paletteBase">
-        <span id="color">
-            <input id="black" name="color" type="radio" v-model="penColor" value="#000000" @change="changeColor"><label for="black"></label>
-            <input id="one"   name="color" type="radio" v-model="penColor" value="#ff0000" @change="changeColor"><label for="one" class="upper"></label>
-            <input id="two"   name="color" type="radio" v-model="penColor" value="#00ff00" @change="changeColor"><label for="two"></label>
-            <input id="three" name="color" type="radio" v-model="penColor" value="#0000ff" @change="changeColor"><label for="three" class="upper"></label>
-			<input id="four"  name="color" type="radio" v-model="penColor" value="#ffff00" @change="changeColor"><label for="four"></label>
-            <input id="five"  name="color" type="radio" v-model="penColor" value="#ffffff" @change="changeColor"><label for="five" class="upper"></label>
+	<div id="paletteBase" :style="elementColor">
+        <span id="colors">
+            <input id="black" name="colors" type="radio" v-model="color" value="#000000" @change="changeColor"><label for="black"></label>
+            <input id="one"   name="colors" type="radio" v-model="color" value="#ff0000" @change="changeColor"><label for="one" class="upper"></label>
+            <input id="two"   name="colors" type="radio" v-model="color" value="#00ff00" @change="changeColor"><label for="two"></label>
+            <input id="three" name="colors" type="radio" v-model="color" value="#0000ff" @change="changeColor"><label for="three" class="upper"></label>
+			<input id="four"  name="colors" type="radio" v-model="color" value="#ffff00" @change="changeColor"><label for="four"></label>
+            <input id="five"  name="colors" type="radio" v-model="color" value="#ffffff" @change="changeColor"><label for="five" class="upper"></label>
         </span>
-        <span id="pen">
-            <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen" checked><label for="marker"></label>
+        <span id="pens">
+            <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen"><label for="marker"></label>
             <input id="thinPen"  name="pens" type="radio" v-model="pen" value="thinPen"  @change="changePen"><label for="thinPen"></label>
             <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen"><label for="thickPen"></label>
             <!-- <input id="eraser"   type="button" value="" @change="clickEraser"><label for="eraser"></label> -->
@@ -29,15 +29,15 @@ module.exports = {
         
 	},
 	computed: {
-		// showFlg: {
-		// 	get(){
-		// 		return this.mydbname == "H1_2_DefaultDataMax" ? false : true;
-		// 	}
-		// },
+		elementColor() {
+			return {
+				"--dynamic-color": this.color
+			}
+		},
 	},
 	data: function () {
 		return {
-            penColor: "#000000",
+            color: "#000000",
             pen: "marker",
 			drawCanvas: null, drawCxt: null,
             previewCanvas: null, previewCxt: null,
@@ -48,10 +48,10 @@ module.exports = {
 	},
 	methods: {
 		changeColor(){
-
+            this.$emit('change-color', this.color);
         },
         changePen(){
-
+            this.$emit('change-pen', this.pen);
         },
         clickEraser(){
 
@@ -82,7 +82,7 @@ module.exports = {
 		z-index: -1;
 		opacity: 0;
 	}
-	#color input[type=radio] + label{
+	#colors input[type=radio] + label{
 		position: relative;
 		display: inline-block;
         margin: 15px 2px 5px 2px;
@@ -94,27 +94,45 @@ module.exports = {
     .upper{
         margin: 5px 2px 15px 2px !important;
     }
-	#color input[type=radio]:checked + label{
+	#colors input[type=radio]:checked + label{
 		background: goldenrod;
 	}
 
-    #pen input[type=radio] + label{
+    #pens input[type=radio] + label{
 		position: relative;
 		display: inline-block;
         margin: 2.5px 2px;
-        width: 45px;
-        height: 45px;
+        width: 40px;
+        height: 40px;
         background: beige;
 	}
-    #pen #marker + label{
-        mask: no-repeat center/70%;
-        -webkit-mask: no-repeat center/70%;
-        background: darkorange;
+    #pens #marker + label{
+        mask: no-repeat center/100%;
+        -webkit-mask: no-repeat center/100%;
+        background: var(--dynamic-color);
+        border: solid 2px #777777;
         mask-image: url(../img/14743.png);
-        -webkit-mask-image: url(../img/14743.png);
+        -webkit-mask-image: url(../img/pen9.png);
     }
-    #pen input[type=radio]:checked + label{
-		background: goldenrod !important;
+    #pens #thinPen + label{
+        mask: no-repeat center/100%;
+        -webkit-mask: no-repeat center/100%;
+        background: var(--dynamic-color);
+        border: solid 2px #777777;
+        mask-image: url(../img/14743.png);
+        -webkit-mask-image: url(../img/pen7.png);
+    }
+    #pens #thickPen + label{
+        mask: no-repeat center/100%;
+        -webkit-mask: no-repeat center/100%;
+        background: var(--dynamic-color);
+        border: solid 2px #777777;
+        mask-image: url(../img/14743.png);
+        -webkit-mask-image: url(../img/pen8.png);
+    }
+    #pens input[type=radio]:checked + label{
+        border: solid 2px palevioletred !important;
+		/* background: chartreuse !important; */
 	}
 
 </style>

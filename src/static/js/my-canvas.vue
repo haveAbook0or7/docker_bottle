@@ -50,6 +50,8 @@ module.exports = {
             isClicked: false,
 
             mouse: {x:0, y:0},
+            color: "#000000",
+            pen: 10
 		}
 	},
 	methods: {
@@ -84,12 +86,12 @@ module.exports = {
         },
         drarLineStart() {
             // 線の太さを指定
-            this.drawCxt.lineWidth = 10;
-            this.previewCxt.lineWidth = 10;
+            this.drawCxt.lineWidth = this.pen;
+            this.previewCxt.lineWidth = this.pen;
             // 線の色を指定
-            this.drawCxt.strokeStyle = "#000000";
+            this.drawCxt.strokeStyle = this.color;
             this.drawCxt.globalAlpha = 0.1;
-            this.previewCxt.strokeStyle = "#000000";
+            this.previewCxt.strokeStyle = this.color;
             this.previewCxt.globalAlpha = 0.1;
             // 今からパスを書きますよと云う宣言
             this.drawCxt.beginPath();
@@ -109,6 +111,14 @@ module.exports = {
             this.previewCxt.clearRect(0,0,this.baseSize.width,this.baseSize.height);
             this.previewCxt.lineTo(this.mouse.x, this.mouse.y);
             this.previewCxt.stroke();
+        },
+        changeColor(value){
+            this.color = value;
+        },
+        changePen(value){
+            var pensize = {marker: 15, thinPen: 2, thickPen: 5};
+            console.log(pensize[value]);
+            this.pen = pensize[value];
         }
 
 	},

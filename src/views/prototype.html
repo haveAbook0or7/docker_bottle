@@ -25,15 +25,13 @@
             <input id="thickPen" name="pens" type="radio" value="thickPen"><label for="thickPen">cc</label>
         </span> -->
         <div id="con" style="width: 900px; height: 900px; background-color: cadetblue;">
-            <my-palette></my-palette>
-            <my-canvas></my-canvas>
+            <canvas-palette></canvas-palette>
         </div>
         <script>
             new Vue({
                 el: "#con",
                 components: {
-                    'my-canvas': httpVueLoader('../static/js/my-canvas.vue'),
-                    'my-palette': httpVueLoader('../static/js/my-palette.vue'),
+                    'canvas-palette': httpVueLoader('../static/js/canvas-palette.vue'),
                 },
             });
         </script>
