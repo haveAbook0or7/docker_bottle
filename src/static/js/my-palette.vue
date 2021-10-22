@@ -9,10 +9,24 @@
             <input id="five"  name="colors" type="radio" v-model="color" :value="colorPalette.five" @change="changeColor"><label for="five" class="upper" :style="'background: '+colorPalette.five+';'"></label>
         </span>
         <span id="pens">
-            <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen"><label for="marker"></label>
-            <input id="thinPen"  name="pens" type="radio" v-model="pen" value="thinPen"  @change="changePen"><label for="thinPen"></label>
-            <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen"><label for="thickPen"></label>
-            <input id="eraser"   name="pens" type="radio" v-model="pen" value="eraser"   @change="changePen"><label for="eraser"></label>
+            <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen"><label for="marker" @dblclick="showConfig('dbl', 'marker')"></label>
+            <input id="thinPen"  name="pens" type="radio" v-model="pen" value="thinPen"  @change="changePen"><label for="thinPen" @dblclick="showConfig('dbl', 'thinPen')"></label>
+            <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen"><label for="thickPen" @dblclick="showConfig('dbl', 'thickPen')"></label>
+            <input id="eraser"   name="pens" type="radio" v-model="pen" value="eraser"   @change="changePen"><label for="eraser" @dblclick="showConfig('dbl', 'eraser')"></label>
+        </span>
+        <span id="penConfig">
+            <my-pens-config v-show="this.showFlg.marker" 
+                id_name="marker" :init_size="this.penSize.marker" :init_alpha="this.penAlpha.marker" 
+                @change-size="changeConfig" @change-alpha="changeConfig"></my-pens-config>
+            <my-pens-config v-show="this.showFlg.thinPen" 
+                id_name="thinPen" :init_size="this.penSize.thinPen" :init_alpha="this.penAlpha.thinPen" 
+                @change-size="changeConfig" @change-alpha="changeConfig"></my-pens-config>
+            <my-pens-config v-show="this.showFlg.thickPen" 
+                id_name="thickPen" :init_size="this.penSize.thickPen" :init_alpha="this.penAlpha.thickPen" 
+                @change-size="changeConfig" @change-alpha="changeConfig"></my-pens-config>
+            <my-pens-config v-show="this.showFlg.eraser" 
+                id_name="eraser" :init_size="this.penSize.eraser" :init_alpha="this.penAlpha.eraser" 
+                @change-size="changeConfig" @change-alpha="changeConfig"></my-pens-config>
         </span>
     </div>
 </template>
@@ -20,7 +34,7 @@
 <script>
 module.exports = {
 	components: {
-		
+		'my-pens-config': httpVueLoader('./my-pens-config.vue'),
     },
 	props: {
 		// mydbname: {default:"H1_2_DefaultDataMax"},
@@ -50,14 +64,10 @@ module.exports = {
             colorPalette: {black: "#000000", one: "#ff0000", two: "#00ff00", three: "#0000ff", four: "#ffff00", five: "#ffffff"},
             penSize: {marker: 15, thinPen: 2, thickPen: 5, eraser: 15},
             penAlpha: {marker: 0.3, thinPen: 0.9, thickPen: 0.9, eraser: 1.0},
+            configShow: false,
+            showFlg: {marker: false, thinPen: false, thickPen: false, eraser: false},
             color: "#000000",
             pen: "marker",
-            alpha: 0.8,
-			drawCanvas: null, drawCxt: null,
-            previewCanvas: null, previewCxt: null,
-            isClicked: false,
-
-            mouse: {x:0, y:0},
 		}
 	},
 	methods: {
@@ -65,12 +75,41 @@ module.exports = {
             this.$emit('change-color', this.color);
         },
         changePen(){
+            var flg = false;
+            for(k in this.showFlg){
+                if(this.showFlg[k] == true){
+                    flg = true
+                }
+            }
+            if(flg){
+                this.showConfig("change" ,this.pen);
+            }
             this.$emit('change-pen', 
                 this.pen != "eraser" ? this.color : "#ffffff", 
                 this.penSize[this.pen], 
                 this.penAlpha[this.pen]
             );
         },
+        showConfig(eve, id){
+            for(k in this.showFlg){
+                if(k == id){
+                    continue;
+                }
+                this.showFlg[k] = false;
+            }
+            this.showFlg[id] = !this.showFlg[id];
+        },
+        changeConfig(id, lbl, value){
+            switch(lbl){
+                case "size":
+                    this.penSize[id] = value;
+                    break;
+                case "alpha":
+                    this.penAlpha[id] = value;
+                    break;
+            }
+            this.changePen();
+        }
 	},
 }
 // export default { Node.jsじゃないから、これだとダメだった。 }
@@ -82,6 +121,7 @@ module.exports = {
 		padding: 0;
 		border: 0;
 		font-size: 13px;
+        z-index: 3;
 	}
     #paletteBase{
         background: #777777;
@@ -157,4 +197,7 @@ module.exports = {
         border: solid 2px palevioletred !important;
 		/* background: chartreuse !important; */
 	}
+    #penConfig{
+        z-index: 5;
+    }
 </style>
