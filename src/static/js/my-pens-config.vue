@@ -1,6 +1,7 @@
 <template>
-	<div id="propertyBase" :style="elementColor">
-        
+	<div id="propertyBase">
+        <input id="size" type="range" min="0" max="100" step="1" v-model="size" @change="changeSize">
+		<input id="alpha" type="range" min="0.0" max="1.0" step="0.1" v-model="alpha" @change="changeAlpha">
     </div>
 </template>
 
@@ -10,44 +11,27 @@ module.exports = {
 		
     },
 	props: {
-		// mydbname: {default:"H1_2_DefaultDataMax"},
+		initSize: {default: 5},
+		initAlpha: {default: 0.5},
 	},
 	mounted() {
         
 	},
 	computed: {
-		elementColor() {
-			return {
-				"--dynamic-color": this.color
-			}
-		},
 	},
 	data: function () {
 		return {
-            colorPalette: {black: "#000000", one: "#ff0000", two: "#00ff00", three: "#0000ff", four: "#ffff00", five: "#ffffff"},
-            color: "#000000",
-            pen: "marker",
-            alpha: 0.8,
-			drawCanvas: null, drawCxt: null,
-            previewCanvas: null, previewCxt: null,
-            isClicked: false,
-
-            mouse: {x:0, y:0},
+            size: this.initSize,
+            alpha: this.initAlpha,
 		}
 	},
 	methods: {
-		changeColor(){
-            this.$emit('change-color', this.color);
-        },
-        changePen(){
-            this.$emit('change-pen', this.pen);
-        },
-        clickEraser(){
-            this.color = "#ffffff";
-            this.$emit('click-eraser', this.color);
+        changeSize(){
+            console.log(this.size);
         },
         changeAlpha(){
-            this.$emit('change-alpha', this.alpha);
+			console.log(this.alpha);
+            // this.$emit('change-alpha', this.alpha);
         }
 	},
 }

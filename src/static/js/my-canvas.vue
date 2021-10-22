@@ -51,8 +51,8 @@ module.exports = {
 
             mouse: {x:0, y:0},
             color: "#000000",
-            pen: 10,
-            alpha: 0.5,
+            pen: 15,
+            alpha: 0.3,
 		}
 	},
 	methods: {
@@ -116,18 +116,11 @@ module.exports = {
         changeColor(value){
             this.color = value;
         },
-        changePen(value){
-            var pensize = {marker: 15, thinPen: 2, thickPen: 5};
-            console.log(pensize[value]);
-            this.pen = pensize[value];
+        changePen(color, size, alpha){
+            this.color = color;
+            this.pen = size;
+            this.alpha = alpha;
         },
-        clickEraser(value){
-            this.color = value;
-            this.alpha = 1.0;
-        },
-        changeAlpha(value){
-            this.alpha = value;
-        }
 
 	},
 }

@@ -12,11 +12,7 @@
             <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen"><label for="marker"></label>
             <input id="thinPen"  name="pens" type="radio" v-model="pen" value="thinPen"  @change="changePen"><label for="thinPen"></label>
             <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen"><label for="thickPen"></label>
-            <input id="eraser"   type="button" value="" @click="clickEraser"><label for="eraser"></label>
-        </span>
-        <span>
-            不透明度<br>
-            <input id="alpha" type="range" min="0.0" max="1.0" step="0.1" v-model="alpha" @change="changeAlpha">
+            <input id="eraser"   name="pens" type="radio" v-model="pen" value="eraser"   @change="changePen"><label for="eraser"></label>
         </span>
     </div>
 </template>
@@ -30,7 +26,17 @@ module.exports = {
 		// mydbname: {default:"H1_2_DefaultDataMax"},
 	},
 	mounted() {
-        
+        axios.post("/py",{
+			id: 1
+		})
+		.then(response => {
+            this.colorPalette = response.data.data.palette;
+            this.penSize = response.data.data.size;
+            this.penAlpha = response.data.data.alpha;
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
 	},
 	computed: {
 		elementColor() {
@@ -42,6 +48,8 @@ module.exports = {
 	data: function () {
 		return {
             colorPalette: {black: "#000000", one: "#ff0000", two: "#00ff00", three: "#0000ff", four: "#ffff00", five: "#ffffff"},
+            penSize: {marker: 15, thinPen: 2, thickPen: 5, eraser: 15},
+            penAlpha: {marker: 0.3, thinPen: 0.9, thickPen: 0.9, eraser: 1.0},
             color: "#000000",
             pen: "marker",
             alpha: 0.8,
@@ -57,15 +65,12 @@ module.exports = {
             this.$emit('change-color', this.color);
         },
         changePen(){
-            this.$emit('change-pen', this.pen);
+            this.$emit('change-pen', 
+                this.pen != "eraser" ? this.color : "#ffffff", 
+                this.penSize[this.pen], 
+                this.penAlpha[this.pen]
+            );
         },
-        clickEraser(){
-            this.color = "#ffffff";
-            this.$emit('click-eraser', this.color);
-        },
-        changeAlpha(){
-            this.$emit('change-alpha', this.alpha);
-        }
 	},
 }
 // export default { Node.jsじゃないから、これだとダメだった。 }
@@ -81,7 +86,7 @@ module.exports = {
     #paletteBase{
         background: #777777;
         width: 450px;
-        height: 100px;
+        height: 50px;
         position: relative;
         box-sizing: border-box;
     }
@@ -121,48 +126,35 @@ module.exports = {
         -webkit-mask: no-repeat center/100%;
         background: var(--dynamic-color);
         border: solid 2px #777777;
-        mask-image: url(../img/pen9.png);
-        -webkit-mask-image: url(../img/pen9.png);
+        mask-image: url(../img/pen12.png);
+        -webkit-mask-image: url(../img/pen12.png);
     }
     #pens #thinPen + label{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
         background: var(--dynamic-color);
         border: solid 2px #777777;
-        mask-image: url(../img/pen7.png);
-        -webkit-mask-image: url(../img/pen7.png);
+        mask-image: url(../img/pen10.png);
+        -webkit-mask-image: url(../img/pen10.png);
     }
     #pens #thickPen + label{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
         background: var(--dynamic-color);
         border: solid 2px #777777;
-        mask-image: url(../img/pen8.png);
-        -webkit-mask-image: url(../img/pen8.png);
+        mask-image: url(../img/pen11.png);
+        -webkit-mask-image: url(../img/pen11.png);
+    }
+    #pens #eraser + label{
+        mask: no-repeat center/100%;
+        -webkit-mask: no-repeat center/100%;
+        background: #fff;
+        border: solid 2px #777777;
+        mask-image: url(../img/ere1.png);
+        -webkit-mask-image: url(../img/ere1.png);
     }
     #pens input[type=radio]:checked + label{
         border: solid 2px palevioletred !important;
 		/* background: chartreuse !important; */
 	}
-    /* 消しゴム */
-    #pens input[type=button] + label{
-		position: relative;
-		display: inline-block;
-        margin: 2.5px 2px;
-        width: 40px;
-        height: 40px;
-        background: beige;
-	}
-    #pens #eraser + label{
-        mask: no-repeat center/100%;
-        -webkit-mask: no-repeat center/100%;
-        background: var(--dynamic-color);
-        border: solid 2px #777777;
-        mask-image: url(../img/pen9.png);
-        -webkit-mask-image: url(../img/pen9.png);
-    }
-    /* 濃さ */
-    #alpha{
-        width: 230px;
-    }
 </style>

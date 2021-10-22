@@ -1,6 +1,6 @@
 <template>
 	<div id="Base" style="width: 900px; height: 900px;">
-        <my-palette @change-color="changeColor" @change-pen="changePen" @click-eraser="clickEraser" @change-alpha="changeAlpha"></my-palette>
+        <my-palette @change-color="changeColor" @change-pen="changePen"></my-palette>
         <my-canvas ref="myCanvas"></my-canvas>
     </div>
 </template>
@@ -34,15 +34,9 @@ module.exports = {
 		changeColor(value){
             this.$refs.myCanvas.changeColor(value);
         },
-        changePen(value){
-            this.$refs.myCanvas.changePen(value);
+        changePen(color, size, alpha){
+            this.$refs.myCanvas.changePen(color, size, alpha);
         },
-		clickEraser(value){
-			this.$refs.myCanvas.clickEraser(value);
-		},
-		changeAlpha(value){
-			this.$refs.myCanvas.changeAlpha(value);
-		}
 
 	},
 }
