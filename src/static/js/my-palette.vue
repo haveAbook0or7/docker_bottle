@@ -1,18 +1,22 @@
 <template>
 	<div id="paletteBase" :style="elementColor">
         <span id="colors">
-            <input id="black" name="colors" type="radio" v-model="color" value="#000000" @change="changeColor"><label for="black"></label>
-            <input id="one"   name="colors" type="radio" v-model="color" value="#ff0000" @change="changeColor"><label for="one" class="upper"></label>
-            <input id="two"   name="colors" type="radio" v-model="color" value="#00ff00" @change="changeColor"><label for="two"></label>
-            <input id="three" name="colors" type="radio" v-model="color" value="#0000ff" @change="changeColor"><label for="three" class="upper"></label>
-			<input id="four"  name="colors" type="radio" v-model="color" value="#ffff00" @change="changeColor"><label for="four"></label>
-            <input id="five"  name="colors" type="radio" v-model="color" value="#ffffff" @change="changeColor"><label for="five" class="upper"></label>
+            <input id="black" name="colors" type="radio" v-model="color" :value="colorPalette.black" @change="changeColor"><label for="black" :style="'background: '+colorPalette.black+';'"></label>
+            <input id="one"   name="colors" type="radio" v-model="color" :value="colorPalette.one" @change="changeColor"><label for="one" class="upper" :style="'background: '+colorPalette.one+';'"></label>
+            <input id="two"   name="colors" type="radio" v-model="color" :value="colorPalette.two" @change="changeColor"><label for="two" :style="'background: '+colorPalette.two+';'"></label>
+            <input id="three" name="colors" type="radio" v-model="color" :value="colorPalette.three" @change="changeColor"><label for="three" class="upper" :style="'background: '+colorPalette.three+';'"></label>
+			<input id="four"  name="colors" type="radio" v-model="color" :value="colorPalette.four" @change="changeColor"><label for="four" :style="'background: '+colorPalette.four+';'"></label>
+            <input id="five"  name="colors" type="radio" v-model="color" :value="colorPalette.five" @change="changeColor"><label for="five" class="upper" :style="'background: '+colorPalette.five+';'"></label>
         </span>
         <span id="pens">
             <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen"><label for="marker"></label>
             <input id="thinPen"  name="pens" type="radio" v-model="pen" value="thinPen"  @change="changePen"><label for="thinPen"></label>
             <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen"><label for="thickPen"></label>
-            <!-- <input id="eraser"   type="button" value="" @change="clickEraser"><label for="eraser"></label> -->
+            <input id="eraser"   type="button" value="" @click="clickEraser"><label for="eraser"></label>
+        </span>
+        <span>
+            不透明度<br>
+            <input id="alpha" type="range" min="0.0" max="1.0" step="0.1" v-model="alpha" @change="changeAlpha">
         </span>
     </div>
 </template>
@@ -37,8 +41,10 @@ module.exports = {
 	},
 	data: function () {
 		return {
+            colorPalette: {black: "#000000", one: "#ff0000", two: "#00ff00", three: "#0000ff", four: "#ffff00", five: "#ffffff"},
             color: "#000000",
             pen: "marker",
+            alpha: 0.8,
 			drawCanvas: null, drawCxt: null,
             previewCanvas: null, previewCxt: null,
             isClicked: false,
@@ -54,9 +60,12 @@ module.exports = {
             this.$emit('change-pen', this.pen);
         },
         clickEraser(){
-
+            this.color = "#ffffff";
+            this.$emit('click-eraser', this.color);
+        },
+        changeAlpha(){
+            this.$emit('change-alpha', this.alpha);
         }
-
 	},
 }
 // export default { Node.jsじゃないから、これだとダメだった。 }
@@ -72,7 +81,7 @@ module.exports = {
     #paletteBase{
         background: #777777;
         width: 450px;
-        height: 50px;
+        height: 100px;
         position: relative;
         box-sizing: border-box;
     }
@@ -82,6 +91,7 @@ module.exports = {
 		z-index: -1;
 		opacity: 0;
 	}
+    /* カラー */
 	#colors input[type=radio] + label{
 		position: relative;
 		display: inline-block;
@@ -97,7 +107,7 @@ module.exports = {
 	#colors input[type=radio]:checked + label{
 		background: goldenrod;
 	}
-
+    /* ペン */
     #pens input[type=radio] + label{
 		position: relative;
 		display: inline-block;
@@ -111,7 +121,7 @@ module.exports = {
         -webkit-mask: no-repeat center/100%;
         background: var(--dynamic-color);
         border: solid 2px #777777;
-        mask-image: url(../img/14743.png);
+        mask-image: url(../img/pen9.png);
         -webkit-mask-image: url(../img/pen9.png);
     }
     #pens #thinPen + label{
@@ -119,7 +129,7 @@ module.exports = {
         -webkit-mask: no-repeat center/100%;
         background: var(--dynamic-color);
         border: solid 2px #777777;
-        mask-image: url(../img/14743.png);
+        mask-image: url(../img/pen7.png);
         -webkit-mask-image: url(../img/pen7.png);
     }
     #pens #thickPen + label{
@@ -127,12 +137,32 @@ module.exports = {
         -webkit-mask: no-repeat center/100%;
         background: var(--dynamic-color);
         border: solid 2px #777777;
-        mask-image: url(../img/14743.png);
+        mask-image: url(../img/pen8.png);
         -webkit-mask-image: url(../img/pen8.png);
     }
     #pens input[type=radio]:checked + label{
         border: solid 2px palevioletred !important;
 		/* background: chartreuse !important; */
 	}
-
+    /* 消しゴム */
+    #pens input[type=button] + label{
+		position: relative;
+		display: inline-block;
+        margin: 2.5px 2px;
+        width: 40px;
+        height: 40px;
+        background: beige;
+	}
+    #pens #eraser + label{
+        mask: no-repeat center/100%;
+        -webkit-mask: no-repeat center/100%;
+        background: var(--dynamic-color);
+        border: solid 2px #777777;
+        mask-image: url(../img/pen9.png);
+        -webkit-mask-image: url(../img/pen9.png);
+    }
+    /* 濃さ */
+    #alpha{
+        width: 230px;
+    }
 </style>

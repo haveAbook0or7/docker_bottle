@@ -51,7 +51,8 @@ module.exports = {
 
             mouse: {x:0, y:0},
             color: "#000000",
-            pen: 10
+            pen: 10,
+            alpha: 0.5,
 		}
 	},
 	methods: {
@@ -90,9 +91,9 @@ module.exports = {
             this.previewCxt.lineWidth = this.pen;
             // 線の色を指定
             this.drawCxt.strokeStyle = this.color;
-            this.drawCxt.globalAlpha = 0.1;
+            this.drawCxt.globalAlpha = this.alpha;
             this.previewCxt.strokeStyle = this.color;
-            this.previewCxt.globalAlpha = 0.1;
+            this.previewCxt.globalAlpha = this.alpha;
             // 今からパスを書きますよと云う宣言
             this.drawCxt.beginPath();
             this.previewCxt.beginPath();
@@ -119,6 +120,13 @@ module.exports = {
             var pensize = {marker: 15, thinPen: 2, thickPen: 5};
             console.log(pensize[value]);
             this.pen = pensize[value];
+        },
+        clickEraser(value){
+            this.color = value;
+            this.alpha = 1.0;
+        },
+        changeAlpha(value){
+            this.alpha = value;
         }
 
 	},
