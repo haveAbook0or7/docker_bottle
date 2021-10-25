@@ -9,10 +9,10 @@
             <input id="five"  name="colors" type="radio" v-model="color" :value="colorPalette.five" @change="changeColor"><label for="five" class="upper" :style="'background: '+colorPalette.five+';'"></label>
         </span>
         <span id="pens">
-            <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen"><label for="marker" @dblclick="showConfig('dbl', 'marker')"></label>
-            <input id="thinPen"  name="pens" type="radio" v-model="pen" value="thinPen"  @change="changePen"><label for="thinPen" @dblclick="showConfig('dbl', 'thinPen')"></label>
-            <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen"><label for="thickPen" @dblclick="showConfig('dbl', 'thickPen')"></label>
-            <input id="eraser"   name="pens" type="radio" v-model="pen" value="eraser"   @change="changePen"><label for="eraser" @dblclick="showConfig('dbl', 'eraser')"></label>
+            <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen"><label for="marker" @dblclick="showConfig('marker')"></label>
+            <input id="thinPen"  name="pens" type="radio" v-model="pen" value="thinPen"  @change="changePen"><label for="thinPen" @dblclick="showConfig('thinPen')"></label>
+            <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen"><label for="thickPen" @dblclick="showConfig('thickPen')"></label>
+            <input id="eraser"   name="pens" type="radio" v-model="pen" value="eraser"   @change="changePen"><label for="eraser" @dblclick="showConfig('eraser')"></label>
         </span>
         <span id="penConfig">
             <my-pens-config v-show="this.showFlg.marker" 
@@ -64,7 +64,7 @@ module.exports = {
             colorPalette: {black: "#000000", one: "#ff0000", two: "#00ff00", three: "#0000ff", four: "#ffff00", five: "#ffffff"},
             penSize: {marker: 15, thinPen: 2, thickPen: 5, eraser: 15},
             penAlpha: {marker: 0.3, thinPen: 0.9, thickPen: 0.9, eraser: 1.0},
-            configShow: false,
+            configShow: {id: "marker", flg: false},
             showFlg: {marker: false, thinPen: false, thickPen: false, eraser: false},
             color: "#000000",
             pen: "marker",
@@ -72,17 +72,12 @@ module.exports = {
 	},
 	methods: {
 		changeColor(){
-            this.$emit('change-color', this.color);
+            this.$emit('change-color', this.pen != "eraser" ? this.color : "#ffffff");
         },
         changePen(){
-            var flg = false;
-            for(k in this.showFlg){
-                if(this.showFlg[k] == true){
-                    flg = true
-                }
-            }
-            if(flg){
-                this.showConfig("change" ,this.pen);
+            if(this.configShow.flg){
+                this.showFlg[this.configShow.id] = false;
+                this.showConfig(this.pen);
             }
             this.$emit('change-pen', 
                 this.pen != "eraser" ? this.color : "#ffffff", 
@@ -90,7 +85,7 @@ module.exports = {
                 this.penAlpha[this.pen]
             );
         },
-        showConfig(eve, id){
+        showConfig(id){
             for(k in this.showFlg){
                 if(k == id){
                     continue;
@@ -98,6 +93,8 @@ module.exports = {
                 this.showFlg[k] = false;
             }
             this.showFlg[id] = !this.showFlg[id];
+            this.configShow.id = id;
+            this.configShow.flg = this.showFlg[id];
         },
         changeConfig(id, lbl, value){
             switch(lbl){
@@ -190,8 +187,8 @@ module.exports = {
         -webkit-mask: no-repeat center/100%;
         background: #fff;
         border: solid 2px #777777;
-        mask-image: url(../img/ere1.png);
-        -webkit-mask-image: url(../img/ere1.png);
+        mask-image: url(../img/ere2.png);
+        -webkit-mask-image: url(../img/ere2.png);
     }
     #pens input[type=radio]:checked + label{
         border: solid 2px palevioletred !important;
