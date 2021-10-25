@@ -12,13 +12,15 @@
     </head>
     <body>
         <div id="con" style="width: 900px; height: 900px; background-color: cadetblue;">
-            <canvas-palette></canvas-palette>
+            <my-colors-config></my-colors-config>
+            <!-- <canvas-palette></canvas-palette> -->
         </div>
         <script>
             new Vue({
                 el: "#con",
                 components: {
                     'canvas-palette': httpVueLoader('../static/js/canvas-palette.vue'),
+                    'my-colors-config': httpVueLoader('../static/js/my-colors-config.vue'),
                 },
             });
         </script>
