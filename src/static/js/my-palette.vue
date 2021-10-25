@@ -64,6 +64,7 @@ module.exports = {
             colorPalette: {black: "#000000", one: "#ff0000", two: "#00ff00", three: "#0000ff", four: "#ffff00", five: "#ffffff"},
             penSize: {marker: 15, thinPen: 2, thickPen: 5, eraser: 15},
             penAlpha: {marker: 0.3, thinPen: 0.9, thickPen: 0.9, eraser: 1.0},
+
             configShow: {id: "marker", flg: false},
             showFlg: {marker: false, thinPen: false, thickPen: false, eraser: false},
             color: "#000000",
@@ -141,14 +142,10 @@ module.exports = {
         border-radius: 50%;
         width: 30px;
         height: 30px;
-        background: beige;
 	}
     .upper{
         margin: 5px 2px 15px 2px !important;
     }
-	#colors input[type=radio]:checked + label{
-		background: goldenrod;
-	}
     /* ペン */
     #pens input[type=radio] + label{
 		position: relative;
@@ -156,7 +153,6 @@ module.exports = {
         margin: 2.5px 2px;
         width: 40px;
         height: 40px;
-        background: beige;
 	}
     #pens #marker + label{
         mask: no-repeat center/100%;
@@ -192,8 +188,8 @@ module.exports = {
     }
     #pens input[type=radio]:checked + label{
         border: solid 2px palevioletred !important;
-		/* background: chartreuse !important; */
 	}
+    /* 詳細設定 */
     #penConfig{
         z-index: 5;
     }

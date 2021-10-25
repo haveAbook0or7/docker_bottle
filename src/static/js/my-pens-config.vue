@@ -32,13 +32,9 @@ module.exports = {
 	},
 	methods: {
         changeSize(){
-			console.log(this.id_name);
-			console.log(this.size);
 			this.$emit('change-size', this.id_name, "size", this.size);
         },
         changeAlpha(){
-			console.log(this.id_name);
-			console.log(this.alpha);
             this.$emit('change-alpha', this.id_name, "alpha", this.alpha);
         }
 	},
