@@ -14,6 +14,9 @@
             <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen"><label for="thickPen" @dblclick="showConfig('thickPen')"></label>
             <input id="eraser"   name="pens" type="radio" v-model="pen" value="eraser"   @change="changePen"><label for="eraser" @dblclick="showConfig('eraser')"></label>
         </span>
+        <span id="colorsConfig">
+            <my-colors-config></my-colors-config>
+        </span>
         <span id="penConfig">
             <my-pens-config v-show="this.showFlg.marker" 
                 id_name="marker" :init_size="this.penSize.marker" :init_alpha="this.penAlpha.marker" 
@@ -35,6 +38,7 @@
 module.exports = {
 	components: {
 		'my-pens-config': httpVueLoader('./my-pens-config.vue'),
+        'my-colors-config': httpVueLoader('./my-colors-config.vue'),
     },
 	props: {
 		// mydbname: {default:"H1_2_DefaultDataMax"},
@@ -191,6 +195,9 @@ module.exports = {
 	}
     /* 詳細設定 */
     #penConfig{
+        z-index: 5;
+    }
+    #colorsConfig{
         z-index: 5;
     }
 </style>

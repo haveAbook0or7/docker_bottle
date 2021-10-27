@@ -1,21 +1,21 @@
 <template>
 	<div id="propertyBase">
         <table border="0">
-            <tr><td colspan="3"><input id="rgb16" type="text" v-model="rgb16" @change="changeSize"></td></tr>
+            <tr><td colspan="3" style="text-align: right;">#<input id="rgb16" type="text" maxlength="6" v-model="rgbhex" @change="changeColor"></td></tr>
             <tr>
                 <td>R</td>
-                <td><input id="r" type="range" min="0" max="255" step="1" v-model="r" @change="changeSize"></td>
-                <td><input type="text" v-model="r" @change="changeSize"></td>
+                <td><input id="r" type="range" min="0" max="255" step="1" v-model="r" @change="changeColor"></td>
+                <td><input type="text" maxlength="3" v-model="r" @input="inputNum('r', r)" @change="changeColor"></td>
             </tr>
             <tr>
                 <td>G</td>
-                <td><input id="g" type="range" min="0" max="255" step="1" v-model="g" @change="changeSize"></td>
-                <td><input type="text" v-model="g" @change="changeSize"></td>
+                <td><input id="g" type="range" min="0" max="255" step="1" v-model="g" @change="changeColor"></td>
+                <td><input type="text" maxlength="3" v-model="g" @input="inputNum('g', g)" @change="changeColor"></td>
             </tr>
             <tr>
                 <td>B</td>
-                <td><input id="b" type="range" min="0" max="255" step="1" v-model="b" @change="changeSize"></td>
-                <td><input type="text" v-model="b" @change="changeSize"></td>
+                <td><input id="b" type="range" min="0" max="255" step="1" v-model="b" @change="changeColor"></td>
+                <td><input type="text" maxlength="3" v-model="b" @input="inputNum('b', b)" @change="changeColor"></td>
             </tr>
         </table>
     </div>
@@ -36,10 +36,20 @@ module.exports = {
         
 	},
 	computed: {
-        rgb16: {
+        rgbhex: {
+            cache: false,
 			get(){
-				return this.tento16(this.r)+this.tento16(this.g)+this.tento16(this.b);
-			}
+				return this.tentohex(this.r)+this.tentohex(this.g)+this.tentohex(this.b);
+			},
+            set(v){
+                if(!/^[0-9a-f]{6}$/.test(v)){
+                    return;
+                }
+                var henkan = "0123456789abcdef";
+                this.r = henkan.indexOf(v[0]) * 16 + henkan.indexOf(v[1]) * 1;
+                this.g = henkan.indexOf(v[2]) * 16 + henkan.indexOf(v[3]) * 1;
+                this.b = henkan.indexOf(v[4]) * 16 + henkan.indexOf(v[5]) * 1;
+            }
 		},
 	},
 	data: function () {
@@ -50,7 +60,7 @@ module.exports = {
 		}
 	},
 	methods: {
-        tento16(num){
+        tentohex(num){
             var henkan = "0123456789abcdef";
             var re = [];
             var n = num;
@@ -68,12 +78,18 @@ module.exports = {
             }
             return res.padStart(2, "0");
         },
-        changeSize(){
+        inputNum(lbl, n){
+            if(n < 0 || n == ""){
+                this[lbl] = 0;
+            }
+            if(n > 255){
+                this[lbl] = 255;
+            }
+        },
+        changeColor(){
+            console.log("change");
 			// this.$emit('change-size', this.id_name, "size", this.size);
         },
-        changeAlpha(){
-            // this.$emit('change-alpha', this.id_name, "alpha", this.alpha);
-        }
 	},
 }
 // export default { Node.jsじゃないから、これだとダメだった。 }
@@ -89,14 +105,14 @@ module.exports = {
 	}
 	div{
 		display: inline-block;
-		width: 210px;
-		height: 120px;
+		width: 230px;
+		height: 100px;
 		position: absolute;
-		/* bottom: -85px;
-		right: 0; */
+		bottom: -100px;
+		left: 0;
 	}
 	input[type=range]{
-		width: 128px;
+		width: 180px;
 	}
 	input[type=text]{
 		border: solid 1px goldenrod;
