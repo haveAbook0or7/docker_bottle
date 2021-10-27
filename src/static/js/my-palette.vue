@@ -1,35 +1,55 @@
 <template>
 	<div id="paletteBase" :style="elementColor">
         <span id="colors">
-            <input id="black" name="colors" type="radio" v-model="color" :value="colorPalette.black" @change="changeColor"><label for="black" :style="'background: '+colorPalette.black+';'"></label>
-            <input id="one"   name="colors" type="radio" v-model="color" :value="colorPalette.one" @change="changeColor"><label for="one" class="upper" :style="'background: '+colorPalette.one+';'"></label>
-            <input id="two"   name="colors" type="radio" v-model="color" :value="colorPalette.two" @change="changeColor"><label for="two" :style="'background: '+colorPalette.two+';'"></label>
-            <input id="three" name="colors" type="radio" v-model="color" :value="colorPalette.three" @change="changeColor"><label for="three" class="upper" :style="'background: '+colorPalette.three+';'"></label>
-			<input id="four"  name="colors" type="radio" v-model="color" :value="colorPalette.four" @change="changeColor"><label for="four" :style="'background: '+colorPalette.four+';'"></label>
-            <input id="five"  name="colors" type="radio" v-model="color" :value="colorPalette.five" @change="changeColor"><label for="five" class="upper" :style="'background: '+colorPalette.five+';'"></label>
+            <input id="black" name="colors" type="radio" v-model="color" value="black" @change="changeColor">
+            <label for="black" :style="'background: '+colorPalette.black+';'"></label>
+            <input id="one"   name="colors" type="radio" v-model="color" value="one" @change="changeColor">
+            <label for="one" class="upper" :style="'background: '+colorPalette.one+';'" @dblclick="showColorConf('one')"></label>
+            <input id="two"   name="colors" type="radio" v-model="color" value="two" @change="changeColor">
+            <label for="two" :style="'background: '+colorPalette.two+';'" @dblclick="showColorConf('two')"></label>
+            <input id="three" name="colors" type="radio" v-model="color" value="three" @change="changeColor">
+            <label for="three" class="upper" :style="'background: '+colorPalette.three+';'" @dblclick="showColorConf('three')"></label>
+			<input id="four"  name="colors" type="radio" v-model="color" value="four" @change="changeColor">
+            <label for="four" :style="'background: '+colorPalette.four+';'" @dblclick="showColorConf('four')"></label>
+            <input id="five"  name="colors" type="radio" v-model="color" value="five" @change="changeColor">
+            <label for="five" class="upper" :style="'background: '+colorPalette.five+';'" @dblclick="showColorConf('five')"></label>
         </span>
         <span id="pens">
-            <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen"><label for="marker" @dblclick="showConfig('marker')"></label>
-            <input id="thinPen"  name="pens" type="radio" v-model="pen" value="thinPen"  @change="changePen"><label for="thinPen" @dblclick="showConfig('thinPen')"></label>
-            <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen"><label for="thickPen" @dblclick="showConfig('thickPen')"></label>
-            <input id="eraser"   name="pens" type="radio" v-model="pen" value="eraser"   @change="changePen"><label for="eraser" @dblclick="showConfig('eraser')"></label>
+            <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen"><label for="marker" @dblclick="showPenConf('marker')"></label>
+            <input id="thinPen"  name="pens" type="radio" v-model="pen" value="thinPen"  @change="changePen"><label for="thinPen" @dblclick="showPenConf('thinPen')"></label>
+            <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen"><label for="thickPen" @dblclick="showPenConf('thickPen')"></label>
+            <input id="eraser"   name="pens" type="radio" v-model="pen" value="eraser"   @change="changePen"><label for="eraser" @dblclick="showPenConf('eraser')"></label>
         </span>
         <span id="colorsConfig">
-            <my-colors-config></my-colors-config>
+            <my-colors-config v-show="this.colorConfFlg.one" 
+                id_name="one" :init_rgbhex="colorPalette.one"
+                @change="changeColorConf"></my-colors-config>
+            <my-colors-config v-show="this.colorConfFlg.two" 
+                id_name="two" :init_rgbhex="colorPalette.two"
+                @change="changeColorConf"></my-colors-config>
+            <my-colors-config v-show="this.colorConfFlg.three" 
+                id_name="three" :init_rgbhex="colorPalette.three"
+                @change="changeColorConf"></my-colors-config>
+            <my-colors-config v-show="this.colorConfFlg.four" 
+                id_name="four" :init_rgbhex="colorPalette.four"
+                @change="changeColorConf"></my-colors-config>
+            <my-colors-config v-show="this.colorConfFlg.five" 
+                id_name="five" :init_rgbhex="colorPalette.five"
+                @change="changeColorConf"></my-colors-config>
         </span>
         <span id="penConfig">
-            <my-pens-config v-show="this.showFlg.marker" 
+            <my-pens-config v-show="this.penConfFlg.marker" 
                 id_name="marker" :init_size="this.penSize.marker" :init_alpha="this.penAlpha.marker" 
-                @change-size="changeConfig" @change-alpha="changeConfig"></my-pens-config>
-            <my-pens-config v-show="this.showFlg.thinPen" 
+                @change-size="changePenConf" @change-alpha="changePenConf"></my-pens-config>
+            <my-pens-config v-show="this.penConfFlg.thinPen" 
                 id_name="thinPen" :init_size="this.penSize.thinPen" :init_alpha="this.penAlpha.thinPen" 
-                @change-size="changeConfig" @change-alpha="changeConfig"></my-pens-config>
-            <my-pens-config v-show="this.showFlg.thickPen" 
+                @change-size="changePenConf" @change-alpha="changePenConf"></my-pens-config>
+            <my-pens-config v-show="this.penConfFlg.thickPen" 
                 id_name="thickPen" :init_size="this.penSize.thickPen" :init_alpha="this.penAlpha.thickPen" 
-                @change-size="changeConfig" @change-alpha="changeConfig"></my-pens-config>
-            <my-pens-config v-show="this.showFlg.eraser" 
+                @change-size="changePenConf" @change-alpha="changePenConf"></my-pens-config>
+            <my-pens-config v-show="this.penConfFlg.eraser" 
                 id_name="eraser" :init_size="this.penSize.eraser" :init_alpha="this.penAlpha.eraser" 
-                @change-size="changeConfig" @change-alpha="changeConfig"></my-pens-config>
+                @change-size="changePenConf" @change-alpha="changePenConf"></my-pens-config>
         </span>
     </div>
 </template>
@@ -43,7 +63,7 @@ module.exports = {
 	props: {
 		// mydbname: {default:"H1_2_DefaultDataMax"},
 	},
-	mounted() {
+	beforeCreate() {
         axios.post("/py",{
 			id: 1
 		})
@@ -59,7 +79,7 @@ module.exports = {
 	computed: {
 		elementColor() {
 			return {
-				"--dynamic-color": this.color
+				"--dynamic-color": this.colorPalette[this.color]
 			}
 		},
 	},
@@ -69,39 +89,45 @@ module.exports = {
             penSize: {marker: 15, thinPen: 2, thickPen: 5, eraser: 15},
             penAlpha: {marker: 0.3, thinPen: 0.9, thickPen: 0.9, eraser: 1.0},
 
-            configShow: {id: "marker", flg: false},
-            showFlg: {marker: false, thinPen: false, thickPen: false, eraser: false},
-            color: "#000000",
+            penConfShow: {id: "marker", flg: false},
+            penConfFlg: {marker: false, thinPen: false, thickPen: false, eraser: false},
+            colorConfShow: {id: "one", flg: false},
+            colorConfFlg: {one: false, two: false, three: false, four: false, five: false},
+            color: "black",
             pen: "marker",
 		}
 	},
 	methods: {
 		changeColor(){
-            this.$emit('change-color', this.pen != "eraser" ? this.color : "#ffffff");
+            if(this.colorConfShow.flg){
+                this.colorConfFlg[this.colorConfShow.id] = false;
+                this.showColorConf(this.color);
+            }
+            this.$emit('change-color', this.pen != "eraser" ? this.colorPalette[this.color] : "#ffffff");
         },
         changePen(){
-            if(this.configShow.flg){
-                this.showFlg[this.configShow.id] = false;
-                this.showConfig(this.pen);
+            if(this.penConfShow.flg){
+                this.penConfFlg[this.penConfShow.id] = false;
+                this.showPenConf(this.pen);
             }
             this.$emit('change-pen', 
-                this.pen != "eraser" ? this.color : "#ffffff", 
+                this.pen != "eraser" ? this.colorPalette[this.color] : "#ffffff", 
                 this.penSize[this.pen], 
                 this.penAlpha[this.pen]
             );
         },
-        showConfig(id){
-            for(k in this.showFlg){
+        showPenConf(id){
+            for(k in this.penConfFlg){
                 if(k == id){
                     continue;
                 }
-                this.showFlg[k] = false;
+                this.penConfFlg[k] = false;
             }
-            this.showFlg[id] = !this.showFlg[id];
-            this.configShow.id = id;
-            this.configShow.flg = this.showFlg[id];
+            this.penConfFlg[id] = !this.penConfFlg[id];
+            this.penConfShow.id = id;
+            this.penConfShow.flg = this.penConfFlg[id];
         },
-        changeConfig(id, lbl, value){
+        changePenConf(id, lbl, value){
             switch(lbl){
                 case "size":
                     this.penSize[id] = value;
@@ -111,6 +137,21 @@ module.exports = {
                     break;
             }
             this.changePen();
+        },
+        showColorConf(id){
+            for(k in this.colorConfFlg){
+                if(k == id){
+                    continue;
+                }
+                this.colorConfFlg[k] = false;
+            }
+            this.colorConfFlg[id] = !this.colorConfFlg[id];
+            this.colorConfShow.id = id;
+            this.colorConfShow.flg = this.colorConfFlg[id];
+        },
+        changeColorConf(id, color){
+            this.colorPalette[id] = color;
+            this.changeColor();
         }
 	},
 }

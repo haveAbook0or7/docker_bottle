@@ -28,9 +28,7 @@ module.exports = {
     },
 	props: {
 		id_name: {default: ""},
-		init_r: {default: 100},
-		init_g: {default: 100},
-        init_b: {default: 50},
+        init_rgbhex: {default: "ffffff"},
 	},
 	mounted() {
         
@@ -39,28 +37,31 @@ module.exports = {
         rgbhex: {
             cache: false,
 			get(){
-				return this.tentohex(this.r)+this.tentohex(this.g)+this.tentohex(this.b);
+				return this.dectohex(this.r)+this.dectohex(this.g)+this.dectohex(this.b);
 			},
             set(v){
                 if(!/^[0-9a-f]{6}$/.test(v)){
                     return;
                 }
-                var henkan = "0123456789abcdef";
-                this.r = henkan.indexOf(v[0]) * 16 + henkan.indexOf(v[1]) * 1;
-                this.g = henkan.indexOf(v[2]) * 16 + henkan.indexOf(v[3]) * 1;
-                this.b = henkan.indexOf(v[4]) * 16 + henkan.indexOf(v[5]) * 1;
+                this.r = this.hextodec(v[0]+v[1]);
+                this.g = this.hextodec(v[2]+v[3]);
+                this.b = this.hextodec(v[4]+v[5]);
             }
 		},
 	},
 	data: function () {
+        var v = this.init_rgbhex.slice(1);
+        var rr = this.hextodec(v[0]+v[1]);
+        var gg = this.hextodec(v[2]+v[3]);
+        var bb = this.hextodec(v[4]+v[5]);
 		return {
-            r: this.init_r,
-            g: this.init_g,
-            b: this.init_b,
+            r: rr,
+            g: gg,
+            b: bb,
 		}
 	},
 	methods: {
-        tentohex(num){
+        dectohex(num){
             var henkan = "0123456789abcdef";
             var re = [];
             var n = num;
@@ -78,6 +79,10 @@ module.exports = {
             }
             return res.padStart(2, "0");
         },
+        hextodec(num){
+            var henkan = "0123456789abcdef";
+            return henkan.indexOf(num[0]) * 16 + henkan.indexOf(num[1]) * 1;
+        },
         inputNum(lbl, n){
             if(n < 0 || n == ""){
                 this[lbl] = 0;
@@ -87,8 +92,7 @@ module.exports = {
             }
         },
         changeColor(){
-            console.log("change");
-			// this.$emit('change-size', this.id_name, "size", this.size);
+			this.$emit('change', this.id_name, "#"+this.rgbhex);
         },
 	},
 }
