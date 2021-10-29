@@ -62,25 +62,21 @@ module.exports = {
 	},
 	methods: {
         dectohex(num){
-            var henkan = "0123456789abcdef";
-            var re = [];
+            const henkan = "0123456789abcdef";
+            var re = "";
             var n = num;
             while(true){
-                re.push(henkan[n%16]);
+                re += henkan[n%16];
                 if(n < 16){
                     break;
                 }
                 n  = n / 16 | 0;
             }
-            re = re.reverse();
-            var res = "";
-            for(var i = 0; i < re.length; i++){
-                res += re[i];
-            }
+            var res = re.split("").reverse().join("");
             return res.padStart(2, "0");
         },
         hextodec(num){
-            var henkan = "0123456789abcdef";
+            const henkan = "0123456789abcdef";
             return henkan.indexOf(num[0]) * 16 + henkan.indexOf(num[1]) * 1;
         },
         inputNum(lbl, n){

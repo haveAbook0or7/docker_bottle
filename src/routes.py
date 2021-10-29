@@ -1,5 +1,5 @@
 from bottle import route, response, abort, request, get, static_file
-from utils import *
+from api.userconfig import *
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
@@ -24,7 +24,30 @@ def handle_item():
         if request.method == 'GET':
             return get_items()
         else:
-            return create_item(key=request.query.key, payload=request.body)
+            return select(key=request.query.key, payload=request.body)
+    except:
+        # internal server error
+        abort(500)
+
+@route('/userconfig/select', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'POST':
+            return select(key=request.query.key, payload=request.body)
+        else:
+            return get_test()
+    except:
+        # internal server error
+        abort(500)
+@route('/userconfig/update', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'POST':
+            return update(key=request.query.key, payload=request.body)
+        else:
+            return get_test()
     except:
         # internal server error
         abort(500)

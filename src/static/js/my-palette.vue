@@ -64,13 +64,15 @@ module.exports = {
 		// mydbname: {default:"H1_2_DefaultDataMax"},
 	},
 	beforeCreate() {
-        axios.post("/py",{
-			id: 1
+        axios.post("/userconfig/select",{
+			id: "abcde12345"
 		})
 		.then(response => {
-            this.colorPalette = response.data.data.palette;
-            this.penSize = response.data.data.size;
-            this.penAlpha = response.data.data.alpha;
+            if(response.data.message == "OK"){
+                this.colorPalette = response.data.data.palette;
+                this.penSize = response.data.data.size;
+                this.penAlpha = response.data.data.alpha;
+            }
 		})
 		.catch(function (error) {
 			console.log(error);
@@ -88,6 +90,7 @@ module.exports = {
             colorPalette: {black: "#000000", one: "#ff0000", two: "#00ff00", three: "#0000ff", four: "#ffff00", five: "#ffffff"},
             penSize: {marker: 15, thinPen: 2, thickPen: 5, eraser: 15},
             penAlpha: {marker: 0.3, thinPen: 0.9, thickPen: 0.9, eraser: 1.0},
+            penCap: {marker: "butt", thinPen: "round", thickPen: "round", eraser: "round"},
 
             penConfShow: {id: "marker", flg: false},
             penConfFlg: {marker: false, thinPen: false, thickPen: false, eraser: false},
@@ -113,7 +116,8 @@ module.exports = {
             this.$emit('change-pen', 
                 this.pen != "eraser" ? this.colorPalette[this.color] : "#ffffff", 
                 this.penSize[this.pen], 
-                this.penAlpha[this.pen]
+                this.penAlpha[this.pen],
+                this.penCap[this.pen]
             );
         },
         showPenConf(id){

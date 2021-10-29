@@ -51,6 +51,7 @@ module.exports = {
             color: "#000000",
             pen: 15,
             alpha: 0.3,
+            cap: "butt"
 		}
 	},
 	methods: {
@@ -78,46 +79,50 @@ module.exports = {
         },
         mouseup(){
             // プレビューを消して、描画
-            this.previewCxt.clearRect(0,0,this.baseSize.width,this.baseSize.height);
-            this.drawCxt.stroke();
+            this.previewCxt.save();
+            // this.previewCxt.clearRect(0,0,this.baseSize.width,this.baseSize.height);
+            // this.drawCxt.stroke();
             // クリック終了
             this.isClicked = false;
         },
         drarLineStart() {
             // 線の太さを指定
-            this.drawCxt.lineWidth = this.pen;
+            // this.drawCxt.lineWidth = this.pen;
             this.previewCxt.lineWidth = this.pen;
             // 線の色を指定
-            this.drawCxt.strokeStyle = this.color;
-            this.drawCxt.globalAlpha = this.alpha;
+            // this.drawCxt.strokeStyle = this.color;
+            // this.drawCxt.globalAlpha = this.alpha;
             this.previewCxt.strokeStyle = this.color;
             this.previewCxt.globalAlpha = this.alpha;
             // 今からパスを書きますよと云う宣言
-            this.drawCxt.beginPath();
+            // this.drawCxt.beginPath();
             this.previewCxt.beginPath();
             // 先端を丸くする
-            this.drawCxt.lineCap = "butt"
-            this.previewCxt.lineCap = "butt"
-            this.drawCxt.lineJoin = "round"
-            this.previewCxt.lineJoin = "round"
+            // this.drawCxt.lineCap = this.cap;
+            this.previewCxt.lineCap = this.cap;
+            // this.drawCxt.lineJoin = "round";
+            this.previewCxt.lineJoin = "round";
             // パスの開始点に移動
-            this.drawCxt.moveTo(this.mouse.x, this.mouse.y);
+            // this.drawCxt.moveTo(this.mouse.x, this.mouse.y);
         },
         drawLine() {
             // 指定の位置までパスを引く
-            this.drawCxt.lineTo(this.mouse.x, this.mouse.y);
+            // this.drawCxt.lineTo(this.mouse.x, this.mouse.y);
             // パスに線を載せる
-            this.previewCxt.clearRect(0,0,this.baseSize.width,this.baseSize.height);
+            this.previewCxt.clearRect(0,0,this.previewCxt.canvas.clientWidth,this.previewCxt.canvas.clientHeight);
+            this.previewCxt.restore();
+            // this.previewCxt.save();
             this.previewCxt.lineTo(this.mouse.x, this.mouse.y);
             this.previewCxt.stroke();
         },
         changeColor(value){
             this.color = value;
         },
-        changePen(color, size, alpha){
+        changePen(color, size, alpha, cap){
             this.color = color;
             this.pen = size;
             this.alpha = alpha;
+            this.cap = cap;
         },
 	},
 }

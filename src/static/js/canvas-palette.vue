@@ -34,8 +34,8 @@ module.exports = {
 		changeColor(value){
             this.$refs.myCanvas.changeColor(value);
         },
-        changePen(color, size, alpha){
-            this.$refs.myCanvas.changePen(color, size, alpha);
+        changePen(color, size, alpha, cap){
+            this.$refs.myCanvas.changePen(color, size, alpha, cap);
         },
 
 	},
