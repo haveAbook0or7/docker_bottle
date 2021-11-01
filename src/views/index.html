@@ -1,41 +1,92 @@
-<!--
-    ホームページ
--->
+
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>暇ぶし</title>
-        <meta charset="UTF-8">
-        <meta name = "authr" content="有本 和奏">
-        <!-- <link href="/static/css/index.css" rel="stylesheet" type="text/css"> -->
-        <script src="https://unpkg.com/vue"></script>
-        <script src="https://unpkg.com/http-vue-loader"></script>
-        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    </head>
-    <body>
-        <header>
-            <div>
-                <h1>暇つぶし</h1>
-            </div>
-        </header>
-        <main>
-            <br><br><br>
-            <h2>各リンク</h2>
-            <div id="con">
-                <!-- <a id="twst" href="Hobby_1/php/Hobby_1_1_home.php" target="_blank"><span>ツイステカード編成ツール</span></a>
-                <br><br>
-                <a id="twst" href="Hobby_1/php/Hobby_contents1.php" target="_blank"><span>てすと</span></a>
-                <br><br><br> -->
-                <select-own></select-own>
-            </div>
-        </main>
-        <script>
-            new Vue({
-                el: "#con",
-                components: {
-                    'select-own': httpVueLoader('/static/js/select-own.vue'),
-                },
-            });
-        </script>
-    </body>
+<head>
+	<meta charset="utf-8">
+	<title>ぬり絵テスト</title>
+	<style type="text/css">
+		/* キャンバスに枠線をつける */
+		#coloring {
+			border: solid 1px #cccccc;
+		}
+	</style>
+</head>
+<body>
+	<!-- キャンバスを置く -->
+	<canvas id="coloring" width="400" height="300"></canvas>
+	<!-- 位置情報を取得 -->
+	<div id="mousePoint">位置情報</div>
+    <input type="button" id="btn1" value="ボタン" onclick="imageDraw();">
+</body>
+<script type="text/javascript">
+	// キャンバスを取得
+	var canvas = document.getElementById('coloring');
+	// コンテキストを取得
+	var ctx    = canvas.getContext('2d');
+    //画像オブジェクトを生成
+    var img = new Image();
+    img.src = "../static/img/canvas.jpg";
+    
+    //画像をcanvasに設定
+    img.onload = function(){
+        ctx.drawImage(img, 0, 0, 400, 300);  //400x300に縮小表示
+    }
+	// 位置情報
+	var mPoint = document.getElementById('mousePoint');
+
+	// マウス位置
+	var mouse = {x:0, y:0};
+
+	var isClicked = false;
+
+	// マウスイベントを取得
+	// マウスクリック
+	canvas.addEventListener("mousedown", function(e){
+		drarLineStart();
+
+		// クリック中フラグ
+		isClicked = true;
+	});
+	// マウス移動
+	canvas.addEventListener("mousemove", function(e){
+		// キャンバスの位置とサイズを取得
+		var rect = e.target.getBoundingClientRect();
+
+		// マウスの位置
+		mouse.x = e.clientX - rect.left;
+		mouse.y = e.clientY - rect.top;
+		// クリック中なら線を引く
+		if(isClicked) {
+			drawLine();
+			mPoint.innerHTML = mouse.x + ", " + mouse.y;
+		}
+	});
+	// マウスクリック解除
+	canvas.addEventListener("mouseup", function(e){
+		// クリック終了
+		isClicked = false;
+	});
+
+	// 開始位置を指定
+	function drarLineStart() {
+		// 線の太さを指定
+		ctx.lineWidth = 3;
+		// 線の色を指定
+		ctx.strokeStyle = "#FF00FF"
+		// 今からパスを書きますよと云う宣言
+		ctx.beginPath();
+		// 先端を丸くする
+		ctx.lineCap = "round"
+		// パスの開始点に移動
+		ctx.moveTo(mouse.x, mouse.y);
+	}
+
+	// 線を引く
+	function drawLine() {
+		// 指定の位置までパスを引く
+		ctx.lineTo(mouse.x, mouse.y);
+		// パスに線を載せる
+		ctx.stroke();
+	}
+</script>
 </html>
