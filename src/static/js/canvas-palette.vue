@@ -1,6 +1,6 @@
 <template>
 	<div id="Base" style="width: 900px; height: 900px;">
-        <my-palette @change-color="changeColor" @change-pen="changePen"></my-palette>
+        <my-palette @change-color="changeColor" @change-pen="changePen" @back-next="backNext"></my-palette>
         <my-canvas ref="myCanvas"></my-canvas>
     </div>
 </template>
@@ -37,6 +37,16 @@ module.exports = {
         changePen(color, size, alpha, cap){
             this.$refs.myCanvas.changePen(color, size, alpha, cap);
         },
+		backNext(id){
+			switch(id){
+                case "back":
+                    this.$refs.myCanvas.prevCanvas();
+                    break;
+                case "next":
+                    this.$refs.myCanvas.nextCanvas();
+                    break;
+            }
+		}
 
 	},
 }

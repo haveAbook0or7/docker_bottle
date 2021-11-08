@@ -8,6 +8,8 @@
             @mouseup="mouseup"></canvas>
     </div>
     {{mouse.x}}, {{mouse.y}}
+    <button type="button" @click="prevCanvas">戻る</button>
+	<button type="button" @click="nextCanvas">進む</button>
     </span>
 </template>
 
@@ -32,6 +34,9 @@ module.exports = {
         // コンテキスト取得
         this.drawCxt = this.drawCanvas.getContext('2d');
         this.previewCxt = this.previewCanvas.getContext('2d');
+        // ストレージの初期化
+        this.myStorage = localStorage;
+        this.myStorage.setItem("__log", JSON.stringify([]));
 	},
 	computed: {
 		// showFlg: {
@@ -46,6 +51,9 @@ module.exports = {
 			drawCanvas: null, drawCxt: null,
             previewCanvas: null, previewCxt: null,
             isClicked: false,
+            myStorage: null,
+            temp: [],
+            currentCanvas: 0,
 
             mouse: {x:0, y:0},
             color: "#000000",
@@ -79,41 +87,97 @@ module.exports = {
         },
         mouseup(){
             // プレビューを消して、描画
-            this.previewCxt.save();
-            // this.previewCxt.clearRect(0,0,this.baseSize.width,this.baseSize.height);
-            // this.drawCxt.stroke();
+            this.previewCxt.clearRect(0,0,this.baseSize.width,this.baseSize.height);
+            this.drawCxt.stroke();
+            // ローカルストレージに保存
+            this.setLocalStoreage();
             // クリック終了
             this.isClicked = false;
         },
         drarLineStart() {
-            // 線の太さを指定
-            // this.drawCxt.lineWidth = this.pen;
+            // 線の太さ・色・不透明度を指定
+            this.drawCxt.lineWidth = this.pen;
             this.previewCxt.lineWidth = this.pen;
-            // 線の色を指定
-            // this.drawCxt.strokeStyle = this.color;
-            // this.drawCxt.globalAlpha = this.alpha;
+            this.drawCxt.strokeStyle = this.color;
             this.previewCxt.strokeStyle = this.color;
+            this.drawCxt.globalAlpha = this.alpha;
             this.previewCxt.globalAlpha = this.alpha;
             // 今からパスを書きますよと云う宣言
-            // this.drawCxt.beginPath();
+            this.drawCxt.beginPath();
             this.previewCxt.beginPath();
-            // 先端を丸くする
-            // this.drawCxt.lineCap = this.cap;
+            // 先端を指定、つなぎ目を丸くする
+            this.drawCxt.lineCap = this.cap;
             this.previewCxt.lineCap = this.cap;
-            // this.drawCxt.lineJoin = "round";
+            this.drawCxt.lineJoin = "round";
             this.previewCxt.lineJoin = "round";
             // パスの開始点に移動
-            // this.drawCxt.moveTo(this.mouse.x, this.mouse.y);
+            this.drawCxt.moveTo(this.mouse.x, this.mouse.y);
+            this.previewCxt.moveTo(this.mouse.x, this.mouse.y);
         },
         drawLine() {
             // 指定の位置までパスを引く
-            // this.drawCxt.lineTo(this.mouse.x, this.mouse.y);
+            this.drawCxt.lineTo(this.mouse.x, this.mouse.y);
             // パスに線を載せる
-            this.previewCxt.clearRect(0,0,this.previewCxt.canvas.clientWidth,this.previewCxt.canvas.clientHeight);
-            this.previewCxt.restore();
-            // this.previewCxt.save();
+            this.previewCxt.clearRect(0,0,this.baseSize.width,this.baseSize.height);
             this.previewCxt.lineTo(this.mouse.x, this.mouse.y);
             this.previewCxt.stroke();
+        },
+        setLocalStoreage(){
+            // 画像化
+            var png = this.drawCanvas.toDataURL("image/png");
+            // ローカルストレージから配列を取得
+            var logs = JSON.parse(this.myStorage.getItem("__log"));
+            // 一度だけ処理する
+            const thisvc = this;
+            setTimeout(function(){
+                // 配列の先頭にに画像を格納
+                logs.unshift({png});
+                // ローカルストレージに配列を保存
+                thisvc.myStorage.setItem("__log", JSON.stringify(logs));
+                // 履歴を初期化
+                thisvc.currentCanvas = 0;
+                thisvc.temp = [];
+            }, 0);
+        },
+        prevCanvas(){
+            // ローカルストレージから配列を取得
+            var logs = JSON.parse(this.myStorage.getItem("__log"));
+            if(logs.length > 0){
+                this.temp.unshift(logs.shift());
+                const thisvc = this;
+                setTimeout(function(){
+                    thisvc.myStorage.setItem("__log", JSON.stringify(logs));
+                    //Canvasを初期化する
+                    thisvc.drawCxt.clearRect(0, 0, thisvc.baseSize.width,thisvc.baseSize.height);
+                    //画像を描写する
+                    if(logs.length != 0){
+                        thisvc.drawImg(logs[0]['png']);
+                    }
+                }, 0);
+            }
+        },
+        nextCanvas(){
+            // ローカルストレージから配列を取得
+            var logs = JSON.parse(this.myStorage.getItem("__log"));
+            if(this.temp.length > 0){
+                logs.unshift(this.temp.shift());
+                const thisvc = this;
+                setTimeout(function(){
+                    thisvc.myStorage.setItem("__log", JSON.stringify(logs));
+                    //Canvasを初期化する
+                    thisvc.drawCxt.clearRect(0, 0, thisvc.baseSize.width,thisvc.baseSize.height);
+                    //画像を描写する
+                    thisvc.drawImg(logs[0]['png']);
+                }, 0);
+            }
+        },
+        drawImg(src){
+            var img = new Image();
+            img.src = src;
+            img.onload = () => {
+                this.drawCxt.globalAlpha = 1.0;
+                this.drawCxt.drawImage(img, 0, 0);
+            }
         },
         changeColor(value){
             this.color = value;

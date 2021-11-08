@@ -20,6 +20,10 @@
             <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen"><label for="thickPen" @dblclick="showPenConf('thickPen')"></label>
             <input id="eraser"   name="pens" type="radio" v-model="pen" value="eraser"   @change="changePen"><label for="eraser" @dblclick="showPenConf('eraser')"></label>
         </span>
+        <span id="backnext">
+            <input id="back" type="button" @click="clickBackNext('back')"><label for="back"></label>
+            <input id="next" type="button" @click="clickBackNext('next')"><label for="next"></label>
+        </span>
         <span id="colorsConfig">
             <my-colors-config v-show="this.colorConfFlg.one" 
                 id_name="one" :init_rgbhex="colorPalette.one"
@@ -156,6 +160,9 @@ module.exports = {
         changeColorConf(id, color){
             this.colorPalette[id] = color;
             this.changeColor();
+        },
+        clickBackNext(id){
+            this.$emit('back-next', id);
         }
 	},
 }
@@ -172,7 +179,7 @@ module.exports = {
 	}
     #paletteBase{
         background: #777777;
-        width: 450px;
+        width: 550px;
         height: 50px;
         position: relative;
         box-sizing: border-box;
@@ -238,6 +245,28 @@ module.exports = {
     #pens input[type=radio]:checked + label{
         border: solid 2px palevioletred !important;
 	}
+    /* 戻る進む */
+    #backnext input[type=button] + label{
+		position: relative;
+		display: inline-block;
+        margin: 10px 2px;
+        width: 40px;
+        height: 30px;
+	}
+    #backnext #back + label{
+        mask: no-repeat center/100%;
+        -webkit-mask: no-repeat center/100%;
+        background: steelblue;
+        mask-image: url(../img/back.png);
+        -webkit-mask-image: url(../img/back.png);
+    }
+    #backnext #next + label{
+        mask: no-repeat center/100%;
+        -webkit-mask: no-repeat center/100%;
+        background: steelblue;
+        mask-image: url(../img/next.png);
+        -webkit-mask-image: url(../img/next.png);
+    }
     /* 詳細設定 */
     #penConfig{
         z-index: 5;
