@@ -1,5 +1,5 @@
 <template>
-	<div id="paletteBase" :style="elementColor">
+	<div id="paletteBase" :style="variables">
         <span id="colors">
             <input id="black" name="colors" type="radio" v-model="color" value="black" @change="changeColor">
             <label for="black" :style="'background: '+colorPalette.black+';'"></label>
@@ -24,6 +24,7 @@
             <input id="back" type="button" @click="clickBackNext('back')"><label for="back"></label>
             <input id="next" type="button" @click="clickBackNext('next')"><label for="next"></label>
         </span>
+        <span id="paletteMove" @mousedown="mousedown" @mousemove="mousemove" @mouseup="mouseup"></span>
         <span id="colorsConfig">
             <my-colors-config v-show="this.colorConfFlg.one" 
                 id_name="one" :init_rgbhex="colorPalette.one"
@@ -64,9 +65,6 @@ module.exports = {
 		'my-pens-config': httpVueLoader('./my-pens-config.vue'),
         'my-colors-config': httpVueLoader('./my-colors-config.vue'),
     },
-	props: {
-		// mydbname: {default:"H1_2_DefaultDataMax"},
-	},
 	beforeCreate() {
         axios.post("/userconfig/select",{
 			id: "abcde12345"
@@ -83,9 +81,11 @@ module.exports = {
 		});
 	},
 	computed: {
-		elementColor() {
+		variables() {
 			return {
-				"--dynamic-color": this.colorPalette[this.color]
+				"--dynamic-color": this.colorPalette[this.color],
+                "--palette-x": this.mouse.x+"px",
+                "--palette-y": this.mouse.y+"px"
 			}
 		},
 	},
@@ -102,6 +102,8 @@ module.exports = {
             colorConfFlg: {one: false, two: false, three: false, four: false, five: false},
             color: "black",
             pen: "marker",
+            isClicked: false,
+            mouse:{x:0, y:0}
 		}
 	},
 	methods: {
@@ -163,6 +165,31 @@ module.exports = {
         },
         clickBackNext(id){
             this.$emit('back-next', id);
+        },
+        mousedown(e){
+            // キャンバスの位置とサイズを取得
+            var rect = e.target.getBoundingClientRect();
+            // マウスの位置
+            this.mouse.x = e.clientX-590;
+            this.mouse.y = e.clientY-25;
+            // 描画の開始
+            // this.drarLineStart();
+            // クリック中フラグ
+            this.isClicked = true;
+        },
+        mousemove(e){
+            // クリック中以外の時は無視
+            if(!this.isClicked) {return;}
+            // キャンバスの位置とサイズを取得
+            var rect = e.target.getBoundingClientRect();
+            // マウスの位置
+            this.mouse.x = e.clientX-590;
+            this.mouse.y = e.clientY-25;
+            console.log(this.mouse.x+":"+this.mouse.y);
+        },
+        mouseup(){
+            // クリック終了
+            this.isClicked = false;
         }
 	},
 }
@@ -179,10 +206,12 @@ module.exports = {
 	}
     #paletteBase{
         background: #777777;
-        width: 550px;
+        width: 600px;
         height: 50px;
-        position: relative;
+        position: absolute;
         box-sizing: border-box;
+        left: var(--palette-x);
+        top: var(--palette-y);
     }
     /* ラジオボタン */
 	input[type=radio]{
@@ -273,5 +302,16 @@ module.exports = {
     }
     #colorsConfig{
         z-index: 5;
+    }
+    /* パレット移動 */
+    #paletteMove{
+        background: #ffff00;
+        position: absolute;
+		display: inline-block;
+        right: 0;
+        /* margin: 15px 2px 5px 2px;
+        border-radius: 50%; */
+        width: 20px;
+        height: 50px;
     }
 </style>
