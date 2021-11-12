@@ -1,5 +1,6 @@
 <template>
     <span>
+        <input type="button" value="アップロード" @click="upload">
 	<div id="canvasBase">
         <canvas id="drawCanvas"></canvas>
         <canvas id="previewCanvas" 
@@ -55,6 +56,19 @@ module.exports = {
 		}
 	},
 	methods: {
+        upload(){
+            var logs = JSON.parse(this.myStorage.getItem("__log"));
+            console.log(logs[0]['png']);
+            axios.post("/upfiles/upload",{
+                png: logs[0]['png']
+            })
+            .then(response => {
+                console.log(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
         canvasResize(newHeight){
             // 高さを更新
             this.baseSize.height = newHeight;
@@ -229,4 +243,9 @@ module.exports = {
         position: absolute;
         z-index: 2;
 	}
+    input{
+        right: 0;
+    position: fixed;
+    z-index: 8;
+    }
 </style>
