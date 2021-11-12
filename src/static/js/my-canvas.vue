@@ -7,20 +7,11 @@
             @mousemove="mousemove" 
             @mouseup="mouseup"></canvas>
     </div>
-    {{mouse.x}}, {{mouse.y}}
-    <button type="button" @click="prevCanvas">戻る</button>
-	<button type="button" @click="nextCanvas">進む</button>
     </span>
 </template>
 
 <script>
 module.exports = {
-	components: {
-		
-    },
-	props: {
-		// mydbname: {default:"H1_2_DefaultDataMax"},
-	},
 	mounted() {
         // キャンバスサイズを取得
         this.baseSize = document.querySelector('#canvasBase').getBoundingClientRect();
@@ -63,6 +54,21 @@ module.exports = {
 		}
 	},
 	methods: {
+        canvasResize(newHeight){
+            // 高さを更新
+            this.baseSize.height = newHeight;
+            this.drawCanvas.setAttribute("height", this.baseSize.height);
+            this.previewCanvas.setAttribute("height", this.baseSize.height);
+            // ローカルストレージから配列を取得
+            var logs = JSON.parse(this.myStorage.getItem("__log"));
+            const thisvc = this;
+            setTimeout(function(){
+                //画像を描写する
+                if(logs.length != 0){
+                    thisvc.drawImg(logs[0]['png']);
+                }
+            }, 0);
+        },
 		mousedown(e){
             // キャンバスの位置とサイズを取得
             var rect = e.target.getBoundingClientRect();
@@ -204,7 +210,7 @@ module.exports = {
         height: 100%;
         position: relative;
         box-sizing: border-box;
-        margin: 0px 50px;
+        /* margin: 0px 50px; */
     }
     #drawCanvas {
         width: 100%;

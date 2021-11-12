@@ -24,7 +24,6 @@
             <input id="back" type="button" @click="clickBackNext('back')"><label for="back"></label>
             <input id="next" type="button" @click="clickBackNext('next')"><label for="next"></label>
         </span>
-        <span id="paletteMove" @mousedown="mousedown" @mousemove="mousemove" @mouseup="mouseup"></span>
         <span id="colorsConfig">
             <my-colors-config v-show="this.colorConfFlg.one" 
                 id_name="one" :init_rgbhex="colorPalette.one"
@@ -84,8 +83,6 @@ module.exports = {
 		variables() {
 			return {
 				"--dynamic-color": this.colorPalette[this.color],
-                "--palette-x": this.mouse.x+"px",
-                "--palette-y": this.mouse.y+"px"
 			}
 		},
 	},
@@ -102,8 +99,6 @@ module.exports = {
             colorConfFlg: {one: false, two: false, three: false, four: false, five: false},
             color: "black",
             pen: "marker",
-            isClicked: false,
-            mouse:{x:0, y:0}
 		}
 	},
 	methods: {
@@ -166,31 +161,6 @@ module.exports = {
         clickBackNext(id){
             this.$emit('back-next', id);
         },
-        mousedown(e){
-            // キャンバスの位置とサイズを取得
-            var rect = e.target.getBoundingClientRect();
-            // マウスの位置
-            this.mouse.x = e.clientX-590;
-            this.mouse.y = e.clientY-25;
-            // 描画の開始
-            // this.drarLineStart();
-            // クリック中フラグ
-            this.isClicked = true;
-        },
-        mousemove(e){
-            // クリック中以外の時は無視
-            if(!this.isClicked) {return;}
-            // キャンバスの位置とサイズを取得
-            var rect = e.target.getBoundingClientRect();
-            // マウスの位置
-            this.mouse.x = e.clientX-590;
-            this.mouse.y = e.clientY-25;
-            console.log(this.mouse.x+":"+this.mouse.y);
-        },
-        mouseup(){
-            // クリック終了
-            this.isClicked = false;
-        }
 	},
 }
 // export default { Node.jsじゃないから、これだとダメだった。 }
@@ -210,8 +180,6 @@ module.exports = {
         height: 50px;
         position: absolute;
         box-sizing: border-box;
-        left: var(--palette-x);
-        top: var(--palette-y);
     }
     /* ラジオボタン */
 	input[type=radio]{
