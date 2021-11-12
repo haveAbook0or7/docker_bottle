@@ -178,7 +178,7 @@ module.exports = {
         background: #777777;
         width: 600px;
         height: 50px;
-        position: absolute;
+        position: fixed;
         box-sizing: border-box;
     }
     /* ラジオボタン */

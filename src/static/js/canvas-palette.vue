@@ -32,10 +32,10 @@ module.exports = {
 	methods: {
 		scroll(e){
 			var scrollLimit = this.canvasheight - this.baseheight;
-			if(scrollLimit == e.view.pageYOffset){
+			if(scrollLimit <= e.view.pageYOffset){
 				this.canvasheight += e.deltaY > 0 ? e.deltaY : 0;
+				this.$refs.myCanvas.canvasResize(this.canvasheight);
 			}
-			this.$refs.myCanvas.canvasResize(this.canvasheight);
 		},
 		changeColor(value){
             this.$refs.myCanvas.changeColor(value);
