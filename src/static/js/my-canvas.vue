@@ -1,6 +1,5 @@
 <template>
     <span>
-        <input type="button" value="アップロード" @click="upload">
 	<div id="canvasBase">
         <canvas id="drawCanvas"></canvas>
         <canvas id="previewCanvas" 
@@ -31,13 +30,6 @@ module.exports = {
         this.myStorage = localStorage;
         this.myStorage.setItem("__log", JSON.stringify([]));
 	},
-	computed: {
-		// showFlg: {
-		// 	get(){
-		// 		return this.mydbname == "H1_2_DefaultDataMax" ? false : true;
-		// 	}
-		// },
-	},
 	data: function () {
 		return {
             baseSize: null,
@@ -56,6 +48,7 @@ module.exports = {
 		}
 	},
 	methods: {
+        // 保存
         upload(){
             var logs = JSON.parse(this.myStorage.getItem("__log"));
             console.log(logs[0]['png']);
@@ -69,6 +62,7 @@ module.exports = {
                 console.log(error);
             });
         },
+        // スクロールして画面拡大
         canvasResize(newHeight){
             // 高さを更新
             this.baseSize.height = newHeight;
@@ -83,6 +77,27 @@ module.exports = {
                     thisvc.drawImg(logs[0]['png']);
                 }
             }, 0);
+        },
+        // ペン動作
+        drarLineStart() {
+            // 線の太さ・色・不透明度を指定
+            this.drawCxt.lineWidth = this.pen;
+            this.previewCxt.lineWidth = this.pen;
+            this.drawCxt.strokeStyle = this.color;
+            this.previewCxt.strokeStyle = this.color;
+            this.drawCxt.globalAlpha = this.alpha;
+            this.previewCxt.globalAlpha = this.alpha;
+            // 今からパスを書きますよと云う宣言
+            this.drawCxt.beginPath();
+            this.previewCxt.beginPath();
+            // 先端を指定、つなぎ目を丸くする
+            this.drawCxt.lineCap = this.cap;
+            this.previewCxt.lineCap = this.cap;
+            this.drawCxt.lineJoin = "round";
+            this.previewCxt.lineJoin = "round";
+            // パスの開始点に移動
+            this.drawCxt.moveTo(this.mouse.x, this.mouse.y);
+            this.previewCxt.moveTo(this.mouse.x, this.mouse.y);
         },
 		mousedown(e){
             // キャンバスの位置とサイズを取得
@@ -104,7 +119,12 @@ module.exports = {
             this.mouse.x = e.clientX - rect.left;
             this.mouse.y = e.clientY - rect.top;
             // クリック中なら線を引く
-            this.drawLine();
+            // 指定の位置までパスを引く
+            this.drawCxt.lineTo(this.mouse.x, this.mouse.y);
+            // パスに線を載せる
+            this.previewCxt.clearRect(0,0,this.baseSize.width,this.baseSize.height);
+            this.previewCxt.lineTo(this.mouse.x, this.mouse.y);
+            this.previewCxt.stroke();
         },
         mouseup(){
             // プレビューを消して、描画
@@ -115,34 +135,7 @@ module.exports = {
             // クリック終了
             this.isClicked = false;
         },
-        drarLineStart() {
-            // 線の太さ・色・不透明度を指定
-            this.drawCxt.lineWidth = this.pen;
-            this.previewCxt.lineWidth = this.pen;
-            this.drawCxt.strokeStyle = this.color;
-            this.previewCxt.strokeStyle = this.color;
-            this.drawCxt.globalAlpha = this.alpha;
-            this.previewCxt.globalAlpha = this.alpha;
-            // 今からパスを書きますよと云う宣言
-            this.drawCxt.beginPath();
-            this.previewCxt.beginPath();
-            // 先端を指定、つなぎ目を丸くする
-            this.drawCxt.lineCap = this.cap;
-            this.previewCxt.lineCap = this.cap;
-            this.drawCxt.lineJoin = "round";
-            this.previewCxt.lineJoin = "round";
-            // パスの開始点に移動
-            this.drawCxt.moveTo(this.mouse.x, this.mouse.y);
-            this.previewCxt.moveTo(this.mouse.x, this.mouse.y);
-        },
-        drawLine() {
-            // 指定の位置までパスを引く
-            this.drawCxt.lineTo(this.mouse.x, this.mouse.y);
-            // パスに線を載せる
-            this.previewCxt.clearRect(0,0,this.baseSize.width,this.baseSize.height);
-            this.previewCxt.lineTo(this.mouse.x, this.mouse.y);
-            this.previewCxt.stroke();
-        },
+        // 戻る進む
         setLocalStoreage(){
             // 画像化
             var png = this.drawCanvas.toDataURL("image/png");
@@ -200,6 +193,7 @@ module.exports = {
                 this.drawCxt.drawImage(img, 0, 0);
             }
         },
+        // ペン設定変更
         changeColor(value){
             this.color = value;
         },

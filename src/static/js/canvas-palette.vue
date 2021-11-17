@@ -1,6 +1,9 @@
 <template>
 	<div id="Base" :style="variables" @wheel="scroll">
-        <my-palette @change-color="changeColor" @change-pen="changePen" @back-next="backNext"></my-palette>
+		<div id="tools">
+			<my-palette :login_user="loginUser" @change-color="changeColor" @change-pen="changePen" @back-next="backNext"></my-palette>
+			<my-control :login_user="loginUser" @back-next="backNext" @save="saves"></my-control>
+		</div>
         <my-canvas ref="myCanvas"></my-canvas>
     </div>
 </template>
@@ -10,7 +13,19 @@ module.exports = {
 	components: {
 		'my-canvas': httpVueLoader('./my-canvas.vue'),
         'my-palette': httpVueLoader('./my-palette.vue'),
+		'my-control': httpVueLoader('./my-control.vue'),
     },
+	created() {
+		// ユーザー認証
+		axios.get("/userlogins/getuser")
+		.then(response => {
+			console.log(response.data);
+			this.loginUser = response.data.data.user;
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+	},
 	mounted() {
 		// キャンバスサイズを取得
 		this.baseheight = document.documentElement.clientHeight;
@@ -25,6 +40,7 @@ module.exports = {
 	},
 	data: function () {
 		return {
+			loginUser: null,
 			baseheight: null,
 			canvasheight: null,
 		}
@@ -52,6 +68,9 @@ module.exports = {
                     this.$refs.myCanvas.nextCanvas();
                     break;
             }
+		},
+		saves(){
+			this.$refs.myCanvas.upload();
 		}
 
 	},
@@ -70,5 +89,13 @@ module.exports = {
 		width: 100%;
 		height: var(--height);
 		background: brown;
+	}
+	#tools{
+		background: #777777;
+        width: 900px;
+        height: 50px;
+        position: fixed;
+        box-sizing: border-box;
+		z-index: 3;
 	}
 </style>

@@ -13,17 +13,14 @@
         </style>
     </head>
     <body>
-        <div id="con" style="background-color: cadetblue; height: 500px;">
-            <!-- <ul>
-                <tree-path class="item" :item="treeData"></tree-path>
-            </ul> -->
-            <select-path></select-path>
+        <div id="con" style="background-color: cadetblue;">
         </div>
         <script>
             new Vue({
                 el: "#con",
                 components: {
-                    'select-path': httpVueLoader('../static/js/select-path.vue'),
+                    'canvas-palette': httpVueLoader('../static/js/canvas-palette.vue'),
+                    'my-colors-config': httpVueLoader('../static/js/my-colors-config.vue'),
                 },
             });
         </script>
