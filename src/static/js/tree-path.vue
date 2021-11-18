@@ -1,14 +1,15 @@
 <template>
-    <span :style="elementColor">
+    <span :style="variable">
         <span class="li">
-            <input type="button" :value="item.name">
+            <input type="button" :value="item.name" @click="spreadItem('')">
             <span class="toggle" v-if="isFolder" @click="toggle"></span>
         </span>
         <div v-show="isOpen" v-if="isFolder">
             <tree-path class="item" 
                 v-for="(child, index) in item.children"
                 :key="index"
-                :item="child">
+                :item="child"
+                @select="spreadItem">
             </tree-path>
         </div>
     </span>
@@ -23,7 +24,7 @@ module.exports = {
         item: Object
 	},
 	computed: {
-		elementColor() {
+		variable() {
 			return {
 				"--dynamic-color": this.underColor,
                 "--top": this.isOpen ? "0px" : "8px",
@@ -31,8 +32,7 @@ module.exports = {
 			}
 		},
         isFolder() {
-        return this.item.children &&
-            this.item.children.length;
+            return this.item.children && this.item.children.length;
         }
 	},
 	data: function () {
@@ -45,6 +45,9 @@ module.exports = {
             if (this.isFolder) {
                 this.isOpen = !this.isOpen;
             }
+        },
+        spreadItem(folder){
+            this.$emit('select', this.item.name+"/"+folder);
         }
 	}
 }
@@ -53,7 +56,6 @@ module.exports = {
 
 <style scoped>
     * {
-        font-family: Menlo, Consolas, monospace;
         text-align: left;
         color: #444;
         margin: 0;
@@ -79,8 +81,8 @@ module.exports = {
     .toggle{
         top: 5px;
         right: 3px;
-        border-top: var(--top) solid slategray;
-        border-bottom: var(--bottom) solid slategray;
+        border-top: var(--top) solid #ccc;
+        border-bottom: var(--bottom) solid #ccc;
         border-left: 5px solid transparent;
         border-right: 5px solid transparent;
         width: 0;

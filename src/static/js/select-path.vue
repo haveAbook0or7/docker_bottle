@@ -1,9 +1,8 @@
 <template>
-	<div :style="elementColor">
-        <input class="select" type="button" :value="selected"><span id="sankaku" @click="clickSelect"></span>
-        <!-- <span id="ul"> -->
-            <tree-path class="item" :item="treeData"></tree-path>
-        <!-- </span> -->
+	<div :style="variable">
+        <input class="select" type="button" :value="selected" @click="openOption">
+        <span class="toggle" @click="openOption"></span>
+        <tree-path class="item" v-show="isOpen" :item="treeData" @select="selectItem"></tree-path>
     </div>
 </template>
 
@@ -13,88 +12,56 @@ module.exports = {
 		'tree-path': httpVueLoader('./tree-path.vue'),
     },
 	props: {
-        item: Object,
-		initial: {default:()=>[]},
-		// options: {default: ()=>[{key: "ホーム", value: null},]},
-		// disabled: {default: false},
+		init_select: {default:()=>[]},
+		options: {default:()=>{
+            return {
+                name: 'home', children: [
+                    {name: 'folder1', children: [
+                        {name: 'folder2'},
+                        {name: 'folder3'}
+                    ]},
+                    {name: 'folder4'},
+                    {name: 'folder5', children: [
+                        {name: 'folder6'}
+                    ]}
+                ]
+            };
+        }},
+		disabled: {default: false},
 	},
 	computed: {
-		elementColor() {
+		variable() {
 			return {
-				"--dynamic-color": this.underColor
+				"--dynamic-color": this.isOpen ? "#da3c41" : "#705b67",
+                "--top": this.isOpen ? "0px" : "8px",
+                "--bottom": this.isOpen ? "8px" : "0px",
 			}
 		},
         treeData: {
             get(){
-                return {
-                    name: 'My Tree',
-                    children: [
-                        {name: 'hello'},
-                        {name: 'wat'},
-                        {
-                            name: 'child folder',
-                            children: [
-                                {
-                                    name: 'child folder',
-                                    children: [
-                                        {name: 'hello'},
-                                        {name: 'wat'}
-                                    ]
-                                },
-                                {name: 'hello'},
-                                {name: 'wat'},
-                                {
-                                    name: 'child folder',
-                                    children: [
-                                        {name: 'hello'},
-                                        {name: 'wat'}
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                };
+                return this.options;
             }
         },
-        // option: {
-        //     get(){
-        //         return [
-        //             {key: "ホーム1", value: null},
-        //             {key: "ホーム2", value: [
-        //                 {key: "ホーム2-1", value: null},
-        //                 {key: "ホーム2-2", value: null},
-        //             ]},
-        //             {key: "ホーム3", value: null},
-        //         ];
-        //     }
-        // }
 	},
 	data: function () {
 		return {
-			selected: this.initial,
-			// isDisabled: this.disabled,
-
-			// underColor: "#705b67",
+			selected: this.init_select,
+			isDisabled: this.disabled,
             isOpen: false,
-            
 		}
 	},
 	methods:{
-	// 	chengeDisabled(value){
-	// 		this.isDisabled = value;
-	// 	},
-	// 	updateValue(value){
-	// 		this.$emit('up-value', value.target.id, value.target.value);
-	// 	},
-	// 	chengeValue(value){
-	// 		this.selected = value;
-	// 	},
-	// 	chengeUnderC(value){
-	// 		this.underColor = value;
-	// 	},
-        clickSelect(){
-            console.log("www");
-        }
+		chengeDisabled(value){
+			this.isDisabled = value;
+		},
+        openOption(){
+            if(!this.isDisabled){
+                this.isOpen = !this.isOpen;
+            }
+        },
+        selectItem(path){
+            this.selected = path;
+        },
 	}
 }
 // export default { Node.jsじゃないから、これだとダメだった。 }
@@ -109,6 +76,7 @@ module.exports = {
         position: relative;
         display: block;
         width: 200px;
+        text-align: left;
 	}
     .select{
         width: 200px;
@@ -117,13 +85,15 @@ module.exports = {
         color: darkslategrey;
         border-bottom:  2px solid var(--dynamic-color);
     }
-    #sankaku{
+    .toggle{
         position: absolute;
         top: 5px;
         right: 3px;
-        border-top: 8px solid slategray;
+        border-top: var(--top) solid var(--dynamic-color);
+        border-bottom: var(--bottom) solid var(--dynamic-color);
         border-left: 5px solid transparent;
         border-right: 5px solid transparent;
         width: 0;
+        height: 0;
     }
 </style>
