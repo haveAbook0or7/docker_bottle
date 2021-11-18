@@ -11,19 +11,33 @@
             <tr>
                 <td>保存場所</td>
                 <td>
-                    <input type="text">
+                    <select-path  id="path"></select-path>
                 </td>
             </tr>
             </table>
-			<input type="button" :value="buttonMode" @click="clickSave">
+			<input id="save" type="button" :value="buttonMode" @click="clickSave">
         </div>
     </div>
 </template>
 
 <script>
 module.exports = {
+	components: {
+		'select-path': httpVueLoader('./select-path.vue'),
+    },
 	props: {
 		login_user: {default:null},
+	},
+	mounted() {
+		// ユーザーのフォルダ取得
+		axios.get("/userlogins/getuser")
+		.then(response => {
+			console.log(response.data);
+			this.loginUser = response.data.data.user;
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
 	},
 	data: function () {
 		return {
@@ -61,7 +75,7 @@ module.exports = {
 		border: 0;
 	}
 	.hidden{
-		display: none !important;
+		/* display: none !important; */
 	}
 	#overlay{
 		/*　要素を重ねた時の順番　*/
@@ -88,10 +102,14 @@ module.exports = {
 		align-items: center;
 		justify-content: center;
 	}
+	td{
+		height: 40px;
+		min-width: 70px;
+	}
 	input[type=text]{
 		font: 15px sans-serif;
 		box-sizing: border-box;
-		width: 100%;
+		width: 200px;
 		padding: 0.3em;
 		color: #aaaaaa;
 		border: none;
@@ -103,12 +121,17 @@ module.exports = {
 		border-bottom: 2px solid #da3c41;
 		outline: none;
 	}
-	input[type=button]{
+	#path{
+		position: absolute;
+		top: 165px;
+	}
+	#save{
 		position: absolute;
 		bottom: 57px;
 		width: 100px;
 		height: 30px;
 		color: #fff;
 		background: #da3c41;
+		z-index: 2;
 	}
 </style>

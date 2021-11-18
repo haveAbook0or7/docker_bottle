@@ -81,8 +81,8 @@ module.exports = {
     .toggle{
         top: 5px;
         right: 3px;
-        border-top: var(--top) solid #ccc;
-        border-bottom: var(--bottom) solid #ccc;
+        border-top: var(--top) solid #aaa;
+        border-bottom: var(--bottom) solid #aaa;
         border-left: 5px solid transparent;
         border-right: 5px solid transparent;
         width: 0;

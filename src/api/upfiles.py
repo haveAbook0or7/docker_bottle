@@ -8,9 +8,32 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
 def upfiles2(user="abcde12345"):
-    a = json.dumps(os.listdir(f"./static/usermemo/"), indent=4)
-    b = json.loads(a)
-    return str(len(b))
+    memopath = "./static/usermemo/"
+    rejson = {"name": user, "children": []}
+    hensuu = [user,"","",""]
+    c = ""
+    cnt = 1
+    for current_dir, sub_dirs, files_list, in os.walk(memopath+user): 
+        now = current_dir[len(memopath):].split("/")
+        if(len(sub_dirs) == 0):
+            # rejson = {"name": now[len(now)-1],}
+            cnt-=1
+        else:
+            hensuu[cnt] = sub_dirs
+            # rejson = {"name": now[len(now)-1], "children": []}
+            cnt+=1
+        c += u"now {}   <br>".format(now[len(now)-1])
+        c += u"sub {}   <br>".format(sub_dirs)
+        c += u"file {}   <br>".format(files_list)
+        c += u"cnt {}   <br>".format(cnt)
+        c += u"json {}   <br>".format(hensuu)
+        c += "//////////////////////////////////////////////<br>"
+
+        # for subdir in sub_dirs
+        #     rejson["children"] += 
+    # a = json.dumps(os.walk(f"./static/usermemo/{user}"), indent=4)
+    # b = json.loads(a)
+    return c
 
 def upfiles1(key, payload, createnew=True):
     postjson = json.load(payload)
