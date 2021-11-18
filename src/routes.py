@@ -1,5 +1,7 @@
 from bottle import route, response, abort, request, get, static_file
 from api.userconfig import *
+from api.upfiles import *
+from api.userlogins import *
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
@@ -22,9 +24,19 @@ def handle_item():
     try:
         response.headers['Content-Type'] = 'text/html'
         if request.method == 'GET':
-            return get_items()
+            return get_login_user()
         else:
             return select(key=request.query.key, payload=request.body)
+    except:
+        # internal server error
+        abort(500)
+
+@route('/userlogins/getuser', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'GET':
+            return get_login_user()
     except:
         # internal server error
         abort(500)
@@ -48,6 +60,19 @@ def handle_item():
             return update(key=request.query.key, payload=request.body)
         else:
             return get_test()
+    except:
+        # internal server error
+        abort(500)
+
+@route('/upfiles/upload', method=['GET', 'POST'])
+def handle_item():
+    
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'POST':
+            return upfiles1(key=request.query.key, payload=request.body)
+        else:
+            return upfiles2()
     except:
         # internal server error
         abort(500)

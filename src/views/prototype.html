@@ -7,20 +7,23 @@
         <script src="https://unpkg.com/http-vue-loader"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <style>
-
+            *{
+                margin: 0;
+            }
         </style>
     </head>
     <body>
-        <div id="con" style="width: 900px; height: 900px; background-color: cadetblue;">
-            <!-- <my-colors-config></my-colors-config> -->
-            <canvas-palette></canvas-palette>
+        <div id="con" style="background-color: cadetblue; height: 500px;">
+            <!-- <ul>
+                <tree-path class="item" :item="treeData"></tree-path>
+            </ul> -->
+            <select-path></select-path>
         </div>
         <script>
             new Vue({
                 el: "#con",
                 components: {
-                    'canvas-palette': httpVueLoader('../static/js/canvas-palette.vue'),
-                    'my-colors-config': httpVueLoader('../static/js/my-colors-config.vue'),
+                    'select-path': httpVueLoader('../static/js/select-path.vue'),
                 },
             });
         </script>

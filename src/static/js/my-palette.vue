@@ -1,5 +1,5 @@
 <template>
-	<div id="paletteBase" :style="elementColor">
+	<div id="paletteBase" :style="variables">
         <span id="colors">
             <input id="black" name="colors" type="radio" v-model="color" value="black" @change="changeColor">
             <label for="black" :style="'background: '+colorPalette.black+';'"></label>
@@ -60,12 +60,9 @@ module.exports = {
 		'my-pens-config': httpVueLoader('./my-pens-config.vue'),
         'my-colors-config': httpVueLoader('./my-colors-config.vue'),
     },
-	props: {
-		// mydbname: {default:"H1_2_DefaultDataMax"},
-	},
-	beforeCreate() {
+	created() {
         axios.post("/userconfig/select",{
-			id: "abcde12345"
+			id: this.login_user
 		})
 		.then(response => {
             if(response.data.message == "OK"){
@@ -78,10 +75,13 @@ module.exports = {
 			console.log(error);
 		});
 	},
+    props: {
+		login_user: {default:null},
+	},
 	computed: {
-		elementColor() {
+		variables() {
 			return {
-				"--dynamic-color": this.colorPalette[this.color]
+				"--dynamic-color": this.colorPalette[this.color],
 			}
 		},
 	},
@@ -156,7 +156,10 @@ module.exports = {
         changeColorConf(id, color){
             this.colorPalette[id] = color;
             this.changeColor();
-        }
+        },
+        clickBackNext(id){
+            this.$emit('back-next', id);
+        },
 	},
 }
 // export default { Node.jsじゃないから、これだとダメだった。 }
@@ -171,11 +174,7 @@ module.exports = {
         z-index: 3;
 	}
     #paletteBase{
-        background: #777777;
-        width: 450px;
-        height: 50px;
-        position: relative;
-        box-sizing: border-box;
+        display: inline-block;
     }
     /* ラジオボタン */
 	input[type=radio]{
@@ -244,5 +243,16 @@ module.exports = {
     }
     #colorsConfig{
         z-index: 5;
+    }
+    /* パレット移動 */
+    #paletteMove{
+        background: #ffff00;
+        position: absolute;
+		display: inline-block;
+        right: 0;
+        /* margin: 15px 2px 5px 2px;
+        border-radius: 50%; */
+        width: 20px;
+        height: 50px;
     }
 </style>
