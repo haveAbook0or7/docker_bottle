@@ -222,11 +222,11 @@ module.exports = {
 		font-size: 13px;
 	}
     div{
-        width: 1000px;
+        width: 900px;
         height: 100%;
         position: relative;
         box-sizing: border-box;
-        /* margin: 0px 50px; */
+        margin: 0px auto;
     }
     #drawCanvas {
         width: 100%;
@@ -234,7 +234,6 @@ module.exports = {
         background: #ffffff;
         box-sizing: border-box;
         position: absolute;
-		border: solid 1px #cc77cc;
 	}
     #previewCanvas {
         width: 100%;
@@ -243,9 +242,4 @@ module.exports = {
         position: absolute;
         z-index: 2;
 	}
-    input{
-        right: 0;
-    position: fixed;
-    z-index: 8;
-    }
 </style>

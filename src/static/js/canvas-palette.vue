@@ -3,6 +3,7 @@
 		<div id="tools">
 			<my-palette :login_user="loginUser" @change-color="changeColor" @change-pen="changePen" @back-next="backNext"></my-palette>
 			<my-control :login_user="loginUser" @back-next="backNext" @save="saves"></my-control>
+			<my-menu :login_user="loginUser"></my-menu>
 		</div>
         <my-canvas ref="myCanvas"></my-canvas>
     </div>
@@ -14,6 +15,7 @@ module.exports = {
 		'my-canvas': httpVueLoader('./my-canvas.vue'),
         'my-palette': httpVueLoader('./my-palette.vue'),
 		'my-control': httpVueLoader('./my-control.vue'),
+		'my-menu': httpVueLoader('./my-menu.vue'),
     },
 	created() {
 		// ユーザー認証
@@ -93,7 +95,7 @@ module.exports = {
 	}
 	#tools{
 		background: #777777;
-        width: 900px;
+        width: 100%;
         height: 50px;
         position: fixed;
         box-sizing: border-box;

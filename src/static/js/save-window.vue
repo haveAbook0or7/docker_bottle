@@ -140,7 +140,6 @@ module.exports = {
 		color: #fff;
 		background: #da3c41;
 		z-index: 2;
-		
 	}
 	#save:active{
 		box-sizing: border-box;
