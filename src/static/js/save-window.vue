@@ -11,7 +11,7 @@
             <tr>
                 <td>保存場所</td>
                 <td>
-                    <select-path  id="path"></select-path>
+                    <select-path  id="path" :options="filepath"></select-path>
                 </td>
             </tr>
             </table>
@@ -28,12 +28,14 @@ module.exports = {
 	props: {
 		login_user: {default:null},
 	},
-	mounted() {
+	created() {
 		// ユーザーのフォルダ取得
-		axios.get("/userlogins/getuser")
+		axios.post("/upfiles/getdir",{
+			user: this.login_user
+		})
 		.then(response => {
-			console.log(response.data);
-			this.loginUser = response.data.data.user;
+			console.log(response.data.data);
+			this.filepath = response.data.data;
 		})
 		.catch(function (error) {
 			console.log(error);
@@ -43,7 +45,7 @@ module.exports = {
 		return {
 			modalClass: "hidden",
             filename: "新しいメモ帳",
-			filepath: "",
+			filepath: {},
 			buttonMode: "保存",
 			data: [],
 			message: [],
@@ -75,7 +77,7 @@ module.exports = {
 		border: 0;
 	}
 	.hidden{
-		/* display: none !important; */
+		display: none !important;
 	}
 	#overlay{
 		/*　要素を重ねた時の順番　*/
@@ -133,5 +135,10 @@ module.exports = {
 		color: #fff;
 		background: #da3c41;
 		z-index: 2;
+		
+	}
+	#save:active{
+		box-sizing: border-box;
+		border: 2px inset #c0353a;
 	}
 </style>

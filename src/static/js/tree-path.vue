@@ -2,7 +2,7 @@
     <span :style="variable">
         <span class="li">
             <input type="button" :value="item.name" @click="spreadItem('')">
-            <span class="toggle" v-if="isFolder" @click="toggle"></span>
+            <span class="toggle" v-if="isFolder" @click="toggle" @mouseenter="toggle"></span>
         </span>
         <div v-show="isOpen" v-if="isFolder">
             <tree-path class="item" 
@@ -73,6 +73,7 @@ module.exports = {
         width: 200px;
         background: #fff;
         color: darkslategrey;
+        box-shadow: 1px 2px 4px #aaa;
     }
     input[type=button]:hover{
         background: #ccc;

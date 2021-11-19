@@ -72,7 +72,18 @@ def handle_item():
         if request.method == 'POST':
             return upfiles1(key=request.query.key, payload=request.body)
         else:
-            return upfiles2()
+            return get_user_dir()
+    except:
+        # internal server error
+        abort(500)
+
+@route('/upfiles/getdir', method=['GET', 'POST'])
+def handle_item():
+    
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'POST':
+            return get_user_dir(key=request.query.key, payload=request.body)
     except:
         # internal server error
         abort(500)
