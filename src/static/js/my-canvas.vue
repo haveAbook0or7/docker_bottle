@@ -55,6 +55,7 @@ module.exports = {
             console.log(logs[0]['png']);
             if(mode == "保存"){
                 axios.post("/upfiles/upload",{
+                    mode: "save_new",
                     path: path,
                     name: filename,
                     png: logs[0]['png'],
