@@ -36,3 +36,17 @@ def upfiles1(key, payload, createnew=True):
         "message": 'fff',
         "data": "img_binary"
     },indent=4)
+
+def upfiles2(key, payload, createnew=True):
+    postjson = json.load(payload)
+    save_path = postjson["path"] 
+    save_name = postjson["name"]
+    pngfile = postjson["png"].replace('data:image/png;base64,', '')
+    img_binary = base64.b64decode(pngfile)
+    with open(f'./static/usermemo/{save_path}{save_name}', 'bw') as f:
+        f.write(img_binary)
+
+    return json.dumps({
+        "message": 'fff',
+        "data": "img_binary"
+    },indent=4)

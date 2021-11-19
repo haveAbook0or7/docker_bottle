@@ -5,8 +5,8 @@
             <input id="next" type="button" @click="clickBackNext('next')"><label for="next"></label>
         </span>
         <span id="saves">
-            <input id="save" type="button" @click="clickSave"><label for="save"></label>
-            <save-window ref="modal" :login_user="login_user"></save-window>
+            <input id="save" type="button" @click="clickSaveModalOpen"><label for="save"></label>
+            <save-window ref="modal" :login_user="login_user" @save="clickSave"></save-window>
         </span>
     </div>
 </template>
@@ -29,9 +29,12 @@ module.exports = {
         clickBackNext(id){
             this.$emit('back-next', id);
         },
-        clickSave(){
+        clickSaveModalOpen(){
             this.$refs.modal.openModal("新しいメモ帳");
-            // this.$emit('save');
+        },
+        clickSave(mode, path, filename){
+            // canvas-paletteへ渡す
+            this.$emit('save', mode, path, filename);
         }
 	},
 }

@@ -29,6 +29,7 @@ module.exports = {
         // ストレージの初期化
         this.myStorage = localStorage;
         this.myStorage.setItem("__log", JSON.stringify([]));
+        this.setLocalStoreage();
 	},
 	data: function () {
 		return {
@@ -49,18 +50,22 @@ module.exports = {
 	},
 	methods: {
         // 保存
-        upload(){
+        upload(mode, path, filename){
             var logs = JSON.parse(this.myStorage.getItem("__log"));
             console.log(logs[0]['png']);
-            axios.post("/upfiles/upload",{
-                png: logs[0]['png']
-            })
-            .then(response => {
-                console.log(response.data);
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+            if(mode == "保存"){
+                axios.post("/upfiles/upload",{
+                    path: path,
+                    name: filename,
+                    png: logs[0]['png'],
+                })
+                .then(response => {
+                    console.log(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
         },
         // スクロールして画面拡大
         canvasResize(newHeight){

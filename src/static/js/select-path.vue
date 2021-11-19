@@ -12,7 +12,7 @@ module.exports = {
 		'tree-path': httpVueLoader('./tree-path.vue'),
     },
 	props: {
-		init_select: {default:()=>[]},
+		init_select: {default:null},
 		options: {default:()=>{
             return {
                 name: 'home', children: [
@@ -28,6 +28,9 @@ module.exports = {
             };
         }},
 		disabled: {default: false},
+	},
+    mounted() {
+        this.selectItem(this.init_select == null ? this.options.name+"/" : this.init_select);
 	},
 	computed: {
 		variable() {
@@ -45,7 +48,7 @@ module.exports = {
 	},
 	data: function () {
 		return {
-			selected: this.init_select,
+			selected: "",
 			isDisabled: this.disabled,
             isOpen: false,
 		}
@@ -61,6 +64,7 @@ module.exports = {
         },
         selectItem(path){
             this.selected = path;
+            this.$emit('select', this.selected);
         },
 	}
 }

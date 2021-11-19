@@ -69,8 +69,9 @@ module.exports = {
                     break;
             }
 		},
-		saves(){
-			this.$refs.myCanvas.upload();
+		saves(mode, path, filename){
+			// my-canvasのuploadでアップロード
+			this.$refs.myCanvas.upload(mode, path, filename);
 		}
 
 	},

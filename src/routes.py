@@ -70,7 +70,7 @@ def handle_item():
     try:
         response.headers['Content-Type'] = 'text/html'
         if request.method == 'POST':
-            return upfiles1(key=request.query.key, payload=request.body)
+            return upfiles2(key=request.query.key, payload=request.body)
         else:
             return get_user_dir()
     except:

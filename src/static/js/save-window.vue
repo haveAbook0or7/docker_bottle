@@ -11,7 +11,7 @@
             <tr>
                 <td>保存場所</td>
                 <td>
-                    <select-path  id="path" :options="filepath"></select-path>
+                    <select-path  id="path" :options="filepathData" @select="getPath"></select-path>
                 </td>
             </tr>
             </table>
@@ -35,7 +35,7 @@ module.exports = {
 		})
 		.then(response => {
 			console.log(response.data.data);
-			this.filepath = response.data.data;
+			this.filepathData = response.data.data;
 		})
 		.catch(function (error) {
 			console.log(error);
@@ -45,7 +45,8 @@ module.exports = {
 		return {
 			modalClass: "hidden",
             filename: "新しいメモ帳",
-			filepath: {},
+			filepath: "",
+			filepathData: {},
 			buttonMode: "保存",
 			data: [],
 			message: [],
@@ -62,8 +63,12 @@ module.exports = {
 		stop(){
 			event.stopPropagation();
 		},
+		getPath(path){
+			this.filepath = path;
+		},
 		clickSave(){
-			console.log(this.buttonMode);
+			// my-controlへ渡す
+			this.$emit('save', this.buttonMode, this.filepath, this.filename+".png");
 		}
 	},
 }
