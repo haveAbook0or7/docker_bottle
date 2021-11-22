@@ -2,25 +2,20 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>ホーム</title>
+        <title>サインイン</title>
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/http-vue-loader"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <style>
-            *{
-                margin: 0;
-            }
-        </style>
     </head>
     <body>
         <div id="con" style="background-color: cadetblue;">
-            <canvas-palette></canvas-palette>
+            <signin-form></signin-form>
         </div>
         <script>
             new Vue({
                 el: "#con",
                 components: {
-                    'canvas-palette': httpVueLoader('../static/js/canvas-palette.vue'),
+                    'signin-form': httpVueLoader('../static/js/signin/signin-form.vue'),
                 },
             });
         </script>
