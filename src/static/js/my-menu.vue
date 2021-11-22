@@ -1,22 +1,21 @@
 <template>
 	<div id="menubase" :style="variable">
 		<table border="0">
-		<tr>
-			<td>
-                {{login_user}}
-                <span id="menu"><span id="mtoggle"></span></span>
-            </td>
+		<tr style="height: 22px;">
+			<td>{{login_user}}</td>
+            <td><span id="mtoggle" @click="openMenu"></span></td>
 			<td><input type="button" value="サインアップ"></td>
 		</tr>
-		<tr><td colspan="2">らくがきちょう</td></tr>
+		<tr><td colspan="3" style="font-size: 22px;">らくがきちょう</td></tr>
 		</table>
+        <menu-list :login_user="login_user" v-show="isOpen"></menu-list>
 	</div>
 </template>
 
 <script>
 module.exports = {
     components: {
-		'save-window': httpVueLoader('./save-window.vue'),
+		'menu-list': httpVueLoader('./menu-list.vue'),
         'my-palette': httpVueLoader('./my-palette.vue'),
 		'my-control': httpVueLoader('./my-control.vue'),
     },
@@ -27,8 +26,8 @@ module.exports = {
 		variable() {
 			return {
 				"--dynamic-color": this.isOpen ? "#da3c41" : "#1b2538",
-                "--top": this.isOpen ? "0px" : "15px",
-                "--bottom": this.isOpen ? "15px" : "0px",
+                "--top": this.isOpen ? "0px" : "12px",
+                "--bottom": this.isOpen ? "12px" : "0px",
 			}
 		},
 	},
@@ -38,6 +37,9 @@ module.exports = {
 		}
 	},
 	methods: {
+        openMenu(){
+            this.isOpen = !this.isOpen;
+        }
 	},
 }
 // export default { Node.jsじゃないから、これだとダメだった。 }
@@ -52,31 +54,29 @@ module.exports = {
         z-index: 3;
 	}
     #menubase{
+        position: relative;
         display: inline-block;
     }
     table{
         height: 50px;
         text-align: right;
+        border-collapse: collapse;
+        border-spacing: 0;
     }
     td{
-        min-width: 100px;
-    }
-    #menu{
-        display: inline-block;
         position: relative;
-        width: 20px;
-        height: 13px;
+        min-width: 21px;
     }
     #mtoggle{
         position: absolute;
-        top: 2px;
-        left: 2px;
-        border-top: var(--top) solid #da3c41;
-        border-bottom: var(--bottom) solid #da3c41;
-        border-left: 8px solid transparent;
-        border-right: 8px solid transparent;
+        top: 3.5px;
+        right: 3.5px;
         width: 0;
         height: 0;
+        border-top: var(--top) solid #da3c41;
+        border-bottom: var(--bottom) solid #da3c41;
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
 	}
     input[type=button]{
 		width: 100px;

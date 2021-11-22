@@ -3,8 +3,9 @@
 		<div id="tools">
 			<my-palette :login_user="loginUser" @change-color="changeColor" @change-pen="changePen" @back-next="backNext"></my-palette>
 			<my-control :login_user="loginUser" @back-next="backNext" @save="saves"></my-control>
-			<my-menu :login_user="loginUser"></my-menu>
+			<my-menu :login_user="loginUser" id="menu"></my-menu>
 		</div>
+		<br><br><br>
         <my-canvas ref="myCanvas"></my-canvas>
     </div>
 </template>
@@ -101,4 +102,9 @@ module.exports = {
         box-sizing: border-box;
 		z-index: 3;
 	}
+	#menu{
+		position: absolute;
+		top: 0;
+		right: 0;
+		}
 </style>
