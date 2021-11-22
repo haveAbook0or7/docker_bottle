@@ -7,11 +7,6 @@
 
 <script>
 module.exports = {
-    components: {
-		'save-window': httpVueLoader('./save-window.vue'),
-        'my-palette': httpVueLoader('./my-palette.vue'),
-		'my-control': httpVueLoader('./my-control.vue'),
-    },
     props: {
 		login_user: {default:null},
 	},

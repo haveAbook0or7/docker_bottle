@@ -62,7 +62,7 @@ module.exports = {
 		padding: 0;
 		border: 0;
 		font-size: 13px;
-        cursor: pointer;
+        cursor: default;
     }
     div{
         padding-left: 15px;

@@ -2,7 +2,7 @@
 	<div id="menubase" :style="variable">
 		<table border="0">
 		<tr style="height: 22px;">
-			<td>{{login_user}}</td>
+			<td style="cursor: default;" @click="openMenu">{{login_user}}</td>
             <td><span id="mtoggle" @click="openMenu"></span></td>
 			<td><input type="button" value="サインアップ"></td>
 		</tr>
@@ -16,8 +16,6 @@
 module.exports = {
     components: {
 		'menu-list': httpVueLoader('./menu-list.vue'),
-        'my-palette': httpVueLoader('./my-palette.vue'),
-		'my-control': httpVueLoader('./my-control.vue'),
     },
     props: {
 		login_user: {default:null},
