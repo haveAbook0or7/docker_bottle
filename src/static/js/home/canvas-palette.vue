@@ -13,10 +13,10 @@
 <script>
 module.exports = {
 	components: {
-		'my-canvas': httpVueLoader('./my-canvas.vue'),
-        'my-palette': httpVueLoader('./my-palette.vue'),
-		'my-control': httpVueLoader('./my-control.vue'),
-		'my-menu': httpVueLoader('./my-menu.vue'),
+		'my-canvas': httpVueLoader('./canvas/my-canvas.vue'),
+        'my-palette': httpVueLoader('./palette/my-palette.vue'),
+		'my-control': httpVueLoader('./palette/my-control.vue'),
+		'my-menu': httpVueLoader('./palette/my-menu.vue'),
     },
 	created() {
 		// ユーザー認証

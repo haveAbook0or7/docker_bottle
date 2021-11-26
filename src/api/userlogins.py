@@ -56,6 +56,6 @@ def sign_out():
         "data": res
     }, indent=4)
 
-def sign_up_pre():
+# def sign_up_pre():
 
-def sign_up():
+# def sign_up():

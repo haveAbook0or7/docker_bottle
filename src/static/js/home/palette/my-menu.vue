@@ -15,7 +15,7 @@
 <script>
 module.exports = {
     components: {
-		'menu-list': httpVueLoader('./menu-list.vue'),
+		'menu-list': httpVueLoader('../component/menu-list.vue'),
     },
     props: {
 		login_user: {default:null},

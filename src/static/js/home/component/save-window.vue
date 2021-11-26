@@ -23,7 +23,7 @@
 <script>
 module.exports = {
 	components: {
-		'select-path': httpVueLoader('./select-path.vue'),
+		'select-path': httpVueLoader('../../component/select-path.vue'),
     },
 	props: {
 		login_user: {default:null},

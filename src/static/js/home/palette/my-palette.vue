@@ -57,8 +57,8 @@
 <script>
 module.exports = {
 	components: {
-		'my-pens-config': httpVueLoader('./my-pens-config.vue'),
-        'my-colors-config': httpVueLoader('./my-colors-config.vue'),
+		'my-pens-config': httpVueLoader('../palette-config/my-pens-config.vue'),
+        'my-colors-config': httpVueLoader('../palette-config/my-colors-config.vue'),
     },
 	created() {
         axios.post("/userconfig/select",{
@@ -207,32 +207,32 @@ module.exports = {
         -webkit-mask: no-repeat center/100%;
         background: var(--dynamic-color);
         border: solid 2px #777777;
-        mask-image: url(../img/pen12.png);
-        -webkit-mask-image: url(../img/pen12.png);
+        mask-image: url(../../../img/pen12.png);
+        -webkit-mask-image: url(../../../img/pen12.png);
     }
     #pens #thinPen + label{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
         background: var(--dynamic-color);
         border: solid 2px #777777;
-        mask-image: url(../img/pen10.png);
-        -webkit-mask-image: url(../img/pen10.png);
+        mask-image: url(../../../img/pen10.png);
+        -webkit-mask-image: url(../../../img/pen10.png);
     }
     #pens #thickPen + label{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
         background: var(--dynamic-color);
         border: solid 2px #777777;
-        mask-image: url(../img/pen11.png);
-        -webkit-mask-image: url(../img/pen11.png);
+        mask-image: url(../../../img/pen11.png);
+        -webkit-mask-image: url(../../../img/pen11.png);
     }
     #pens #eraser + label{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
         background: #fff;
         border: solid 2px #777777;
-        mask-image: url(../img/ere2.png);
-        -webkit-mask-image: url(../img/ere2.png);
+        mask-image: url(../../../img/ere2.png);
+        -webkit-mask-image: url(../../../img/ere2.png);
     }
     #pens input[type=radio]:checked + label{
         border: solid 2px palevioletred !important;

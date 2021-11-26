@@ -14,9 +14,7 @@
 <script>
 module.exports = {
     components: {
-		'save-window': httpVueLoader('./save-window.vue'),
-        'my-palette': httpVueLoader('./my-palette.vue'),
-		'my-control': httpVueLoader('./my-control.vue'),
+		'save-window': httpVueLoader('../component/save-window.vue'),
     },
     props: {
 		login_user: {default:null},
@@ -64,22 +62,22 @@ module.exports = {
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
         background: steelblue;
-        mask-image: url(../img/back.png);
-        -webkit-mask-image: url(../img/back.png);
+        mask-image: url(../../../img/back.png);
+        -webkit-mask-image: url(../../../img/back.png);
     }
     #backnext #next + label{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
         background: steelblue;
-        mask-image: url(../img/next.png);
-        -webkit-mask-image: url(../img/next.png);
+        mask-image: url(../../../img/next.png);
+        -webkit-mask-image: url(../../../img/next.png);
     }
     /* 保存 */
     #saves #save + label{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
         background: steelblue;
-        mask-image: url(../img/save.png);
-        -webkit-mask-image: url(../img/save.png);
+        mask-image: url(../../../img/save.png);
+        -webkit-mask-image: url(../../../img/save.png);
     }
 </style>
