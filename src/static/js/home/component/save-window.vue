@@ -8,7 +8,7 @@
                     <input type="text" v-model="filename">
                 </td>
             </tr>
-            <tr>
+            <tr v-if="ifGuest">
                 <td>保存場所</td>
                 <td>
                     <select-path  id="path" :options="filepathData" @select="getPath"></select-path>
@@ -30,11 +30,15 @@ module.exports = {
 	},
 	created() {
 		// ユーザーのフォルダ取得
-		axios.post("/upfiles/getdir",{
-			user: this.login_user
-		})
+		axios.get("/upfiles/getdir")
 		.then(response => {
-			console.log(response.data.data);
+			if(response.data.message = "guest"){
+				this.ifGuest = false;
+				this.buttonMode = "ダウンロード";
+			}else{
+				this.ifGuest = true;
+				this.buttonMode = "保存";
+			}
 			this.filepathData = response.data.data;
 		})
 		.catch(function (error) {
@@ -44,6 +48,7 @@ module.exports = {
 	data: function () {
 		return {
 			modalClass: "hidden",
+			ifGuest: true,
             filename: "新しいメモ帳",
 			filepath: "",
 			filepathData: {},

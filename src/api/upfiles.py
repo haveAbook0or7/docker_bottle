@@ -1,23 +1,30 @@
+import bottle
 import os
 import json
 import mysql.connector
 import urllib.request
 import base64
 import io
+from beaker.middleware import SessionMiddleware
 
 # ユーザーのディレクトリ取得
-def get_user_dir(key, payload, createnew=True):
-    postjson = json.load(payload)
-    user = postjson["user"]
+def get_user_dir():
+    session1 = bottle.request.environ.get('beaker.session')
+    user = session1["user"]
     memopath = "./static/usermemo/"
     restr = ""
+    if user == "guest":
+        return json.dumps({
+            "message": "guest",
+            "data": None
+        }, ensure_ascii=False, indent=4)
+
     for current_dir, sub_dirs, files_list, in os.walk(memopath+user): 
         now = current_dir[len(memopath):].split("/")
         if(len(sub_dirs) != 0):
             restr += '{"name": "%s", "children": [' %now[len(now)-1]
         else:
             restr += '{"name": "%s"}]},' %now[len(now)-1]
-    
     rejson = json.loads(restr[0:len(restr)-1])
     return json.dumps({
         "message": '',

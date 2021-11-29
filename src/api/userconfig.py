@@ -16,10 +16,10 @@ def get_test():
     return json.dumps(result, indent=4)
 # ペン設定引き出しTODOセッション使う
 def select():
-    message = ""
-    res = {}
     session1 = bottle.request.environ.get('beaker.session')
     logid = {"id": session1["user"]}
+    message = ""
+    res = {}
     try:
         conn = mysql.connector.connect(host="db", port=3306, user="db_user", password="pass", database="db_canvas")
         cur = conn.cursor()

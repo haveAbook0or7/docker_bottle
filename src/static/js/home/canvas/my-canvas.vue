@@ -66,6 +66,12 @@ module.exports = {
                 .catch(function (error) {
                     console.log(error);
                 });
+            }else{
+                const fileLink = document.createElement('a');
+                fileLink.href = logs[0]['png'];
+                fileLink.setAttribute('download', filename);
+                document.body.appendChild(fileLink);
+                fileLink.click();
             }
         },
         // スクロールして画面拡大

@@ -101,11 +101,10 @@ def handle_item():
 
 @route('/upfiles/getdir', method=['GET', 'POST'])
 def handle_item():
-    
     try:
         response.headers['Content-Type'] = 'text/html'
-        if request.method == 'POST':
-            return get_user_dir(key=request.query.key, payload=request.body)
+        if request.method == 'GET':
+            return get_user_dir()
     except:
         # internal server error
         abort(500)
