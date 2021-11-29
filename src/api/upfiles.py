@@ -15,7 +15,7 @@ def get_user_dir():
     restr = ""
     if user == "guest":
         return json.dumps({
-            "message": "guest",
+            "message": user,
             "data": None
         }, ensure_ascii=False, indent=4)
 

@@ -13,7 +13,7 @@ def get_login_user():
     # session1["user"] = "abcde12345"
     if "user" not in session1:
         session1["user"] = "guest"
-    session1.save()
+        session1.save()
     res = {}
     res["user"] = session1["user"]
     return json.dumps({

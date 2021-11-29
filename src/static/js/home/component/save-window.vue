@@ -32,7 +32,8 @@ module.exports = {
 		// ユーザーのフォルダ取得
 		axios.get("/upfiles/getdir")
 		.then(response => {
-			if(response.data.message = "guest"){
+			console.log(response.data);
+			if(response.data.message == "guest"){
 				this.ifGuest = false;
 				this.buttonMode = "ダウンロード";
 			}else{
