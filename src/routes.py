@@ -30,7 +30,34 @@ def handle_item():
     except:
         # internal server error
         abort(500)
-
+# サインアップ
+@route('/userlogins/signup', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'POST':
+            return sign_up(key=request.query.key, payload=request.body)
+    except:
+        abort(500)
+# サインイン
+@route('/userlogins/signin', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'POST':
+            return sign_in(key=request.query.key, payload=request.body)
+    except:
+        abort(500)
+# サインアウト
+@route('/userlogins/signout', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'GET':
+            return sign_out()
+    except:
+        abort(500)
+# ログインユーザー取得
 @route('/userlogins/getuser', method=['GET', 'POST'])
 def handle_item():
     try:
@@ -45,10 +72,8 @@ def handle_item():
 def handle_item():
     try:
         response.headers['Content-Type'] = 'text/html'
-        if request.method == 'POST':
-            return select(key=request.query.key, payload=request.body)
-        else:
-            return get_test()
+        if request.method == 'GET':
+            return select()
     except:
         # internal server error
         abort(500)

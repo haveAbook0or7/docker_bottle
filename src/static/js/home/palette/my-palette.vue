@@ -61,9 +61,7 @@ module.exports = {
         'my-colors-config': httpVueLoader('../palette-config/my-colors-config.vue'),
     },
 	created() {
-        axios.post("/userconfig/select",{
-			id: this.login_user
-		})
+        axios.get("/userconfig/select")
 		.then(response => {
             if(response.data.message == "OK"){
                 this.colorPalette = response.data.data.palette;

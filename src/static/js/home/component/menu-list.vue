@@ -1,5 +1,7 @@
 <template>
 	<div :style="variable">
+        <meta v-if="reloadFlg" http-equiv="refresh" content=" 0; url=/">
+        <meta v-if="signinFlg" http-equiv="refresh" content=" 0; url=/signin.html">
         <a class="menuitem" v-for="menu in menu" :key="menu.name" :href="menu.url" target="_blank" v-show="menu.show">{{menu.name}}</a>
 		<input class="menuitem" type="button" :value="sign.name" @click="clickSign(sign.value)">
 	</div>
@@ -21,19 +23,36 @@ module.exports = {
 	},
 	data: function () {
 		return {
+            reloadFlg: false,
+            signinFlg: false,
             isOpen: false,
             menu: [
-                {name: "マイメモ", url: ""+this.login_user, show: this.login_user != "ゲスト"}
+                {name: "マイメモ", url: ""+this.login_user, show: this.login_user != "guest"}
             ],
             sign: {
-                name: this.login_user == "ゲスト" ? "サインイン" : "サインアウト",
-                value: this.login_user == "ゲスト" ? "signin" : "signout",
-                }
+                name: this.login_user == "guest" ? "サインイン" : "サインアウト",
+                value: this.login_user == "guest" ? "signin" : "signout",
+            }
 		}
 	},
 	methods: {
         clickSign(value){
             console.log(value);
+            switch(value){
+                case "signin":
+                    this.signinFlg = true;
+                    break;
+                case "signout":
+                    axios.get("/userlogins/signout")
+                    .then(response => {
+                        console.log(response.data);
+                        this.reloadFlg = true;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                    break;
+            }
         }
 	},
 }
@@ -64,6 +83,7 @@ module.exports = {
         background: #fff;
         box-sizing: border-box;
         border-bottom: 1px solid #aaa;
+        cursor: default;
     }
     input[type=button]{
 		height: 25px;
