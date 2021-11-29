@@ -5,7 +5,7 @@
 			<my-control :login_user="loginUser" @back-next="backNext" @save="saves"></my-control>
 			<my-menu :login_user="loginUser" id="menu"></my-menu>
 		</div>
-		<br><br><br>
+		<!-- <br><br><br> -->
         <my-canvas ref="myCanvas"></my-canvas>
     </div>
 </template>
