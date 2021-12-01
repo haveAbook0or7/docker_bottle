@@ -4,7 +4,7 @@
 		<tr style="height: 22px;">
 			<td style="cursor: default;" @click="openMenu">{{login_user}}</td>
             <td><span id="mtoggle" @click="openMenu"></span></td>
-			<td><input type="button" value="サインアップ"></td>
+			<td><a id="tosignup" href="../../../signup-pre.html">サインアップ</a></td>
 		</tr>
 		<tr><td colspan="3" style="font-size: 22px;">らくがきちょう</td></tr>
 		</table>
@@ -76,15 +76,19 @@ module.exports = {
         border-left: 7px solid transparent;
         border-right: 7px solid transparent;
 	}
-    input[type=button]{
-		width: 100px;
-		height: 20px;
-		color: #fff;
-		background: #da3c41;
+    a{
+        width: 100px;
+        height: 20px;
+        line-height: 20px;
+        display: inline-block;
+        color: #fff;
+        text-decoration: none;
+        text-align: center;
+        background: #da3c41;
         box-sizing: border-box;
+        cursor: default;
     }
-    input[type=button]:active{
-		box-sizing: border-box;
+    a:active{
 		border: 2px inset #c0353a;
 	}
 </style>

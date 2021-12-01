@@ -33,18 +33,20 @@ module.exports = {
 	},
 	methods: {
 		signin(){
-			axios.post("/userlogins/signin",{
-				id: this.id,
-				pass: this.pass
-			})
-			.then(response => {
-				console.log(response.data);
-				this.reFlg = response.data.data.flg;
-				this.idErr = response.data.message;
-			})
-			.catch(function (error) {
-				console.log(error);
-			});
+			if(this.errFlg){
+				axios.post("/userlogins/signin",{
+					id: this.id,
+					pass: this.pass
+				})
+				.then(response => {
+					console.log(response.data);
+					this.reFlg = response.data.data.flg;
+					this.idErr = response.data.message;
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+			}
 		},
 		inputId(){
 			const regex = /^[a-zA-Z0-9]{2,40}$/;
