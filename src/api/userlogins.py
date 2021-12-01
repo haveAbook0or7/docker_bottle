@@ -5,6 +5,8 @@ import mysql.connector
 import urllib.request
 import base64
 import io
+import smtplib
+from email.mime.text import MIMEText
 from beaker.middleware import SessionMiddleware
 
 def get_login_user():
@@ -62,6 +64,23 @@ def sign_out():
         "data": res
     }, indent=4)
 
-# def sign_up_pre():
+def test_mail():
+    m = MIMEText("msg")
+    m['Subject'] = "subject"
+    m['From'] = "fromaddr@test.com"
+    m['To'] = "toaddr@test.com"
+
+    s = smtplib.SMTP(host="mailhog", port=1025)
+    s.sendmail("fromaddr@test.com", "toaddr@test.com", m.as_string())
+    s.close()
+
+    return "done"
+
+def sign_up_pre():
+
+    return json.dumps({
+        "message": None,
+        "data": None
+    }, indent=4)
 
 # def sign_up():

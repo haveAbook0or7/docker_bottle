@@ -24,7 +24,7 @@ def handle_item():
     try:
         response.headers['Content-Type'] = 'text/html'
         if request.method == 'GET':
-            return get_login_user()
+            return test_mail()
         else:
             return select(key=request.query.key, payload=request.body)
     except:
