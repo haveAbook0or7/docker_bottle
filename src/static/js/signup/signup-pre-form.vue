@@ -1,11 +1,20 @@
 <template>
 	<div class="signuppreBase">
-		<!-- <meta v-if="reFlg" http-equiv="refresh" content=" 0; url=/"> -->
 		<span>らくがきちょう</span>
-		<div class="form">
+		<!-- 初期画面 -->
+		<div class="form" v-show="showflg && !tempFlg">
 			<label id="email">メールアドレス</label><span id="emerr">{{this.emErr}}</span>
 			<input type="text" v-model="email" @input="inputEmail" @keydown.enter="signupPre">
 			<input type="button" value="仮登録" :disabled="!emFlg" @click="signupPre" @keydown.enter="signupPre">
+		</div>
+		<!-- エラー -->
+		<div class="form" v-show="!showflg">
+			{{this.msg}}
+		</div>
+		<!-- 登録完了 -->
+		<div class="form" v-show="tempFlg">
+			{{this.msg}}<br>
+			受信したメールのURLから本登録を行ってください。
 		</div>
     </div>
 </template>
@@ -15,7 +24,9 @@ module.exports = {
 	data: function () {
 		return {
 			email: "",
-			reFlg: false,
+			showflg: true,
+			tempFlg: false,
+			msg: "",
 			emErr: "",
 			emFlg: false,
 		}
@@ -27,10 +38,9 @@ module.exports = {
 					email: this.email,
 				})
 				.then(response => {
-					console.log(response.data);
-					// this.showflg = response.data.data.flg;
-					// this.tempFlg = response.data.data.flg;
-					// this.msg = response.data.message;
+					this.showflg = response.data.data.flg;
+					this.tempFlg = response.data.data.flg;
+					this.msg = response.data.message;
 				})
 				.catch(function (error) {
 					console.log(error);

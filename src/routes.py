@@ -31,6 +31,14 @@ def handle_item():
         # internal server error
         abort(500)
 # サインアップ
+@route('/userlogins/signup_pre', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'POST':
+            return sign_up_pre(key=request.query.key, payload=request.body)
+    except:
+        abort(500)
 @route('/userlogins/signup', method=['GET', 'POST'])
 def handle_item():
     try:
