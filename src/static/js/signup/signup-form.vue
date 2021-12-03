@@ -1,37 +1,68 @@
 <template>
 	<div class="signupBase">
-		<meta v-if="reFlg" http-equiv="refresh" content=" 0; url=/">
 		<span>らくがきちょう</span>
-		<div class="form">
+		<!-- トークン照合クリア -->
+		<div class="form" v-show="tokenflg && !signupflg">
 			<label id="id">ユーザーID</label><span id="iderr">{{this.idErr}}</span>
 			<input type="text" v-model="id" @input="inputId" @keydown.enter="signup">
-			<label id="pass">パスワード</label><span id="pserr">{{this.psErr}}</span>
+			<label id="pass">パスワード</label><span id="pass">{{this.psErr}}</span>
 			<input type="password" v-model="pass" @input="inputPass" @keydown.enter="signup">
-			<label id="email">メールアドレス</label><span id="emerr">{{this.emErr}}</span>
+			<label id="email">メールアドレス</label><span id="email">{{this.emErr}}</span>
 			<input type="text" v-model="email" @input="inputEmail" @keydown.enter="signup">
 			<input type="button" value="サインアップ" :disabled="!errFlg" @click="signup" @keydown.enter="signup">
+		</div>
+		<!-- エラー -->
+		<div class="form" v-show="!tokenflg">
+			{{this.msg}}
+		</div>
+		<!-- 登録完了 -->
+		<div class="form" v-show="signupflg">
+			{{this.msg}}下記リンクからログインを行ってください。<br>
+			<a href="/signin.html">ログイン</a>
 		</div>
     </div>
 </template>
 
 <script>
 module.exports = {
-	props: {
-        token: {default:null},
-    },
 	mounted() {
-		
+		// URLを取得
+		var url = new URL(window.location.href);
+		// URLSearchParamsオブジェクトを取得
+		var params = url.searchParams;
+		// getメソッド
+		this.token = params.get('token');
+		console.log(this.token);
+		// token照合
+		axios.post("/userlogins/signup",{
+			flg: "mounted",
+			data: {token: this.token}
+		})
+		.then(response => {
+			console.log(response.data);
+			this.tokenflg = response.data.data.flg;
+			this.email = response.data.data.email;
+			this.emFlg = true;
+			this.msg = response.data.message;
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
 	},
 	computed: {
 		errFlg: {
             get(){
-				console.log(this.id);
+				console.log(this.idFlg && this.psFlg && this.emFlg ? true : false);
                 return this.idFlg && this.psFlg && this.emFlg ? true : false;
 			}
         }
 	},
 	data: function () {
 		return {
+			token: null,
+			tokenflg: false,
+            signupflg: false,
+			msg: "",
 			id: "",
 			pass: "",
 			email: "",
@@ -42,7 +73,47 @@ module.exports = {
 	},
 	methods: {
 		signup(){
-
+			if(this.errFlg){
+				this.idErr = "";
+				this.psErr = "";
+				this.emErr = "";
+				axios.post("/userlogins/signup",{
+					flg: "signup",
+					data: {
+						id: this.id,
+						pass: this.pass,
+						email: this.email,
+					}
+				})
+				.then(response => {
+					console.log(response.data);
+					console.log(response.data.data.flg);
+					if(response.data.data.flg){
+						this.msg = response.data.message;
+						this.signupflg = true;
+						console.log(this.signupflg);
+					}else{
+						switch(response.data.data.err){
+							case "err":
+								this.msg = response.data.message;
+								this.tokenflg = false;
+								break;
+							case "idErr":
+								this.idErr = response.data.message;
+								break;
+							case "psErr":
+								this.psErr = response.data.message;
+								break;
+							case "emErr":
+								this.emErr = response.data.message;
+								break;
+						}
+					}
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+			}
 		},
 		inputId(){
 			const regex = /^[a-zA-Z0-9]{2,40}$/;
@@ -118,18 +189,18 @@ module.exports = {
 		left: -10px;
 		top: 5px;
 	}
-	#pass{
-		top: 50px;
-	}
 	.form > span{
 		position: absolute;
 		top: 5px;
-		left: 80px;
+		left: 85px;
 		width: 300px;
 		color: #d93a25;
 	}
-	#pserr{
+	#pass{
 		top: 50px;
+	}
+	#email{
+		top: 95px;
 	}
 	input[type=text], input[type=password]{
 		display: block;

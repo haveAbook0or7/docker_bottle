@@ -108,7 +108,7 @@ def sign_up_pre(key, payload, createnew=True):
         # 既に登録ユーザがいたらエラーメッセージを返す。
         message = "" if res["flg"] else "既に登録されているメールアドレスは使えません。"
     except mysql.connector.Error as e:
-        message = e.args
+        message = "エラー(001)。もう一度始めからやり直してください。"
     except Exception as e:
         message = e.args
     finally:
@@ -126,16 +126,13 @@ def sign_up_pre(key, payload, createnew=True):
         cur = conn.cursor()
         query = "INSERT INTO preUser(email, token, deletedate) VALUES(%(email)s,%(token)s,%(deletedate)s);"
         cur.execute(query, postjson)
-        result = cur.fetchall()
         conn.commit()
         cur.close()
         conn.close()
         res["flg"] = True
         message = ""
     except mysql.connector.Error as e:
-        message = e.args
-    except ZeroDivisionError as e:
-        message = e.args
+        message = "エラー(002)。もう一度始めからやり直してください。"
     except Exception as e:
         message = e.args[0]
     finally:
@@ -150,7 +147,7 @@ def sign_up_pre(key, payload, createnew=True):
         m = MIMEText(
             f'''こちらのURLから本登録へお進みください。\n
             なお、URLの有効期限は約6時間です。有効期限が過ぎた場合はもう一度仮登録からやり直して下さい。\n
-            http://localhost:8080/signup-pre.html?token={postjson["token"]}'''
+            http://localhost:8080/signup.html?token={postjson["token"]}'''
         )
         m['Subject'] = "仮登録完了及び本登録URL通知"
         m['From'] = "noreply@test.com"
@@ -161,7 +158,7 @@ def sign_up_pre(key, payload, createnew=True):
         res["flg"] = True
         message = "仮登録完了しました。"
     except SMTPException as e:
-        message = "エラー。もう一度始めからやり直してください。"
+        message = "エラー(003)。もう一度始めからやり直してください。"
     except Exception as e:
         message = e
     finally:
@@ -171,4 +168,151 @@ def sign_up_pre(key, payload, createnew=True):
             "data": res
         }, indent=4)
 
-# def sign_up():
+def sign_up(key, payload, createnew=True):
+    postjson = json.load(payload)
+    if postjson["flg"] == "mounted":
+        return check_token(postjson["data"])
+    elif postjson["flg"] == "signup":
+        return register(postjson["data"])
+    else:
+        return json.dumps({
+            "message": "エラー。もう一度仮登録からやり直してください。",
+            "data": {}
+        }, indent=4)
+
+def check_token(data):
+    postjson = data
+    res = {"flg": False}
+    message = "URLが正しくありません。もう一度仮登録からやり直してください。"
+    try:
+        conn = mysql.connector.connect(host=DATABASE_HOST, port=DATABASE_PORT, user=DATABASE_USER, password=DATABASE_PASS, database=DATABASE_MYDB)
+        cur = conn.cursor()
+        query = "SELECT email FROM preUser WHERE token=%(token)s;"
+        cur.execute(query, postjson)
+        result = cur.fetchall()
+        cur.close()
+        conn.close()
+        if len(result) != 0:
+            res["flg"] = True
+            res["email"] = result[0][0]
+            message = "OK"
+    except mysql.connector.Error as e:
+        message = e.args[0]
+    except Exception as e:
+        message = e.args[0]
+    finally:
+        return json.dumps({
+            "message": message,
+            "data": res
+        }, indent=4)
+
+def register(data):
+    postjson = data
+    res = {"flg": False}
+    message = ""
+    # まずはIDが既に登録されているものではないかチェック
+    try:
+        conn = mysql.connector.connect(host=DATABASE_HOST, port=DATABASE_PORT, user=DATABASE_USER, password=DATABASE_PASS, database=DATABASE_MYDB)
+        cur = conn.cursor()
+        query = "SELECT * FROM User WHERE id=%(id)s;"
+        cur.execute(query, postjson)
+        result = cur.fetchall()
+        cur.close()
+        conn.close()
+        if len(result) == 0:
+            res["flg"] = True
+        message = "" if res["flg"] else "すでに使用されているIDは使えません。"
+    except mysql.connector.Error as e:
+        message = e.args[0]
+    except Exception as e:
+        message = e.args[0]
+    finally:
+        if res["flg"] == False:
+            return json.dumps({
+                "message": message,
+                "data": res
+            }, indent=4)
+    # ここから登録
+    res["flg"] = False
+    try:
+        conn = mysql.connector.connect(host=DATABASE_HOST, port=DATABASE_PORT, user=DATABASE_USER, password=DATABASE_PASS, database=DATABASE_MYDB)
+        cur = conn.cursor()
+        query = "INSERT INTO User(id, pass, email) VALUES(%(id)s, %(pass)s, %(email)s);"
+        cur.execute(query, postjson)
+        conn.commit()
+        cur.close()
+        conn.close()
+        res["flg"] = True
+        message = ""
+    except mysql.connector.Error as e:
+        message = "エラー(002)。もう一度仮登録からやり直してください。"
+    except Exception as e:
+        message = e.args[0]
+    finally:
+        if res["flg"] == False:
+            return json.dumps({
+                "message": message,
+                "data": res
+            }, indent=4)
+    # ユーザーの設定保存レコードを作る
+    res["flg"] = False
+    try:
+        conn = mysql.connector.connect(host=DATABASE_HOST, port=DATABASE_PORT, user=DATABASE_USER, password=DATABASE_PASS, database=DATABASE_MYDB)
+        cur = conn.cursor()
+        query = "INSERT INTO UserConfig(uid) VALUES(%(id)s);"
+        cur.execute(query, postjson)
+        conn.commit()
+        cur.close()
+        conn.close()
+        res["flg"] = True
+        message = ""
+    except mysql.connector.Error as e:
+        message = "エラー(003)。もう一度仮登録からやり直してください。"
+    except Exception as e:
+        message = e.args[0]
+    finally:
+        if res["flg"] == False:
+            return json.dumps({
+                "message": message,
+                "data": res
+            }, indent=4)
+    # ユーザーのメモ帳保存ファイルを作成
+    res["flg"] = False
+    memopath = "./static/usermemo/"
+    try:
+        if not os.path.isdir(memopath+postjson["id"]):
+            os.makedirs(memopath+postjson["id"])
+            res["flg"] = True
+        else:
+            message = "エラー(004)。すでに使用されているIDは使えません。"
+    except FileExistsError:
+        message = "エラー(005)。もう一度仮登録からやり直してください。"
+    except Exception as e:
+        message = e.args[0]
+    finally:
+        if res["flg"] == False:
+            return json.dumps({
+                "message": message,
+                "data": res
+            }, indent=4)
+    res["flg"] = False
+    # 仮登録消す
+    try:
+        conn = mysql.connector.connect(host=DATABASE_HOST, port=DATABASE_PORT, user=DATABASE_USER, password=DATABASE_PASS, database=DATABASE_MYDB)
+        cur = conn.cursor()
+        query = "DELETE FROM preUser WHERE email=%(email)s;"
+        cur.execute(query, postjson)
+        conn.commit()
+        cur.close()
+        conn.close()
+        res["flg"] = True
+        message = "本登録完了しました。"
+    except mysql.connector.Error as e:
+        message = "エラー(006)。もう一度仮登録からやり直してください。"
+    except Exception as e:
+        message = e.args[0]
+    finally:
+        return json.dumps({
+            "message": message,
+            "data": res
+        }, indent=4)
