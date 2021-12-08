@@ -1,5 +1,6 @@
 from bottle import route, response, abort, request, get, static_file
 from api.userconfig import *
+from api.mngfiles import *
 from api.upfiles import *
 from api.userlogins import *
 import os
@@ -113,6 +114,18 @@ def handle_item():
         response.headers['Content-Type'] = 'text/html'
         if request.method == 'GET':
             return get_user_dir()
+    except:
+        # internal server error
+        abort(500)
+
+@route('/mngfiles/getnowdir', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'GET':
+            return get_nowdir_files(key=None, payload=None)
+        else:
+            return get_nowdir_files(key=request.query.key, payload=request.body)
     except:
         # internal server error
         abort(500)
