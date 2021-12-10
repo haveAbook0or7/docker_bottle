@@ -62,7 +62,9 @@ def get_open_file():
             img_binary = f.read()
         str_img = base64.b64encode(img_binary).decode()
         res["openfile_img"] = f'data:image/png;base64,{str_img}'
-        res["openfile_neme"] = userpath.split("/")[len(userpath.split("/"))-1].replace('.png', '')
+        file_neme = userpath.split("/")[len(userpath.split("/"))-1]
+        res["openfile_neme"] = file_neme.replace('.png', '')
+        res["openfile_path"] = userpath.replace(file_neme, '')
         res["flg"] = True
     except:
         res["flg"] = False

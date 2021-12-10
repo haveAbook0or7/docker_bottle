@@ -19,6 +19,7 @@ module.exports = {
     props: {
 		login_user: {default:null},
         file_name: {default:null},
+        file_path: {default:null},
 	},
 	data: function () {
 		return {
@@ -30,11 +31,14 @@ module.exports = {
         },
         clickSaveModalOpen(){
             console.log(this.file_name);
-            this.$refs.modal.openModal(this.file_name);
+            this.$refs.modal.openModal(this.file_name, this.file_path);
         },
         clickSave(mode, path, filename){
             // canvas-paletteへ渡す
             this.$emit('save', mode, path, filename);
+        },
+        closeSaveWin(flg){
+            this.$refs.modal.closeModal(flg);
         }
 	},
 }

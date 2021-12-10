@@ -10,12 +10,19 @@
             </tr>
             <tr v-if="ifGuest">
                 <td>保存場所</td>
-                <td>
-                    <select-path  id="path" :options="filepathData" @select="getPath"></select-path>
+                <td class="path">
+                    <select-path :options="filepathData" v-model="filepath"></select-path>
                 </td>
             </tr>
+			<tr>
+				<td colspan="2" class="buttons">
+					<input id="download" type="button" value="ダウンロード" @click="clickSave('download')">
+					<input id="save" type="button" v-if="ifGuest" value="上書き保存" @click="clickSave('save')">
+					<input id="save_new" type="button" v-if="ifGuest" value="新規保存" @click="clickSave('save_new')">
+				</td>
+			</tr>
             </table>
-			<input id="save" type="button" :value="buttonMode" @click="clickSave">
+			
         </div>
     </div>
 </template>
@@ -33,13 +40,7 @@ module.exports = {
 		axios.get("/upfiles/getdir")
 		.then(response => {
 			console.log(response.data);
-			if(response.data.message == "guest"){
-				this.ifGuest = false;
-				this.buttonMode = "ダウンロード";
-			}else{
-				this.ifGuest = true;
-				this.buttonMode = "保存";
-			}
+			this.ifGuest = !(response.data.message == "guest");
 			this.filepathData = response.data.data;
 		})
 		.catch(function (error) {
@@ -53,15 +54,16 @@ module.exports = {
             filename: null,
 			filepath: "",
 			filepathData: {},
-			buttonMode: "保存",
 			data: [],
 			message: [],
 		}
 	},
 	methods: {
-		openModal(value){
+		openModal(filename, filepath){
 			this.modalClass = "";
-            this.filename = value;
+            this.filename = filename;
+			this.filepath = filepath;
+			console.log(this.filepath)
 		},
 		closeModal(){
 			this.modalClass = "hidden";
@@ -69,12 +71,9 @@ module.exports = {
 		stop(){
 			event.stopPropagation();
 		},
-		getPath(path){
-			this.filepath = path;
-		},
-		clickSave(){
+		clickSave(buttonMode){
 			// my-controlへ渡す
-			this.$emit('save', this.buttonMode, this.filepath, this.filename+".png");
+			this.$emit('save', buttonMode, this.filepath, this.filename+".png");
 		}
 	},
 }
@@ -134,13 +133,17 @@ module.exports = {
 		border-bottom: 2px solid #da3c41;
 		outline: none;
 	}
-	#path{
-		position: absolute;
-		top: 165px;
+	.path{
+		position: relative;
 	}
-	#save{
+	.select-path{
 		position: absolute;
-		bottom: 57px;
+	}
+	.buttons{
+		height: 60px;
+		vertical-align: bottom;
+	}
+	#download,#save,#save_new{
 		width: 100px;
 		height: 30px;
 		color: #fff;

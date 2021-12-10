@@ -1,6 +1,6 @@
 <template>
-	<div :style="variable">
-        <input class="select" type="button" :value="selected" @click="openOption">
+	<div class="select-path" :style="variable">
+        <input class="select" type="button" :value="value" @click="openOption">
         <span class="toggle" @click="openOption"></span>
         <tree-path class="item" v-show="isOpen" :item="treeData" @select="selectItem"></tree-path>
     </div>
@@ -11,8 +11,12 @@ module.exports = {
     components: {
 		'tree-path': httpVueLoader('./tree-path.vue'),
     },
+    model: {
+		prop: 'value',
+		event: 'change'
+	},
 	props: {
-		init_select: {default:null},
+        value: {default: null},
 		options: {default:()=>{
             return {
                 name: 'home', children: [
@@ -28,9 +32,6 @@ module.exports = {
             };
         }},
 		disabled: {default: false},
-	},
-    mounted() {
-        this.selectItem(this.init_select == null ? this.options.name+"/" : this.init_select);
 	},
 	computed: {
 		variable() {
@@ -63,8 +64,7 @@ module.exports = {
             }
         },
         selectItem(path){
-            this.selected = path;
-            this.$emit('select', this.selected);
+            this.$emit('change', path);
         },
 	}
 }

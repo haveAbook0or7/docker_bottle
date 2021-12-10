@@ -14,7 +14,7 @@
 module.exports = {
     props: {
 		open_file: {default:null},
-	},
+    },
 	mounted() {
         // キャンバスサイズを取得
         this.baseSize = document.querySelector('#canvasBase').getBoundingClientRect();
@@ -32,8 +32,8 @@ module.exports = {
         this.myStorage = localStorage;
         this.myStorage.setItem("__log", JSON.stringify([]));
         this.setLocalStoreage();
-        // 既存ファイルを開く処理
-        // console.log(this.open_file)
+        // // 既存ファイルを開く処理
+        console.log(this.open_file)
         if(this.open_file != null){
             var img = new Image();
             img.src = this.open_file;
@@ -66,25 +66,27 @@ module.exports = {
         upload(mode, path, filename){
             var logs = JSON.parse(this.myStorage.getItem("__log"));
             console.log(logs[0]['png']);
-            if(mode == "保存"){
+            if(mode == "download"){
+                const fileLink = document.createElement('a');
+                fileLink.href = logs[0]['png'];
+                fileLink.setAttribute('download', filename);
+                document.body.appendChild(fileLink);
+                fileLink.click();
+                this.$emit('save_end', true);
+            }else{
                 axios.post("/upfiles/upload",{
-                    mode: "save_new",
+                    mode: mode,
                     path: path,
                     name: filename,
                     png: logs[0]['png'],
                 })
                 .then(response => {
                     console.log(response.data);
+                    this.$emit('save_end', response.data.data.flg);
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
-            }else{
-                const fileLink = document.createElement('a');
-                fileLink.href = logs[0]['png'];
-                fileLink.setAttribute('download', filename);
-                document.body.appendChild(fileLink);
-                fileLink.click();
             }
         },
         // スクロールして画面拡大

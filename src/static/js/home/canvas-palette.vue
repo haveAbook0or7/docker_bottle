@@ -2,11 +2,15 @@
 	<div id="Base" :style="variables" @wheel="scroll">
 		<div id="tools">
 			<my-palette :login_user="loginUser" @change-color="changeColor" @change-pen="changePen" @back-next="backNext"></my-palette>
-			<my-control :login_user="loginUser" :file_name="initfileName" @back-next="backNext" @save="saves"></my-control>
+			<my-control :login_user="loginUser" @back-next="backNext"  
+				:file_name="initfileName" 
+				:file_path="initfilepath" 
+				@save="saves" ref="control"
+			></my-control>
 			<my-menu :login_user="loginUser" id="menu"></my-menu>
 		</div>
 		<!-- <br><br><br> -->
-        <my-canvas ref="myCanvas" :open_file="openfile"></my-canvas>
+        <my-canvas ref="myCanvas" :open_file="openfile" @save_end="saveEnd"></my-canvas>
     </div>
 </template>
 
@@ -18,12 +22,14 @@ module.exports = {
 		'my-control': httpVueLoader('./palette/my-control.vue'),
 		'my-menu': httpVueLoader('./palette/my-menu.vue'),
     },
-	created() {
+	beforeCreate() {
 		// ユーザー認証
 		axios.get("/userlogins/getuser")
 		.then(response => {
 			console.log(response.data);
 			this.loginUser = response.data.data.user;
+			this.initfilepath = this.loginUser+"/";
+			console.log(this.initfilepath);
 		})
 		.catch(function (error) {
 			console.log(error);
@@ -40,6 +46,7 @@ module.exports = {
 				if(response.data.data.flg){
 					this.openfile = response.data.data.openfile_img;
 					this.initfileName = response.data.data.openfile_neme;
+					this.initfilepath = response.data.data.openfile_path;
 				}
 			})
 			.catch(function (error) {
@@ -66,6 +73,7 @@ module.exports = {
 			canvasheight: null,
 			openfile: null,
 			initfileName: "新しいメモ帳",
+			initfilepath: "",
 		}
 	},
 	methods: {
@@ -95,6 +103,9 @@ module.exports = {
 		saves(mode, path, filename){
 			// my-canvasのuploadでアップロード
 			this.$refs.myCanvas.upload(mode, path, filename);
+		},
+		saveEnd(flg){
+			this.$refs.control.closeSaveWin(flg);
 		}
 
 	},
