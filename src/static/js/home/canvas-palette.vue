@@ -2,11 +2,11 @@
 	<div id="Base" :style="variables" @wheel="scroll">
 		<div id="tools">
 			<my-palette :login_user="loginUser" @change-color="changeColor" @change-pen="changePen" @back-next="backNext"></my-palette>
-			<my-control :login_user="loginUser" @back-next="backNext" @save="saves"></my-control>
+			<my-control :login_user="loginUser" :file_name="initfileName" @back-next="backNext" @save="saves"></my-control>
 			<my-menu :login_user="loginUser" id="menu"></my-menu>
 		</div>
 		<!-- <br><br><br> -->
-        <my-canvas ref="myCanvas"></my-canvas>
+        <my-canvas ref="myCanvas" :open_file="openfile"></my-canvas>
     </div>
 </template>
 
@@ -28,6 +28,24 @@ module.exports = {
 		.catch(function (error) {
 			console.log(error);
 		});
+		// getを取得
+		var url = new URL(window.location.href);
+		var params = url.searchParams;
+		let fileopen = params.get('fileopen');
+        // 既存ファイルを開く処理
+		if(fileopen == "true"){
+			axios.get("/mngfiles/openfile")
+			.then(response => {
+				console.log(response.data);
+				if(response.data.data.flg){
+					this.openfile = response.data.data.openfile_img;
+					this.initfileName = response.data.data.openfile_neme;
+				}
+			})
+			.catch(function (error) {
+				console.log(error);
+			});
+		}
 	},
 	mounted() {
 		// キャンバスサイズを取得
@@ -46,6 +64,8 @@ module.exports = {
 			loginUser: null,
 			baseheight: null,
 			canvasheight: null,
+			openfile: null,
+			initfileName: "新しいメモ帳",
 		}
 	},
 	methods: {

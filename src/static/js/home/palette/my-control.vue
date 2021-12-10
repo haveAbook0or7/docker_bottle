@@ -18,6 +18,7 @@ module.exports = {
     },
     props: {
 		login_user: {default:null},
+        file_name: {default:null},
 	},
 	data: function () {
 		return {
@@ -28,7 +29,8 @@ module.exports = {
             this.$emit('back-next', id);
         },
         clickSaveModalOpen(){
-            this.$refs.modal.openModal("新しいメモ帳");
+            console.log(this.file_name);
+            this.$refs.modal.openModal(this.file_name);
         },
         clickSave(mode, path, filename){
             // canvas-paletteへ渡す

@@ -117,7 +117,7 @@ def handle_item():
     except:
         # internal server error
         abort(500)
-
+# 現在のディレクトリ取得
 @route('/mngfiles/getnowdir', method=['GET', 'POST'])
 def handle_item():
     try:
@@ -126,6 +126,18 @@ def handle_item():
             return get_nowdir_files(key=None, payload=None)
         else:
             return get_nowdir_files(key=request.query.key, payload=request.body)
+    except:
+        # internal server error
+        abort(500)
+# ファイルを開くときの処理
+@route('/mngfiles/openfile', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'POST':
+            return set_open_file(key=request.query.key, payload=request.body)
+        else:
+            return get_open_file()
     except:
         # internal server error
         abort(500)

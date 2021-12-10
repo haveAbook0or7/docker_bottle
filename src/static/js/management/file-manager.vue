@@ -16,10 +16,9 @@
                 <label :class="file.split('.').length == 1 ? 'folder' : 'file'"></label>
                 <input type="button" :style="index == 0 ? 'border-top: 1px solid #cfd982;':''"
                     :value="file.split('.')[0]" 
-                    @click="file.split('.').length == 1 ? clickFolder(file) : clickFile(file.split('.')[0])">
+                    @click="file.split('.').length == 1 ? clickFolder(file) : clickFile(file)">
                 <label class="action"></label>
             </span>
-            
         </div>
     </div>
 </template>
@@ -77,8 +76,31 @@ module.exports = {
                 console.log(error);
             });
         },
-        clickFile(){
-            console.log("clickfile")
+        clickFile(file){
+            console.log("clickfile");
+            let nowdir = "";
+            for(var i = 1; i < this.pathlist.length; i++){
+                if(this.pathlist[i] == file){
+                    break;
+                }
+                nowdir += "/"+this.pathlist[i];
+            }
+            nowdir += "/"+file;
+            console.log(nowdir);
+            axios.post("/mngfiles/openfile",{
+                openfile: nowdir
+            })
+            .then(response => {
+                console.log(response.data);
+                const fileLink = document.createElement('a');
+                fileLink.href = "/?fileopen="+response.data.data.flg;;
+                fileLink.target = "_blank";
+                document.body.appendChild(fileLink);
+                fileLink.click();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         }
 	},
 }

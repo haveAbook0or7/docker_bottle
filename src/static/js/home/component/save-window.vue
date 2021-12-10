@@ -50,7 +50,7 @@ module.exports = {
 		return {
 			modalClass: "hidden",
 			ifGuest: true,
-            filename: "新しいメモ帳",
+            filename: null,
 			filepath: "",
 			filepathData: {},
 			buttonMode: "保存",

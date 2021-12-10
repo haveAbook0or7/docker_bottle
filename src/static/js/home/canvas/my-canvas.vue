@@ -12,6 +12,9 @@
 
 <script>
 module.exports = {
+    props: {
+		open_file: {default:null},
+	},
 	mounted() {
         // キャンバスサイズを取得
         this.baseSize = document.querySelector('#canvasBase').getBoundingClientRect();
@@ -29,6 +32,17 @@ module.exports = {
         this.myStorage = localStorage;
         this.myStorage.setItem("__log", JSON.stringify([]));
         this.setLocalStoreage();
+        // 既存ファイルを開く処理
+        // console.log(this.open_file)
+        if(this.open_file != null){
+            var img = new Image();
+            img.src = this.open_file;
+            img.onload = () => {
+                this.drawCxt.globalAlpha = 1.0;
+                this.drawCxt.drawImage(img, 0, 0);
+                this.setLocalStoreage();
+            }
+        }
 	},
 	data: function () {
 		return {
