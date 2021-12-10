@@ -1,5 +1,6 @@
 <template>
-	<div class="filemanagerBase" :style="variables">
+	<div class="filemanagerBase" :style="variables" @contextmenu="openMinWindow($event, 'default')" @click="$refs.minwin.closeModal()">
+        <manage-window ref="minwin"></manage-window>
 		<div id="nowdir">
             <span v-for="(path, index) in pathlist" :key="index" @click="clickFolder(path)">
                 {{path}} > 
@@ -25,6 +26,9 @@
 
 <script>
 module.exports = {
+    components: {
+		'manage-window': httpVueLoader('./manage-window.vue'),
+    },
     mounted() {
         axios.get("/mngfiles/getnowdir")
 		.then(response => {
@@ -101,6 +105,17 @@ module.exports = {
             .catch(function (error) {
                 console.log(error);
             });
+        },
+        openMinWindow(e, mode){
+            e.preventDefault();
+            // キャンバスの位置とサイズを取得
+            var rect = e.target.getBoundingClientRect();
+            // マウスの位置
+            let mousex = e.pageX;
+            let mousey = e.pageY;
+            console.log(mode);
+            // console.log(e);
+            this.$refs.minwin.openModal(mousex, mousey);
         }
 	},
 }
@@ -195,5 +210,9 @@ module.exports = {
         right: 0;
         mask-image: url(../../img/action.png);
         -webkit-mask-image: url(../../img/action.png);
+    }
+    .manage-window{
+        position: absolute;
+        z-index: 7;
     }
 </style>
