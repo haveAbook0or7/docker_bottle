@@ -2,15 +2,11 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>試作品</title>
+        <title>ホーム</title>
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
         <script src="https://unpkg.com/http-vue-loader"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <style>
-            *{
-                margin: 0;
-            }
-        </style>
+        <style>*{margin: 0;}</style>
     </head>
     <body>
         <div id="con" style="background-color: cadetblue;">
@@ -20,7 +16,7 @@
             new Vue({
                 el: "#con",
                 components: {
-                    'canvas-palette': httpVueLoader('../static/js/canvas-palette.vue'),
+                    'canvas-palette': httpVueLoader('../static/js/home/canvas-palette.vue'),
                 },
             });
         </script>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>サインイン</title>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://unpkg.com/http-vue-loader"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <style>*{margin: 0; height: 100%;}</style>
+    </head>
+    <body>
+        <div id="con">
+            <signin-form></signin-form>
+        </div>
+        <script>
+            new Vue({
+                el: "#con",
+                components: {
+                    'signin-form': httpVueLoader('../static/js/signin/signin-form.vue'),
+                },
+            });
+        </script>
+    </body>
+</html>
+

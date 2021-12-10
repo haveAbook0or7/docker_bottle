@@ -1,5 +1,6 @@
 from bottle import route, response, abort, request, get, static_file
 from api.userconfig import *
+from api.mngfiles import *
 from api.upfiles import *
 from api.userlogins import *
 import os
@@ -24,13 +25,48 @@ def handle_item():
     try:
         response.headers['Content-Type'] = 'text/html'
         if request.method == 'GET':
-            return get_login_user()
+            return test_mail()
         else:
             return select(key=request.query.key, payload=request.body)
     except:
         # internal server error
         abort(500)
-
+# サインアップ
+@route('/userlogins/signup_pre', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'POST':
+            return sign_up_pre(key=request.query.key, payload=request.body)
+    except:
+        abort(500)
+@route('/userlogins/signup', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'POST':
+            return sign_up(key=request.query.key, payload=request.body)
+    except:
+        abort(500)
+# サインイン
+@route('/userlogins/signin', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'POST':
+            return sign_in(key=request.query.key, payload=request.body)
+    except:
+        abort(500)
+# サインアウト
+@route('/userlogins/signout', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'GET':
+            return sign_out()
+    except:
+        abort(500)
+# ログインユーザー取得
 @route('/userlogins/getuser', method=['GET', 'POST'])
 def handle_item():
     try:
@@ -45,10 +81,8 @@ def handle_item():
 def handle_item():
     try:
         response.headers['Content-Type'] = 'text/html'
-        if request.method == 'POST':
-            return select(key=request.query.key, payload=request.body)
-        else:
-            return get_test()
+        if request.method == 'GET':
+            return select()
     except:
         # internal server error
         abort(500)
@@ -66,13 +100,44 @@ def handle_item():
 
 @route('/upfiles/upload', method=['GET', 'POST'])
 def handle_item():
-    
     try:
         response.headers['Content-Type'] = 'text/html'
         if request.method == 'POST':
-            return upfiles1(key=request.query.key, payload=request.body)
+            return upfiles(key=request.query.key, payload=request.body)
+    except:
+        # internal server error
+        abort(500)
+
+@route('/upfiles/getdir', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'GET':
+            return get_user_dir()
+    except:
+        # internal server error
+        abort(500)
+# 現在のディレクトリ取得
+@route('/mngfiles/getnowdir', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'GET':
+            return get_nowdir_files(key=None, payload=None)
         else:
-            return upfiles2()
+            return get_nowdir_files(key=request.query.key, payload=request.body)
+    except:
+        # internal server error
+        abort(500)
+# ファイルを開くときの処理
+@route('/mngfiles/openfile', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'POST':
+            return set_open_file(key=request.query.key, payload=request.body)
+        else:
+            return get_open_file()
     except:
         # internal server error
         abort(500)

@@ -1,7 +1,9 @@
+import bottle
 import os
 import json
 import mysql.connector
 import urllib.request
+from beaker.middleware import SessionMiddleware
 
 def get_test():
     conn = mysql.connector.connect(host="db", port=3306, user="db_user", password="pass", database="db_canvas")
@@ -12,17 +14,17 @@ def get_test():
     cur.close()
     conn.close()
     return json.dumps(result, indent=4)
-# ペン設定引き出し
-def select(key, payload, createnew=True):
+# ペン設定引き出しTODOセッション使う
+def select():
+    session1 = bottle.request.environ.get('beaker.session')
+    logid = {"id": session1["user"]}
     message = ""
     res = {}
-    postjson = json.load(payload)
-
     try:
         conn = mysql.connector.connect(host="db", port=3306, user="db_user", password="pass", database="db_canvas")
         cur = conn.cursor()
         query = "SELECT * FROM UserConfig WHERE uid=%(id)s;"
-        cur.execute(query, postjson)
+        cur.execute(query, logid)
         result = cur.fetchall()
         cur.close()
         conn.close()
@@ -32,7 +34,7 @@ def select(key, payload, createnew=True):
         res['alpha'] = {'marker': result[0][10], 'thinPen': result[0][11], 'thickPen': result[0][12], 'eraser': result[0][13]}
         message = "OK"
     except Exception as e:
-        message = e;
+        message = e
 
     return json.dumps({
         "message": message,
