@@ -1,7 +1,7 @@
 <template>
-	<div class="filemanagerBase" :style="variables" @contextmenu="openMinWindow($event, 'default')" @click="$refs.minwin.closeModal()">
-        <manage-window ref="minwin"></manage-window>
-		<div id="nowdir">
+	<div class="filemanagerBase" :style="variables" @contextmenu="openMinWindow($event, 'default', pathstr)" @click="$refs.minwin.closeModal()">
+        <manage-window ref="minwin" @reload="reload"></manage-window>
+		<div id="nowdir" @contextmenu="openMinWindow($event, 'none', null)">
             <span v-for="(path, index) in pathlist" :key="index" @click="clickFolder(path)">
                 {{path}} > 
             </span>
@@ -13,7 +13,7 @@
             </table>
         </div>
         <div id="filelist">
-            <span class="listbutton" v-for="(file, index) in filelist" :key="index">
+            <span class="listbutton" v-for="(file, index) in filelist" :key="index"  @contextmenu="openMinWindow($event, 'item', pathstr+'/'+file)">
                 <label :class="file.split('.').length == 1 ? 'folder' : 'file'"></label>
                 <input type="button" :style="index == 0 ? 'border-top: 1px solid #cfd982;':''"
                     :value="file.split('.')[0]" 
@@ -35,6 +35,11 @@ module.exports = {
 			console.log(response.data);
             this.loginUser = response.data.data.user;
             this.pathlist = response.data.data.path;
+            this.pathstr = "";
+            for(var i = 1; i < this.pathlist.length; i++){
+                this.pathstr += "/"+this.pathlist[i];
+            }
+            console.log(this.pathstr)
             this.filelist = response.data.data.dirlist;
 		})
 		.catch(function (error) {
@@ -52,6 +57,7 @@ module.exports = {
 		return {
             loginUser: "guest",
             pathlist: [],
+            pathstr: "",
 			filelist: [],
 		}
 	},
@@ -74,6 +80,11 @@ module.exports = {
                 console.log(response.data);
                 this.loginUser = response.data.data.user;
                 this.pathlist = response.data.data.path;
+                this.pathstr = "";
+                for(var i = 1; i < this.pathlist.length; i++){
+                    this.pathstr += "/"+this.pathlist[i];
+                }
+                console.log(this.pathstr)
                 this.filelist = response.data.data.dirlist;
             })
             .catch(function (error) {
@@ -81,18 +92,8 @@ module.exports = {
             });
         },
         clickFile(file){
-            console.log("clickfile");
-            let nowdir = "";
-            for(var i = 1; i < this.pathlist.length; i++){
-                if(this.pathlist[i] == file){
-                    break;
-                }
-                nowdir += "/"+this.pathlist[i];
-            }
-            nowdir += "/"+file;
-            console.log(nowdir);
             axios.post("/mngfiles/openfile",{
-                openfile: nowdir
+                openfile: this.pathstr + "/"+file
             })
             .then(response => {
                 console.log(response.data);
@@ -106,16 +107,32 @@ module.exports = {
                 console.log(error);
             });
         },
-        openMinWindow(e, mode){
+        openMinWindow(e, mode, item){
+            e.stopPropagation()
             e.preventDefault();
-            // キャンバスの位置とサイズを取得
-            var rect = e.target.getBoundingClientRect();
-            // マウスの位置
-            let mousex = e.pageX;
-            let mousey = e.pageY;
             console.log(mode);
+            console.log(item);
             // console.log(e);
-            this.$refs.minwin.openModal(mousex, mousey);
+            this.$refs.minwin.openModal(mode, e.pageX, e.pageY, item);
+        },
+        reload(path){
+            axios.post("/mngfiles/getnowdir",{
+                nowdir: path
+            })
+            .then(response => {
+                console.log(response.data);
+                this.loginUser = response.data.data.user;
+                this.pathlist = response.data.data.path;
+                this.pathstr = "";
+                for(var i = 1; i < this.pathlist.length; i++){
+                    this.pathstr += "/"+this.pathlist[i];
+                }
+                console.log(this.pathstr)
+                this.filelist = response.data.data.dirlist;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         }
 	},
 }

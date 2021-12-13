@@ -141,3 +141,14 @@ def handle_item():
     except:
         # internal server error
         abort(500)
+# フォルダを作る処理
+@route('/mngfiles/createfolder', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'POST':
+            return create_folder(key=request.query.key, payload=request.body)
+    except:
+        # internal server error
+        abort(500)
+        create_folder
