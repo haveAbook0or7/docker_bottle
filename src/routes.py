@@ -151,4 +151,13 @@ def handle_item():
     except:
         # internal server error
         abort(500)
-        create_folder
+# 削除処理
+@route('/mngfiles/deleteitem', method=['GET', 'POST'])
+def handle_item():
+    try:
+        response.headers['Content-Type'] = 'text/html'
+        if request.method == 'POST':
+            return delete_item(key=request.query.key, payload=request.body)
+    except:
+        # internal server error
+        abort(500)

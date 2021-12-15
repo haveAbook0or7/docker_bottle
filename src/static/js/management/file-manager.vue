@@ -13,7 +13,8 @@
             </table>
         </div>
         <div id="filelist">
-            <span class="listbutton" v-for="(file, index) in filelist" :key="index"  @contextmenu="openMinWindow($event, 'item', pathstr+'/'+file)">
+            <span class="listbutton" v-for="(file, index) in filelist" :key="index" 
+                @contextmenu="openMinWindow($event, file.split('.').length == 1 ? 'folder' : 'file', pathstr+'/'+file)">
                 <label :class="file.split('.').length == 1 ? 'folder' : 'file'"></label>
                 <input type="button" :style="index == 0 ? 'border-top: 1px solid #cfd982;':''"
                     :value="file.split('.')[0]" 

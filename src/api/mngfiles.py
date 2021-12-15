@@ -1,5 +1,6 @@
 import bottle
 import os
+import shutil
 import json
 import mysql.connector
 import urllib.request
@@ -80,7 +81,7 @@ def create_folder(key, payload, createnew=True):
         user = "abcde12345" # テスト用 TODO
         postjson = json.load(payload)
         # パスとファイル名取得
-        save_path = user+postjson["path"]
+        save_path = user + postjson["path"]
         save_name = "新しいフォルダ"
         # 既存ディレクトリリスト取得
         dirs = []
@@ -113,4 +114,28 @@ def create_folder(key, payload, createnew=True):
     return json.dumps({
         "message": "保存が完了しました。" if save_flg else "エラーメッセージ",
         "data": {"flg": save_flg}
+    }, ensure_ascii=False, indent=4)
+
+def delete_item(key, payload, createnew=True):
+    try:
+        session1 = bottle.request.environ.get('beaker.session')
+        # user = session1["user"]
+        user = "abcde12345" # テスト用 TODO
+        postjson = json.load(payload)
+        # パス取得
+        mode = postjson["mode"]
+        delete_path = user + postjson["path"]
+        # 削除対象が存在したら削除
+        if mode == "file":
+            if os.path.isfile(f'./static/usermemo/{delete_path}'):
+                os.remove(f'./static/usermemo/{delete_path}')
+        elif mode == "folder":
+            if os.path.isdir(f'./static/usermemo/{delete_path}'):
+                shutil.rmtree(f'./static/usermemo/{delete_path}')
+        delete_flg = True
+    except:
+        delete_flg = False
+    return json.dumps({
+        "message": "削除が完了しました。" if delete_flg else "エラーメッセージ",
+        "data": {"flg": delete_flg}
     }, ensure_ascii=False, indent=4)
