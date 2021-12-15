@@ -33,13 +33,15 @@ module.exports = {
 			mouse: {x: 0, y:0},
 			modeFlg: null,
 			itempath: null,
-			mode: null
+			mode: null,
+			itemIndex: null,
 		}
 	},
 	methods: {
-		openModal(mode, x, y, itempath){
+		openModal(mode, x, y, itempath, index){
 			this.showFlg = true;
 			this.mode = mode;
+			this.itemIndex = index;
 			switch(mode){
 				case "default":
 					this.modeFlg = null;
@@ -99,7 +101,8 @@ module.exports = {
             });
 		},
 		changeItemName(){
-
+			console.log(this.itemIndex)
+			this.$emit('rename', this.itemIndex);
 		}
 	},
 }
