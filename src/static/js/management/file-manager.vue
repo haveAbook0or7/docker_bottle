@@ -1,7 +1,7 @@
 <template>
-	<div class="filemanagerBase" :style="variables" @contextmenu="openMinWindow($event, 'default')" @click="$refs.minwin.closeModal()">
-        <manage-window ref="minwin"></manage-window>
-		<div id="nowdir">
+	<div class="filemanagerBase" :style="variables" @contextmenu="openMinWindow($event, 'default', pathstr, null)" @click="$refs.minwin.closeModal()">
+        <manage-window ref="minwin" @reload="reload" @rename="reNameStart"></manage-window>
+		<div id="nowdir" @contextmenu="openMinWindow($event, 'none', null, null)">
             <span v-for="(path, index) in pathlist" :key="index" @click="clickFolder(path)">
                 {{path}} > 
             </span>
@@ -13,12 +13,16 @@
             </table>
         </div>
         <div id="filelist">
-            <span class="listbutton" v-for="(file, index) in filelist" :key="index">
-                <label :class="file.split('.').length == 1 ? 'folder' : 'file'"></label>
-                <input type="button" :style="index == 0 ? 'border-top: 1px solid #cfd982;':''"
-                    :value="file.split('.')[0]" 
-                    @click="file.split('.').length == 1 ? clickFolder(file) : clickFile(file)">
-                <label class="action"></label>
+            <span class="listbutton" v-for="(file, index) in filelist" :key="index" 
+                :style="index == 0 ? 'border-top: 1px solid #cfd982;':''"
+                @click="file.split('.').length == 1 ? clickFolder(file) : clickFile(file)" 
+                @contextmenu="openMinWindow($event, file.split('.').length == 1 ? 'folder' : 'file', pathstr+'/'+file, index)">
+                    <label :class="file.split('.').length == 1 ? 'folder' : 'file'"></label>
+                    <input type="text" :value="file.split('.')[0]" @click="eventStop($event, isreads[index])" 
+                        :readonly="isreads[index]" ref="texts" 
+                        @input="reNameNow(index, $event.target.value)"
+                        @blur="reNameEnd">
+                    <label class="action"></label>
             </span>
         </div>
     </div>
@@ -35,7 +39,16 @@ module.exports = {
 			console.log(response.data);
             this.loginUser = response.data.data.user;
             this.pathlist = response.data.data.path;
+            this.pathstr = "";
+            for(var i = 1; i < this.pathlist.length; i++){
+                this.pathstr += "/"+this.pathlist[i];
+            }
+            console.log(this.pathstr)
             this.filelist = response.data.data.dirlist;
+            this.isreads = [];
+            for(var i = 0; i < this.filelist.length; i++){
+                this.isreads.push(true);
+            }
 		})
 		.catch(function (error) {
 			console.log(error);
@@ -52,7 +65,11 @@ module.exports = {
 		return {
             loginUser: "guest",
             pathlist: [],
+            pathstr: "",
 			filelist: [],
+            isreads: [],
+            renameFile: null,
+            renameIndex: null,
 		}
 	},
 	methods: {
@@ -74,6 +91,11 @@ module.exports = {
                 console.log(response.data);
                 this.loginUser = response.data.data.user;
                 this.pathlist = response.data.data.path;
+                this.pathstr = "";
+                for(var i = 1; i < this.pathlist.length; i++){
+                    this.pathstr += "/"+this.pathlist[i];
+                }
+                console.log(this.pathstr)
                 this.filelist = response.data.data.dirlist;
             })
             .catch(function (error) {
@@ -81,18 +103,8 @@ module.exports = {
             });
         },
         clickFile(file){
-            console.log("clickfile");
-            let nowdir = "";
-            for(var i = 1; i < this.pathlist.length; i++){
-                if(this.pathlist[i] == file){
-                    break;
-                }
-                nowdir += "/"+this.pathlist[i];
-            }
-            nowdir += "/"+file;
-            console.log(nowdir);
             axios.post("/mngfiles/openfile",{
-                openfile: nowdir
+                openfile: this.pathstr + "/"+file
             })
             .then(response => {
                 console.log(response.data);
@@ -106,16 +118,50 @@ module.exports = {
                 console.log(error);
             });
         },
-        openMinWindow(e, mode){
+        eventStop(e, flg){
+            if(!flg){
+                e.stopPropagation();
+            }
+        },
+        openMinWindow(e, mode, item, index){
+            e.stopPropagation();
             e.preventDefault();
-            // キャンバスの位置とサイズを取得
-            var rect = e.target.getBoundingClientRect();
-            // マウスの位置
-            let mousex = e.pageX;
-            let mousey = e.pageY;
             console.log(mode);
+            console.log(index);
             // console.log(e);
-            this.$refs.minwin.openModal(mousex, mousey);
+            this.$refs.minwin.openModal(mode, e.pageX, e.pageY, item, index);
+        },
+        reNameStart(index){
+            this.$set(this.isreads, index, false);
+            this.$refs.texts[index].focus();
+        },
+        reNameNow(index, value){
+            console.log(index)
+            console.log(e);
+            this.renameIndex = index;
+            this.renameFile = value;
+        },
+        reNameEnd(){
+
+        },
+        reload(path){
+            axios.post("/mngfiles/getnowdir",{
+                nowdir: path
+            })
+            .then(response => {
+                console.log(response.data);
+                this.loginUser = response.data.data.user;
+                this.pathlist = response.data.data.path;
+                this.pathstr = "";
+                for(var i = 1; i < this.pathlist.length; i++){
+                    this.pathstr += "/"+this.pathlist[i];
+                }
+                console.log(this.pathstr)
+                this.filelist = response.data.data.dirlist;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         }
 	},
 }
@@ -170,7 +216,24 @@ module.exports = {
     #filelist::-webkit-scrollbar {
         display: var(--scrollbar);
     }
-    input[type=button]{
+    input[type=text]{
+        text-align: left;
+        margin: 5px auto 5px 55px;
+        height: 30px;
+        outline: none;
+    }
+    input[type=text]:read-only{
+        background: transparent;
+        border: none;
+        cursor: default;
+    }
+    input[type=text]:read-write{
+        box-sizing: border-box;
+        background: #fff;
+        color: #0e121a;
+        border: 1px solid #cfd982;
+    }
+    /* input[type=button]{
         box-sizing: border-box;
         width: 100%;
         height: 40px;
@@ -181,10 +244,18 @@ module.exports = {
     }
     input[type=button]:active{
         background: #1c305c;
-    }
+    } */
     .listbutton{
         position: relative;
         display: block;
+        box-sizing: border-box;
+        width: 100%;
+        height: 40px;
+        background: transparent;
+        border-bottom: 1px solid #cfd982;
+    }
+    .listbutton:active{
+        background: #1c305c;
     }
     label{
         position: absolute;

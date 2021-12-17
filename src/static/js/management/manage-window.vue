@@ -1,36 +1,16 @@
 <template>
-	<!-- <div :class="this.modalClass+' manage-window'" id="overlay" :style="variables" @click="closeModal()"> -->
-        <div id="modal" :class="this.modalClass+' manage-window'" :style="variables" @click="stop()">
-            <!-- <table border="0">
-            <tr>
-                <td>ファイル名</td>
-                <td>
-                    <input type="text" v-model="filename">
-                </td>
-            </tr>
-            <tr v-if="ifGuest">
-                <td>保存場所</td>
-                <td class="path">
-                    <select-path :options="filepathData" v-model="filepath"></select-path>
-                </td>
-            </tr>
-			<tr>
-				<td colspan="2" class="buttons">
-					<input id="download" type="button" value="ダウンロード" @click="clickSave('download')">
-					<input id="save" type="button" v-if="ifGuest" value="上書き保存" @click="clickSave('save')">
-					<input id="save_new" type="button" v-if="ifGuest" value="新規保存" @click="clickSave('save_new')">
-				</td>
-			</tr>
-            </table> -->
-			
-        </div>
-    <!-- </div> -->
+    <div v-show="this.showFlg" class="manage-window" :style="variables" @click="$event.stopPropagation()">
+        <input type="button" v-show="this.modeFlg == null" value="フォルダを作成" @click="createFolder">
+		<input type="button" v-show="this.modeFlg" value="削除" @click="$refs.alert.openModal(mode, itempath)">
+		<alert-modal ref="alert" @cancel="closeModal" @delete="deleteItem"></alert-modal>
+		<input type="button" v-show="this.modeFlg" value="名前を変更" @click="changeItemName">
+    </div>
 </template>
 
 <script>
 module.exports = {
 	components: {
-		
+		'alert-modal': httpVueLoader('./alert-modal.vue'),
     },
 	props: {
 		login_user: {default:null},
@@ -47,15 +27,37 @@ module.exports = {
 	},
 	data: function () {
 		return {
-			modalClass: "hidden",
-			width: 200,
+			showFlg: false,
+			width: 180,
 			height: 300,
 			mouse: {x: 0, y:0},
+			modeFlg: null,
+			itempath: null,
+			mode: null,
+			itemIndex: null,
 		}
 	},
 	methods: {
-		openModal(x, y){
-			this.modalClass = "";
+		openModal(mode, x, y, itempath, index){
+			this.showFlg = true;
+			this.mode = mode;
+			this.itemIndex = index;
+			switch(mode){
+				case "default":
+					this.modeFlg = null;
+					this.height = 35;
+					break;
+				case "folder":
+				case "file":
+					this.modeFlg = true;
+					this.height = 70;
+					break;
+				case "none":
+					this.modeFlg = false;
+					this.height = 0;
+					break;
+			}
+			this.itempath = itempath;
 			let screenW = document.documentElement.clientWidth;
 			let screenH = document.documentElement.clientHeight;
 			if(x+this.width > screenW){
@@ -66,14 +68,42 @@ module.exports = {
 			}
 			this.mouse.x = x;
 			this.mouse.y = y;
-			console.log(this.mouse)
+			console.log(this.itempath)
 		},
 		closeModal(){
-			this.modalClass = "hidden";
+			this.showFlg = false;
 		},
-		stop(){
-			event.stopPropagation();
+		createFolder(){
+			axios.post("/mngfiles/createfolder",{
+                path: this.itempath
+            })
+            .then(response => {
+                console.log(response.data);
+                this.$emit('reload', this.itempath);
+				this.closeModal();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
 		},
+		deleteItem(item){
+			axios.post("/mngfiles/deleteitem",{
+				mode: this.mode,
+                path: this.itempath
+            })
+            .then(response => {
+                console.log(response.data);
+                this.$emit('reload', this.itempath.slice(0, -(item.length+1)));
+				this.closeModal();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+		},
+		changeItemName(){
+			console.log(this.itemIndex)
+			this.$emit('rename', this.itemIndex);
+		}
 	},
 }
 // export default { Node.jsじゃないから、これだとダメだった。 }
@@ -84,29 +114,24 @@ module.exports = {
 		margin: 0;
 		padding: 0;
 		border: 0;
+		font-size: 13px;
+		color: #fff;
 	}
-	.hidden{
-		display: none !important;
-	}
-	#overlay{
-		/*　要素を重ねた時の順番　*/
-		z-index:3;
-		/*　画面全体を覆う設定　*/
-		position: absolute;
-		top: 0;
-		left: 0;
-		width:100%;
-		height:100%;
-		background: transparent;
-		background-color:rgba(0,0,0,0.5);
-	}
-	#modal{
+	div{
 		z-index:4;
 		width: var(--width);
-		height: var(--height);
+		/* height: var(--height); */
 		background-color: #fff;
 		position: absolute;
 		top: var(--mouse-y);
 		left: var(--mouse-x);
+	}
+	input[type=button]{
+		box-sizing: border-box;
+		width: var(--width);
+		height: 35px;
+		padding: 0 5px;
+		background: #cfd982;
+		border-bottom: 1px solid #0f2350;
 	}
 </style>
