@@ -115,7 +115,7 @@ def create_folder(key, payload, createnew=True):
         "message": "保存が完了しました。" if save_flg else "エラーメッセージ",
         "data": {"flg": save_flg}
     }, ensure_ascii=False, indent=4)
-
+# フォルダやファイルを削除する。
 def delete_item(key, payload, createnew=True):
     try:
         session1 = bottle.request.environ.get('beaker.session')
@@ -138,4 +138,24 @@ def delete_item(key, payload, createnew=True):
     return json.dumps({
         "message": "削除が完了しました。" if delete_flg else "エラーメッセージ",
         "data": {"flg": delete_flg}
+    }, ensure_ascii=False, indent=4)
+# フォルダやファイルの名前変更
+def rename_item(key, payload, createnew=True):
+    try:
+        session1 = bottle.request.environ.get('beaker.session')
+        # user = session1["user"]
+        user = "abcde12345" # テスト用 TODO
+        postjson = json.load(payload)
+        # パス取得
+        before_path = user + postjson["before"]
+        after_path = user + postjson["after"]
+        # 変更対象が存在したら削除
+        if os.path.exists(f'./static/usermemo/{before_path}'):
+            os.rename(f'./static/usermemo/{before_path}', f'./static/usermemo/{after_path}')
+        rename_flg = True
+    except:
+        rename_flg = False
+    return json.dumps({
+        "message": "変更が完了しました。" if rename_flg else "エラーメッセージ",
+        "data": {"flg": rename_flg}
     }, ensure_ascii=False, indent=4)

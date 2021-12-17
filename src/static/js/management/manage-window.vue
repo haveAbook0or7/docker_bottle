@@ -68,7 +68,7 @@ module.exports = {
 			}
 			this.mouse.x = x;
 			this.mouse.y = y;
-			console.log(this.itempath)
+			// console.log(this.itempath)
 		},
 		closeModal(){
 			this.showFlg = false;
@@ -101,8 +101,9 @@ module.exports = {
             });
 		},
 		changeItemName(){
-			console.log(this.itemIndex)
+			// console.log(this.itemIndex)
 			this.$emit('rename', this.itemIndex);
+			this.closeModal();
 		}
 	},
 }

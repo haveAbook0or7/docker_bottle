@@ -1,5 +1,5 @@
 <template>
-	<div id="overlay" class="alert-modal" v-show="this.showFlg" @click="closeModal()" @contextmenu="$event.stopPropagation();$event.preventDefault();">
+	<div id="overlay" class="alert-modal" v-show="this.showFlg" @click="showFlg = false;$emit('cancel')" @contextmenu="$event.stopPropagation();$event.preventDefault();">
         <div id="modal" v-show="this.showFlg" @click="$event.stopPropagation()">
 			<table border="0">
             <tr>
