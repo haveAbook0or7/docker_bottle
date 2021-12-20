@@ -1,6 +1,7 @@
 <template>
 	<div class="filemanagerBase" :style="variables" @contextmenu="openMinWindow($event, 'default', pathstr, null)" @click="$refs.minwin.closeModal()">
         <manage-window ref="minwin" @reload="reload" @rename="reNameStart"></manage-window>
+        <div class="overlay" v-show="renameFlg" @click="$event.stopPropagation()" @contextmenu="$event.stopPropagation();$event.preventDefault();"></div>
 		<div id="nowdir" @contextmenu="openMinWindow($event, 'none', null, null)">
             <span v-for="(path, index) in pathlist" :key="index" @click="clickFolder(path)">
                 {{path}} > 
@@ -21,7 +22,7 @@
                     <input type="text" :value="file.split('.')[0]" @click="eventStop($event, isreads[index])" 
                         :readonly="isreads[index]" ref="texts" 
                         @input="reNameNow(index, $event.target.value)"
-                        @blur="reNameEnd">
+                        @blur="reNameEnd(index, file)">
                     <label class="action"></label>
             </span>
         </div>
@@ -68,6 +69,7 @@ module.exports = {
             pathstr: "",
 			filelist: [],
             isreads: [],
+            renameFlg: false,
             renameFile: null,
             renameIndex: null,
 		}
@@ -97,6 +99,10 @@ module.exports = {
                 }
                 console.log(this.pathstr)
                 this.filelist = response.data.data.dirlist;
+                this.isreads = [];
+                for(var i = 0; i < this.filelist.length; i++){
+                    this.isreads.push(true);
+                }
             })
             .catch(function (error) {
                 console.log(error);
@@ -123,26 +129,42 @@ module.exports = {
                 e.stopPropagation();
             }
         },
-        openMinWindow(e, mode, item, index){
+        openMinWindow(e, mode, itempath, index){
             e.stopPropagation();
             e.preventDefault();
             console.log(mode);
             console.log(index);
             // console.log(e);
-            this.$refs.minwin.openModal(mode, e.pageX, e.pageY, item, index);
+            this.$refs.minwin.openModal(mode, e.pageX, e.pageY, itempath, index);
         },
         reNameStart(index){
+            this.renameFlg = true;
             this.$set(this.isreads, index, false);
             this.$refs.texts[index].focus();
         },
         reNameNow(index, value){
             console.log(index)
-            console.log(e);
+            console.log(value);
             this.renameIndex = index;
             this.renameFile = value;
         },
-        reNameEnd(){
-
+        reNameEnd(index, file){
+            this.$set(this.isreads, index, true);
+            if(this.renameFile != null && this.renameFile != file.split('.')[0]){
+                axios.post("/mngfiles/renameitem",{
+                    before: this.pathstr+"/"+file,
+                    after: this.pathstr+ "/"+this.renameFile
+                })
+                .then(response => {
+                    console.log(response.data);
+                    this.reload(this.pathstr);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
+            this.renameFile = null;
+            this.renameFlg = false;
         },
         reload(path){
             axios.post("/mngfiles/getnowdir",{
@@ -158,6 +180,10 @@ module.exports = {
                 }
                 console.log(this.pathstr)
                 this.filelist = response.data.data.dirlist;
+                this.isreads = [];
+                for(var i = 0; i < this.filelist.length; i++){
+                    this.isreads.push(true);
+                }
             })
             .catch(function (error) {
                 console.log(error);
@@ -216,6 +242,21 @@ module.exports = {
     #filelist::-webkit-scrollbar {
         display: var(--scrollbar);
     }
+    .overlay{
+		/*　要素を重ねた時の順番　*/
+		z-index:1;
+		/*　画面全体を覆う設定　*/
+		position:fixed;
+		top:0;
+		left:0;
+		width:100%;
+		height:100%;
+		background-color:rgba(0,0,0,0.5);
+		/*　画面の中央に要素を表示させる設定　*/
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
     input[type=text]{
         text-align: left;
         margin: 5px auto 5px 55px;
@@ -228,23 +269,13 @@ module.exports = {
         cursor: default;
     }
     input[type=text]:read-write{
+        position: relative;
+        z-index: 2;
         box-sizing: border-box;
         background: #fff;
         color: #0e121a;
         border: 1px solid #cfd982;
     }
-    /* input[type=button]{
-        box-sizing: border-box;
-        width: 100%;
-        height: 40px;
-        text-align: left;
-        padding-left: 55px;
-        background: transparent;
-        border-bottom: 1px solid #cfd982;
-    }
-    input[type=button]:active{
-        background: #1c305c;
-    } */
     .listbutton{
         position: relative;
         display: block;
