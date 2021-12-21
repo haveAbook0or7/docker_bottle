@@ -1,7 +1,7 @@
 <template>
     <div v-show="this.showFlg" class="manage-window" :style="variables" @click="$event.stopPropagation()">
         <input type="button" v-show="this.modeFlg == null" value="フォルダを作成" @click="createFolder">
-		<input type="button" v-show="this.modeFlg" value="削除" @click="$refs.alert.openModal(mode, itempath)">
+		<input type="button" v-show="this.modeFlg" value="削除" @click="$refs.alert.openModal(mode, item)">
 		<alert-modal ref="alert" @cancel="closeModal" @delete="deleteItem"></alert-modal>
 		<input type="button" v-show="this.modeFlg" value="名前を変更" @click="changeItemName">
     </div>
@@ -31,17 +31,17 @@ module.exports = {
 			width: 180,
 			height: 300,
 			mouse: {x: 0, y:0},
-			modeFlg: null,
-			itempath: null,
 			mode: null,
+			modeFlg: null,
+			pathlist: null,
+			item: null,
 			itemIndex: null,
 		}
 	},
 	methods: {
-		openModal(mode, x, y, itempath, index){
+		openModal(mode, mouse, pathArray, item, index){
 			this.showFlg = true;
 			this.mode = mode;
-			this.itemIndex = index;
 			switch(mode){
 				case "default":
 					this.modeFlg = null;
@@ -57,43 +57,44 @@ module.exports = {
 					this.height = 0;
 					break;
 			}
-			this.itempath = itempath;
+			this.pathlist = pathArray;
+			this.item = item;
+			this.itemIndex = index;
 			let screenW = document.documentElement.clientWidth;
 			let screenH = document.documentElement.clientHeight;
-			if(x+this.width > screenW){
-				x -= this.width;
+			if(mouse.x+this.width > screenW){
+				mouse.x -= this.width;
 			}
-			if(y+this.height > screenH){
-				y -= this.height;
+			if(mouse.y+this.height > screenH){
+				mouse.y -= this.height;
 			}
-			this.mouse.x = x;
-			this.mouse.y = y;
-			// console.log(this.itempath)
+			this.mouse.x = mouse.x;
+			this.mouse.y = mouse.y;
 		},
 		closeModal(){
 			this.showFlg = false;
 		},
 		createFolder(){
 			axios.post("/mngfiles/createfolder",{
-                path: this.itempath
+                path: this.pathlist
             })
             .then(response => {
                 console.log(response.data);
-                this.$emit('reload', this.itempath);
+                this.$emit('reload', this.pathlist);
 				this.closeModal();
             })
             .catch(function (error) {
                 console.log(error);
             });
 		},
-		deleteItem(item){
+		deleteItem(){
 			axios.post("/mngfiles/deleteitem",{
 				mode: this.mode,
-                path: this.itempath
+                path: this.pathlist.concat(this.item)
             })
             .then(response => {
                 console.log(response.data);
-                this.$emit('reload', this.itempath.slice(0, -(item.length+1)));
+                this.$emit('reload', this.pathlist);
 				this.closeModal();
             })
             .catch(function (error) {
@@ -101,8 +102,7 @@ module.exports = {
             });
 		},
 		changeItemName(){
-			// console.log(this.itemIndex)
-			this.$emit('rename', this.itemIndex);
+			this.$emit('rename', this.itemIndex, this.mode);
 			this.closeModal();
 		}
 	},

@@ -8,41 +8,62 @@ import base64
 import io
 from beaker.middleware import SessionMiddleware
 
+def get_path_str(parray):
+    restr = ""
+    for arr in parray:
+        restr += "/" + arr
+    return restr
+
+def get_path_arr(pstr):
+    return pstr.split("/") if pstr!="" else []
+
 # 今のディレクトリのファイル一覧返す。
 def get_nowdir_files(key, payload, createnew=True):
-    session1 = bottle.request.environ.get('beaker.session')
-    # user = session1["user"]
-    user = "abcde12345" # テスト用 TODO
-    nowdir = ""
-    if not payload == None:
-        postjson = json.load(payload)
-        nowdir = postjson["nowdir"]
-    res = {"flg": False}
-    # ゲストユーザーならエラー
-    if user == "guest":
-        return json.dumps({
-            "message": "この機能を利用するにはサインインしてください。",
-            "data": res
-        }, ensure_ascii=False, indent=4)
-    # 今のディレクトリのファイル一覧取得
-    memopath = "./static/usermemo/"
-    res["user"] = user
-    path = user + nowdir
-    res["path"] = path.split('/')
-    res["dirlist"] = os.listdir(memopath + path)
+    try:
+        # ログイン中のユーザーを取得
+        session1 = bottle.request.environ.get('beaker.session')
+        # user = session1["user"]
+        user = "abcde12345" # テスト用 TODO
+        nowdir = ""
+        # POSTのデータがあったら取得
+        if not payload == None:
+            postjson = json.load(payload)
+            nowdir = get_path_str(postjson["nowdir"])
+        res = {"flg": None}
+        # ゲストユーザーならエラー
+        if user == "guest":
+            return json.dumps({
+                "message": "この機能を利用するにはサインインしてください。",
+                "data": res
+            }, ensure_ascii=False, indent=4)
+        # 今のディレクトリのファイル一覧取得
+        res["user"] = user
+        res["path"] = get_path_arr(nowdir[1:])
+        res["dirlist"] = os.listdir(f'./static/usermemo/{user}{nowdir}')
+        res["flg"] = True
+    except:
+        res["flg"] = False
     return json.dumps({
         "message": '',
         "data": res
     }, ensure_ascii=False, indent=4)
 # セッションに開くファイルを格納する。
 def set_open_file(key, payload, createnew=True):
-    res = {}
+    res = {"flg": None}
     try:
-        postjson = json.load(payload)
+        # ログイン中のユーザーを取得
         session1 = bottle.request.environ.get('beaker.session')
         # user = session1["user"]
         user = "abcde12345" # テスト用 TODO
-        session1["openfile"] = f'{user}{postjson["openfile"]}'
+        # ゲストユーザーならエラー
+        if user == "guest":
+            return json.dumps({
+                "message": "この機能を利用するにはサインインしてください。",
+                "data": res
+            }, ensure_ascii=False, indent=4)
+        # 開くファイルパス取得してセッションに保存
+        postjson = json.load(payload)
+        session1["openfile"] = user + get_path_str(postjson["openfile"])
         res["user"] = user
         res["flg"] = True
     except:
@@ -53,13 +74,23 @@ def set_open_file(key, payload, createnew=True):
     }, ensure_ascii=False, indent=4)
 # 開くファイルを取得する。
 def get_open_file():
-    res = {}
+    res = {"flg": None}
     try:
+        # ログイン中のユーザーを取得
         session1 = bottle.request.environ.get('beaker.session')
-        memopath = "./static/usermemo/"
+        # user = session1["user"]
+        user = "abcde12345" # テスト用 TODO
+        # ゲストユーザーならエラー
+        if user == "guest":
+            return json.dumps({
+                "message": "この機能を利用するにはサインインしてください。",
+                "data": res
+            }, ensure_ascii=False, indent=4)
+        # セッションから開くファイルパス取得
         userpath = session1["openfile"]
+        # バイナリデータ所得後加工して返す
         img_binary = ""
-        with open(f'{memopath}{userpath}', 'rb') as f:
+        with open(f'./static/usermemo/{userpath}', 'rb') as f:
             img_binary = f.read()
         str_img = base64.b64encode(img_binary).decode()
         res["openfile_img"] = f'data:image/png;base64,{str_img}'
@@ -75,17 +106,24 @@ def get_open_file():
     }, ensure_ascii=False, indent=4)
 # 新しいフォルダを作る。
 def create_folder(key, payload, createnew=True):
+    res = {"flg": None}
     try:
         session1 = bottle.request.environ.get('beaker.session')
         # user = session1["user"]
         user = "abcde12345" # テスト用 TODO
+        # ゲストユーザーならエラー
+        if user == "guest":
+            return json.dumps({
+                "message": "この機能を利用するにはサインインしてください。",
+                "data": res
+            }, ensure_ascii=False, indent=4)
         postjson = json.load(payload)
         # パスとファイル名取得
-        save_path = user + postjson["path"]
+        save_path = user + get_path_str(postjson["path"])
         save_name = "新しいフォルダ"
         # 既存ディレクトリリスト取得
         dirs = []
-        for current_dir, sub_dirs, files_list, in os.walk(f'./static/usermemo/{save_path.split("/")[0]}'):
+        for current_dir, sub_dirs, files_list, in os.walk(f'./static/usermemo/{user}'):
             dirs += sub_dirs
         # 同じディレクトリ名がないか検索
         cnt = 0
@@ -108,12 +146,12 @@ def create_folder(key, payload, createnew=True):
                 break
         # ディレクトリを作成。
         os.mkdir(f'./static/usermemo/{save_path}/{save_name}')
-        save_flg = True
+        res["flg"] = True
     except:
-        save_flg = False
+        res["flg"] = False
     return json.dumps({
-        "message": "保存が完了しました。" if save_flg else "エラーメッセージ",
-        "data": {"flg": save_flg}
+        "message": "保存が完了しました。" if res["flg"] else "エラーメッセージ",
+        "data": res
     }, ensure_ascii=False, indent=4)
 # フォルダやファイルを削除する。
 def delete_item(key, payload, createnew=True):
@@ -121,10 +159,16 @@ def delete_item(key, payload, createnew=True):
         session1 = bottle.request.environ.get('beaker.session')
         # user = session1["user"]
         user = "abcde12345" # テスト用 TODO
+        # ゲストユーザーならエラー
+        if user == "guest":
+            return json.dumps({
+                "message": "この機能を利用するにはサインインしてください。",
+                "data": res
+            }, ensure_ascii=False, indent=4)
+        # パスとモード取得
         postjson = json.load(payload)
-        # パス取得
         mode = postjson["mode"]
-        delete_path = user + postjson["path"]
+        delete_path = user + get_path_str(postjson["path"])
         # 削除対象が存在したら削除
         if mode == "file":
             if os.path.isfile(f'./static/usermemo/{delete_path}'):
@@ -139,16 +183,22 @@ def delete_item(key, payload, createnew=True):
         "message": "削除が完了しました。" if delete_flg else "エラーメッセージ",
         "data": {"flg": delete_flg}
     }, ensure_ascii=False, indent=4)
-# フォルダやファイルの名前変更
+# フォルダやファイルの名前変更 TODO
 def rename_item(key, payload, createnew=True):
     try:
         session1 = bottle.request.environ.get('beaker.session')
         # user = session1["user"]
         user = "abcde12345" # テスト用 TODO
+        # ゲストユーザーならエラー
+        if user == "guest":
+            return json.dumps({
+                "message": "この機能を利用するにはサインインしてください。",
+                "data": res
+            }, ensure_ascii=False, indent=4)
+        # 変更前と変更後のパス取得
         postjson = json.load(payload)
-        # パス取得
-        before_path = user + postjson["before"]
-        after_path = user + postjson["after"]
+        before_path = user + get_path_str(postjson["before"])
+        after_path = user + get_path_str(postjson["after"])
         # 変更対象が存在したら削除
         if os.path.exists(f'./static/usermemo/{before_path}'):
             os.rename(f'./static/usermemo/{before_path}', f'./static/usermemo/{after_path}')

@@ -10,7 +10,7 @@
 					<input class="cancel" type="button" value="キャンセル" @click="showFlg = false;$emit('cancel')">
 				</td>
 				<td>
-					<input class="delete" type="button" value="削除" @click="showFlg = false;$emit('delete', item)">
+					<input class="delete" type="button" value="削除" @click="showFlg = false;$emit('delete')">
 				</td>
 			</tr>
             </table>
@@ -39,7 +39,7 @@ module.exports = {
 		openModal(mode, item){
 			this.showFlg = true;
             this.mode = mode;
-			this.item = item.split("/")[item.split("/").length-1];
+			this.item = item;
 		}
 	},
 }
