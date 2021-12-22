@@ -18,14 +18,22 @@ def get_user_dir():
             "message": user,
             "data": None
         }, ensure_ascii=False, indent=4)
-
-    for current_dir, sub_dirs, files_list, in os.walk(memopath+user): 
-        now = current_dir[len(memopath):].split("/")
-        if(len(sub_dirs) != 0):
-            restr += '{"name": "%s", "children": [' %now[len(now)-1]
+    dir_cnt = []
+    for current_dir, sub_dirs, files_list, in os.walk(f'./static/usermemo/{user}'): 
+        now = current_dir.split("/")
+        if len(sub_dirs) != 0 :
+            dir_cnt.append(len(sub_dirs)+1)
+            restr += '{"name": "%s", "children": [' % now[-1]
         else:
-            restr += '{"name": "%s"}]},' %now[len(now)-1]
-    rejson = json.loads(restr[0:len(restr)-1])
+            restr += '{"name": "%s"},' % now[-1]
+        dir_cnt[-1] -= 1
+        if dir_cnt[-1] == 0 :
+            restr = restr[0:-1]
+            restr += ']},'
+            dir_cnt.pop(-1)
+            if len(dir_cnt) > 0:
+                dir_cnt[-1] -= 1
+    rejson = json.loads(restr[0:-1])
     return json.dumps({
         "message": '',
         "data": rejson
