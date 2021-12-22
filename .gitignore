@@ -1,1 +1,3 @@
 .env
+src/data
+src/static/usermemo

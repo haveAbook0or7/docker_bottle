@@ -10,7 +10,7 @@
 					<input class="cancel" type="button" value="キャンセル" @click="showFlg = false;$emit('cancel')">
 				</td>
 				<td>
-					<input class="delete" type="button" value="削除" @click="showFlg = false;$emit('delete', item)">
+					<input class="delete" type="button" value="削除" @click="showFlg = false;$emit('delete')">
 				</td>
 			</tr>
             </table>
@@ -39,7 +39,7 @@ module.exports = {
 		openModal(mode, item){
 			this.showFlg = true;
             this.mode = mode;
-			this.item = item.split("/")[item.split("/").length-1];
+			this.item = item;
 		}
 	},
 }
@@ -54,16 +54,13 @@ module.exports = {
 		text-align: center;
 	}
 	#overlay{
-		/*　要素を重ねた時の順番　*/
 		z-index:3;
-		/*　画面全体を覆う設定　*/
 		position:fixed;
 		top:0;
 		left:0;
 		width:100%;
 		height:100%;
 		background-color:rgba(0,0,0,0.5);
-		/*　画面の中央に要素を表示させる設定　*/
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -81,6 +78,7 @@ module.exports = {
 	}
 	table{
 		position: relative;
+		min-width: 250px;
 	}
 	.buttons{
 		height: 60px;
