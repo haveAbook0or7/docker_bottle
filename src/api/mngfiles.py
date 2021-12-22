@@ -199,7 +199,7 @@ def rename_item(key, payload, createnew=True):
         postjson = json.load(payload)
         before_path = user + get_path_str(postjson["before"])
         after_path = user + get_path_str(postjson["after"])
-        # 変更対象が存在したら削除
+        # 変更対象が存在したら変更
         if os.path.exists(f'./static/usermemo/{before_path}'):
             os.rename(f'./static/usermemo/{before_path}', f'./static/usermemo/{after_path}')
         rename_flg = True

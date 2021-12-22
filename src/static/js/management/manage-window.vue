@@ -19,7 +19,6 @@ module.exports = {
 		variables() {
 			return {
 				"--width": this.width+"px",
-				"--height": this.height+"px",
 				"--mouse-x": this.mouse.x+"px",
 				"--mouse-y": this.mouse.y+"px",
 			}
@@ -29,7 +28,6 @@ module.exports = {
 		return {
 			showFlg: false,
 			width: 180,
-			height: 300,
 			mouse: {x: 0, y:0},
 			mode: null,
 			modeFlg: null,
@@ -45,16 +43,13 @@ module.exports = {
 			switch(mode){
 				case "default":
 					this.modeFlg = null;
-					this.height = 35;
 					break;
 				case "folder":
 				case "file":
 					this.modeFlg = true;
-					this.height = 70;
 					break;
 				case "none":
 					this.modeFlg = false;
-					this.height = 0;
 					break;
 			}
 			this.pathlist = pathArray;
@@ -121,7 +116,6 @@ module.exports = {
 	div{
 		z-index:4;
 		width: var(--width);
-		/* height: var(--height); */
 		background-color: #fff;
 		position: absolute;
 		top: var(--mouse-y);

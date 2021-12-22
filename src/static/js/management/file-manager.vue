@@ -1,5 +1,5 @@
 <template>
-	<div class="filemanagerBase" :style="variables" @contextmenu="openMinWindow($event, 'default', null, null)" @click="$refs.minwin.closeModal()">
+	<div class="filemanagerBase" @contextmenu="openMinWindow($event, 'default', null, null)" @click="$refs.minwin.closeModal()">
         <manage-window ref="minwin" @reload="reload" @rename="reNameStart"></manage-window>
         <div class="overlay" v-show="renameShowFlg" @click="$event.stopPropagation()" @contextmenu="$event.stopPropagation();$event.preventDefault();"></div>
 		<div id="nowdir" @contextmenu="openMinWindow($event, 'none', null, null)">
@@ -24,10 +24,9 @@
                         @input="reNameNow(index, $event.target.value)"
                         @blur="reNameEnd(index, file)"
                         @keydown.enter="$event.target.blur()">
-                    <label class="action"></label>
+                    <label class="action" @click="openMinWindow($event, file.split('.').length == 1 ? 'folder' : 'file', file, index)"></label>
             </span>
         </div>
-        <!-- <script src="../static/js/component/regularExpression.js"></script> -->
     </div>
 </template>
 
@@ -59,13 +58,6 @@ module.exports = {
 			console.log(error);
 		});
     },
-	computed: {
-		variables() {
-			return {
-				"--scrollbar": this.filelist.length <= 10 ? "none" : "auto",
-			}
-		},
-	},
 	data: function () {
 		return {
             loginUser: "guest",
@@ -103,6 +95,7 @@ module.exports = {
             console.log(this.pathlist);
         },
 		clickFolder(folder){
+            // 移動するフォルダのパスを求める。遡る場合もこれでOK
             let nowdir = [];
             if(this.loginUser != folder){
                 for(const item of this.pathlist){
@@ -113,14 +106,17 @@ module.exports = {
                 }
                 nowdir.push(folder);
             }
+            // 求めたパスで表示
             this.reload(nowdir);
         },
         clickFile(file){
+            // クリックしたファイルを別ウィンドウで開く
             axios.post("/mngfiles/openfile",{
                 openfile: this.pathlist.concat(file)
             })
             .then(response => {
                 console.log(response.data);
+                // <a>を生成して無理やり開く。
                 const fileLink = document.createElement('a');
                 fileLink.href = "/?fileopen="+response.data.data.flg;;
                 fileLink.target = "_blank";
@@ -144,35 +140,46 @@ module.exports = {
             this.$refs.minwin.openModal(mode, {x: e.pageX, y: e.pageY}, this.pathlist, item, index);
         },
         reNameStart(index, mode){
+            // ファイルかフォルダか記録
             this.reNameMode = mode;
+            // 他の動作を止めるオーバーレイを表示
             this.renameShowFlg = true;
+            // <input>をread-writeにしてフォーカスあてて名前変更開始
             this.$set(this.isreads, index, false);
             this.$refs.texts[index].focus();
         },
         reNameNow(index, value){
-            console.log(index)
-            console.log(value);
-            console.log(this.renameRegex.test(value));
+            // console.log(index)
+            // console.log(value);
+            // console.log(this.renameRegex.test(value));
+            // 正規表現が通ったら仮保存変数に保存。フラグ立てる
             if(this.renameRegex.test(value)){
                 this.renameFile = value;
             }
             this.renameFlg = this.renameRegex.test(value);
         },
         reNameEnd(index, file){
+            // <input>をread-onlyにする
             this.$set(this.isreads, index, true);
+            // [正規表現が通ってる][仮保存変数が空じゃない][前の名前と同じじゃない]の条件が通ったら変更処理
             if(this.renameFlg && this.renameFile != null && this.renameFile != file.split('.')[0]){
+                // ファイルの名前変更なら最後にファイル形式(.png)をくっつける
+                this.renameFile += this.reNameMode == "file" ? "."+file.split('.')[1] : "";
+                // 変更処理
                 axios.post("/mngfiles/renameitem",{
                     before: this.pathlist.concat(file),
                     after: this.pathlist.concat(this.renameFile)
                 })
                 .then(response => {
                     console.log(response.data);
+                    // 完了したらリロード
                     this.reload(this.pathlist);
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
             }
+            // 仮保存変数を初期化してオーバーレイを消す
             this.renameFile = null;
             this.renameShowFlg = false;
         }
@@ -194,17 +201,18 @@ module.exports = {
         background: #0f2350;
         height: 100%;
     }
+    /* 現在のパス */
     #nowdir{
         position: relative;
         height: 50px;
-        background: #d4d9ad;
-        font-size: 18px;
+        background: #cfd982;
     }
     span{
         cursor: default;
         font-size: 18px;
         color: #000;
     }
+    /* ユーザー名表示 */
     table{
         position: absolute;
         top: 0;
@@ -215,6 +223,7 @@ module.exports = {
         border-spacing: 0;
     }
     td{color: #000;}
+    /* アイテム表示スペース */
     #filelist{
         box-sizing: border-box;
         height: 400px;
@@ -223,27 +232,23 @@ module.exports = {
         border-left: 0;
         border-right: 0;
         overflow-y: scroll;
-        -ms-overflow-style: var(--scrollbar);/* IE, Edge 対応 */
-        scrollbar-width: var(--scrollbar); /* Firefox 対応 */
     }
+    /* アイテム表示スペースのスクロールバー */
     #filelist::-webkit-scrollbar {
-        display: var(--scrollbar);
+        display: auto;
+        width: 12px;
     }
-    .overlay{
-		/*　要素を重ねた時の順番　*/
-		z-index:1;
-		/*　画面全体を覆う設定　*/
-		position:fixed;
-		top:0;
-		left:0;
-		width:100%;
-		height:100%;
-		background-color:rgba(0,0,0,0.5);
-		/*　画面の中央に要素を表示させる設定　*/
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
+    #filelist::-webkit-scrollbar-track {
+        background-color: #e4e4e4;
+        border-radius: 50px;
+    }
+    
+    #filelist::-webkit-scrollbar-thumb {
+        background-color: #c3d825;
+        border: 2px outset #a0aa52;
+        border-radius: 50px;
+    }
+    /* 各アイテム名(名前変更時のデザイン) */
     input[type=text]{
         text-align: left;
         margin: 5px auto 5px 55px;
@@ -263,6 +268,20 @@ module.exports = {
         color: #0e121a;
         border: 1px solid #cfd982;
     }
+    /* 名前変更処理時のオーバーレイ */
+    .overlay{
+		z-index:1;
+		position:fixed;
+		top:0;
+		left:0;
+		width:100%;
+		height:100%;
+		background-color:rgba(0,0,0,0.5);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+    /* 各アイテム */
     .listbutton{
         position: relative;
         display: block;
@@ -272,9 +291,10 @@ module.exports = {
         background: transparent;
         border-bottom: 1px solid #cfd982;
     }
-    .listbutton:active{
+    .listbutton:hover{
         background: #1c305c;
     }
+    /* アイコン */
     label{
         position: absolute;
 		display: inline-block;
@@ -283,25 +303,23 @@ module.exports = {
         height: 30px;
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
-        background: #c3d825;
     }
     .folder{
         left: 15px;
+        background: #c3d825;
         mask-image: url(../../img/folder.png);
         -webkit-mask-image: url(../../img/folder.png);
     }
     .file{
         left: 15px;
+        background: #cfd982;
         mask-image: url(../../img/file.png);
         -webkit-mask-image: url(../../img/file.png);
     }
     .action{
         right: 0;
+        background: #c3d825;
         mask-image: url(../../img/action.png);
         -webkit-mask-image: url(../../img/action.png);
-    }
-    .manage-window{
-        position: absolute;
-        z-index: 7;
     }
 </style>
