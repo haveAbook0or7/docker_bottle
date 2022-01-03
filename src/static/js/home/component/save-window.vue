@@ -91,9 +91,9 @@ module.exports = {
 	}
 	#overlay{
 		/*　要素を重ねた時の順番　*/
-		z-index:3;
+		z-index: 4;
 		/*　画面全体を覆う設定　*/
-		position:fixed;
+		position: fixed;
 		top:0;
 		left:0;
 		width:100%;
@@ -118,7 +118,7 @@ module.exports = {
 		height: 40px;
 		min-width: 70px;
 	}
-	input[type=text]{
+	input[type=text]:read-write{
 		font: 15px sans-serif;
 		box-sizing: border-box;
 		width: 200px;
@@ -128,7 +128,7 @@ module.exports = {
 		border-bottom: 2px solid #1b2538;
 		background: transparent;
 	}
-	input[type=text]:focus {
+	input[type=text]:read-write:focus {
 		color: #1b2538;
 		border-bottom: 2px solid #da3c41;
 		outline: none;
@@ -138,6 +138,7 @@ module.exports = {
 	}
 	.select-path{
 		position: absolute;
+		top: 5px;
 	}
 	.buttons{
 		height: 60px;

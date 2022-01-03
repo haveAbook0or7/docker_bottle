@@ -10,7 +10,7 @@
 			<my-menu :login_user="loginUser" id="menu"></my-menu>
 		</div>
 		<!-- <br><br><br> -->
-        <my-canvas ref="myCanvas" :open_file="openfile" @save_end="saveEnd"></my-canvas>
+        <my-canvas ref="myCanvas" @save_end="saveEnd"></my-canvas>
     </div>
 </template>
 
@@ -26,14 +26,19 @@ module.exports = {
 		// ユーザー認証
 		axios.get("/userlogins/getuser")
 		.then(response => {
-			console.log(response.data);
+			// console.log(response.data);
 			this.loginUser = response.data.data.user;
 			this.initfilepath = this.loginUser+"/";
-			console.log(this.initfilepath);
+			// console.log(this.initfilepath);
 		})
 		.catch(function (error) {
 			console.log(error);
 		});
+	},
+	mounted() {
+		// キャンバスサイズを取得
+		this.baseheight = document.documentElement.clientHeight;
+		this.canvasheight = document.documentElement.clientHeight;
 		// getを取得
 		var url = new URL(window.location.href);
 		var params = url.searchParams;
@@ -42,22 +47,20 @@ module.exports = {
 		if(fileopen == "true"){
 			axios.get("/mngfiles/openfile")
 			.then(response => {
-				console.log(response.data);
+				// console.log(response.data);
 				if(response.data.data.flg){
 					this.openfile = response.data.data.openfile_img;
 					this.initfileName = response.data.data.openfile_neme;
 					this.initfilepath = response.data.data.openfile_path;
+					if(this.openfile != null){
+						this.$refs.myCanvas.drawImg(this.openfile, true);
+					}
 				}
 			})
 			.catch(function (error) {
 				console.log(error);
 			});
 		}
-	},
-	mounted() {
-		// キャンバスサイズを取得
-		this.baseheight = document.documentElement.clientHeight;
-		this.canvasheight = document.documentElement.clientHeight;
 	},
 	computed: {
 		variables() {

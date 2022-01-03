@@ -1,8 +1,12 @@
 <template>
 	<div class="select-path" :style="variable">
-        <input class="select" type="button" :value="value" @click="openOption">
-        <span class="toggle" @click="openOption"></span>
-        <tree-path class="item" v-show="isOpen" :item="treeData" @select="selectItem"></tree-path>
+        <div class="path">
+            <input class="select" type="text" readonly :value="value" @click="openOption">
+            <span class="toggle" @click="openOption"></span>
+        </div>
+        <div class="back">
+            <tree-path class="item" v-show="isOpen" :item="treeData" @select="selectItem"></tree-path>
+        </div>
     </div>
 </template>
 
@@ -39,6 +43,7 @@ module.exports = {
 				"--dynamic-color": this.isOpen ? "#da3c41" : "#1b2538",
                 "--top": this.isOpen ? "0px" : "8px",
                 "--bottom": this.isOpen ? "8px" : "0px",
+                "--open": this.isOpen ? "auto" : "0px"
 			}
 		},
         treeData: {
@@ -76,22 +81,52 @@ module.exports = {
 		margin: 0;
 		padding: 0;
 		border: 0;
-		font-size: 13px;
+		font-size: 14px;
         position: relative;
         display: block;
         width: 200px;
         text-align: left;
 	}
-    .select{
+    .back{
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.5);
+        height: var(--open);
+        max-height: 280px;
+        width: 207px;
+        overflow:scroll;
+    }
+    .back::-webkit-scrollbar{
+        display: auto;
+        width: 7px;
+        height: 7px;
+    }
+    .back::-webkit-scrollbar-track {
+        background-color: #e4e4e4;
+        border-radius: 50px;
+        width: 5px;
+    }
+    .back::-webkit-scrollbar-thumb {
+        background-color: #c3d825;
+        border: 2px outset #a0aa52;
+        border-radius: 50px;
+        width: 5px;
+    }
+    .path{
         width: 200px;
-        height: 20px;
+        border-bottom: 2px solid var(--dynamic-color);
+    }
+    .select{
+        width: 185px;
+        height: 30px;
         background: #fff;
         color: darkslategrey;
-        border-bottom:  2px solid var(--dynamic-color);
+        border: none;
+        outline: none;
+        text-align: right;
     }
     .toggle{
         position: absolute;
-        top: 5px;
+        top: 12px;
         right: 3px;
         border-top: var(--top) solid var(--dynamic-color);
         border-bottom: var(--bottom) solid var(--dynamic-color);

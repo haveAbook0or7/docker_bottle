@@ -65,10 +65,11 @@ module.exports = {
         cursor: default;
     }
     div{
-        padding-left: 15px;
+        margin-left: 15px;
     }
     input[type=button]{
         padding: 3px;
+        padding-left: 15px;
         height: 20px;
         width: 200px;
         background: #fff;
@@ -81,7 +82,7 @@ module.exports = {
     
     .toggle{
         top: 5px;
-        right: 3px;
+        left: 3px;
         border-top: var(--top) solid #aaa;
         border-bottom: var(--bottom) solid #aaa;
         border-left: 5px solid transparent;
@@ -90,8 +91,8 @@ module.exports = {
         height: 0;
     }
     .li{
-        display: inline-flex;
         background: #fff;
         border-bottom:  1px solid #ccc;
+        box-sizing: border-box;
     }
 </style>
