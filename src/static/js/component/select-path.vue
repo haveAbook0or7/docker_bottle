@@ -122,7 +122,12 @@ module.exports = {
         color: darkslategrey;
         border: none;
         outline: none;
-        text-align: right;
+        direction: rtl;
+        overflow:scroll;
+        text-overflow: ellipsis;
+    }
+    .select::-webkit-scrollbar{
+        display: none;
     }
     .toggle{
         position: absolute;
