@@ -19,19 +19,21 @@ def get_path_arr(pstr):
 
 # 今のディレクトリのファイル一覧返す。
 def get_nowdir_files(key, payload, createnew=True):
+    res = {"flg": None}
+    msg = ""
     try:
         # ログイン中のユーザーを取得
         session1 = bottle.request.environ.get('beaker.session')
-        # user = session1["user"]
-        user = "abcde12345" # テスト用 TODO
+        user = session1["user"]
+        # user = "abcde12345" # テスト用 TODO
         nowdir = ""
         # POSTのデータがあったら取得
         if not payload == None:
             postjson = json.load(payload)
             nowdir = get_path_str(postjson["nowdir"])
-        res = {"flg": None}
         # ゲストユーザーならエラー
         if user == "guest":
+            res["user"] = user
             return json.dumps({
                 "message": "この機能を利用するにはサインインしてください。",
                 "data": res
@@ -43,8 +45,9 @@ def get_nowdir_files(key, payload, createnew=True):
         res["flg"] = True
     except:
         res["flg"] = False
+        msg = "エラーが起きました。\n再読み込みしても直らない場合は一度ウィンドウを閉じて再ログインしてください。"
     return json.dumps({
-        "message": '',
+        "message": msg,
         "data": res
     }, ensure_ascii=False, indent=4)
 # セッションに開くファイルを格納する。
@@ -53,8 +56,8 @@ def set_open_file(key, payload, createnew=True):
     try:
         # ログイン中のユーザーを取得
         session1 = bottle.request.environ.get('beaker.session')
-        # user = session1["user"]
-        user = "abcde12345" # テスト用 TODO
+        user = session1["user"]
+        # user = "abcde12345" # テスト用 TODO
         # ゲストユーザーならエラー
         if user == "guest":
             return json.dumps({
@@ -78,8 +81,8 @@ def get_open_file():
     try:
         # ログイン中のユーザーを取得
         session1 = bottle.request.environ.get('beaker.session')
-        # user = session1["user"]
-        user = "abcde12345" # テスト用 TODO
+        user = session1["user"]
+        # user = "abcde12345" # テスト用 TODO
         # ゲストユーザーならエラー
         if user == "guest":
             return json.dumps({
@@ -87,17 +90,23 @@ def get_open_file():
                 "data": res
             }, ensure_ascii=False, indent=4)
         # セッションから開くファイルパス取得
+        if "openfile" not in session1:
+            session1["openfile"] = None
+            session1.save()
         userpath = session1["openfile"]
         # バイナリデータ所得後加工して返す
-        img_binary = ""
-        with open(f'./static/usermemo/{userpath}', 'rb') as f:
-            img_binary = f.read()
-        str_img = base64.b64encode(img_binary).decode()
-        res["openfile_img"] = f'data:image/png;base64,{str_img}'
-        file_neme = userpath.split("/")[len(userpath.split("/"))-1]
-        res["openfile_neme"] = file_neme.replace('.png', '')
-        res["openfile_path"] = userpath.replace(file_neme, '')
-        res["flg"] = True
+        if userpath != None:
+            img_binary = ""
+            with open(f'./static/usermemo/{userpath}', 'rb') as f:
+                img_binary = f.read()
+            str_img = base64.b64encode(img_binary).decode()
+            res["openfile_img"] = f'data:image/png;base64,{str_img}'
+            file_neme = userpath.split("/")[len(userpath.split("/"))-1]
+            res["openfile_neme"] = file_neme.replace('.png', '')
+            res["openfile_path"] = userpath.replace(file_neme, '')
+            res["flg"] = True
+        else:
+            raise Exception
     except:
         res["flg"] = False
     return json.dumps({
@@ -109,8 +118,8 @@ def create_folder(key, payload, createnew=True):
     res = {"flg": None}
     try:
         session1 = bottle.request.environ.get('beaker.session')
-        # user = session1["user"]
-        user = "abcde12345" # テスト用 TODO
+        user = session1["user"]
+        # user = "abcde12345" # テスト用 TODO
         # ゲストユーザーならエラー
         if user == "guest":
             return json.dumps({
@@ -157,8 +166,8 @@ def create_folder(key, payload, createnew=True):
 def delete_item(key, payload, createnew=True):
     try:
         session1 = bottle.request.environ.get('beaker.session')
-        # user = session1["user"]
-        user = "abcde12345" # テスト用 TODO
+        user = session1["user"]
+        # user = "abcde12345" # テスト用 TODO
         # ゲストユーザーならエラー
         if user == "guest":
             return json.dumps({
@@ -187,8 +196,8 @@ def delete_item(key, payload, createnew=True):
 def rename_item(key, payload, createnew=True):
     try:
         session1 = bottle.request.environ.get('beaker.session')
-        # user = session1["user"]
-        user = "abcde12345" # テスト用 TODO
+        user = session1["user"]
+        # user = "abcde12345" # テスト用 TODO
         # ゲストユーザーならエラー
         if user == "guest":
             return json.dumps({

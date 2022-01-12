@@ -27,7 +27,7 @@ module.exports = {
             signinFlg: false,
             isOpen: false,
             menu: [
-                {name: "マイメモ", url: ""+this.login_user, show: this.login_user != "guest"}
+                {name: "マイメモ", url: "/userfile.html", show: this.login_user != "guest"}
             ],
             sign: {
                 name: this.login_user == "guest" ? "サインイン" : "サインアウト",

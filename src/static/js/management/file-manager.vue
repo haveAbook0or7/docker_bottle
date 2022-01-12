@@ -3,9 +3,13 @@
         <manage-window ref="minwin" @reload="reload" @rename="reNameStart"></manage-window>
         <div class="overlay" v-show="renameShowFlg" @click="$event.stopPropagation()" @contextmenu="$event.stopPropagation();$event.preventDefault();"></div>
 		<div id="nowdir" @contextmenu="openMinWindow($event, 'none', null, null)">
-            <span v-for="(path, index) in [loginUser].concat(pathlist)" :key="index" @click="clickFolder(path)">
+            <!-- パス -->
+            <span v-show="isLogin" v-for="(path, index) in [loginUser].concat(pathlist)" :key="index" @click="clickFolder(path)">
                 {{path}} > 
             </span>
+            <!-- エラーメッセージ -->
+            <span id="error" v-show="!this.isLogin">{{message}}</span>
+            <!-- ログインユーザー -->
             <table border="0">
             <tr style="height: 22px;">
                 <td>{{this.loginUser}}</td>
@@ -14,7 +18,7 @@
             </table>
         </div>
         <div id="filelist">
-            <span class="listbutton" v-for="(file, index) in filelist" :key="index" 
+            <span v-show="isLogin" class="listbutton" v-for="(file, index) in filelist" :key="index" 
                 :style="index == 0 ? 'border-top: 1px solid #cfd982;':''"
                 @click="file.split('.').length == 1 ? clickFolder(file) : clickFile(file)" 
                 @contextmenu="openMinWindow($event, file.split('.').length == 1 ? 'folder' : 'file', file, index)">
@@ -60,6 +64,8 @@ module.exports = {
     },
 	data: function () {
 		return {
+            isLogin: true,
+            message: "",
             loginUser: "guest",
             pathlist: [],
 			filelist: [],
@@ -85,6 +91,8 @@ module.exports = {
         },
         resProcess(resData){
             console.log(resData);
+            this.isLogin = resData.data.flg;
+            this.message = resData.message;
             this.loginUser = resData.data.user;
             this.pathlist = resData.data.path;
             this.filelist = resData.data.dirlist;
@@ -92,7 +100,8 @@ module.exports = {
             for(const index in this.filelist){
                 this.isreads.push(true);
             }
-            console.log(this.pathlist);
+            console.log(this.message)
+            console.log(this.isLogin);
         },
 		clickFolder(folder){
             // 移動するフォルダのパスを求める。遡る場合もこれでOK
@@ -211,6 +220,11 @@ module.exports = {
         cursor: default;
         font-size: 18px;
         color: #000;
+    }
+    /* エラーメッセージ */
+    #error{
+        white-space: pre-line;
+        font-size: 16px;
     }
     /* ユーザー名表示 */
     table{

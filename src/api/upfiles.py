@@ -26,13 +26,14 @@ def get_user_dir():
             restr += '{"name": "%s", "children": [' % now[-1]
         else:
             restr += '{"name": "%s"},' % now[-1]
-        dir_cnt[-1] -= 1
-        if dir_cnt[-1] == 0 :
-            restr = restr[0:-1]
-            restr += ']},'
-            dir_cnt.pop(-1)
-            if len(dir_cnt) > 0:
-                dir_cnt[-1] -= 1
+        if len(dir_cnt) != 0 :
+            dir_cnt[-1] -= 1
+            if dir_cnt[-1] == 0 :
+                restr = restr[0:-1]
+                restr += ']},'
+                dir_cnt.pop(-1)
+                if len(dir_cnt) > 0:
+                    dir_cnt[-1] -= 1
     rejson = json.loads(restr[0:-1])
     return json.dumps({
         "message": '',

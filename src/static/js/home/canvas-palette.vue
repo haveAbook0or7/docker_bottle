@@ -43,11 +43,12 @@ module.exports = {
 		var url = new URL(window.location.href);
 		var params = url.searchParams;
 		let fileopen = params.get('fileopen');
+		console.log(fileopen)
         // 既存ファイルを開く処理
 		if(fileopen == "true"){
 			axios.get("/mngfiles/openfile")
 			.then(response => {
-				// console.log(response.data);
+				console.log(response.data);
 				if(response.data.data.flg){
 					this.openfile = response.data.data.openfile_img;
 					this.initfileName = response.data.data.openfile_neme;
