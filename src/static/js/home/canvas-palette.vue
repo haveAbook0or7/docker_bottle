@@ -127,10 +127,10 @@ module.exports = {
 	#Base{
 		width: 100%;
 		height: var(--height);
-		background: brown;
+		background: #0f2350;
 	}
 	#tools{
-		background: #777777;
+		background: #cfd982;
         width: 100%;
         height: 50px;
         position: fixed;

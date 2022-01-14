@@ -14,9 +14,12 @@ def get_test():
     cur.close()
     conn.close()
     return json.dumps(result, indent=4)
-# ペン設定引き出しTODOセッション使う
+# ペン設定引き出し
 def select():
     session1 = bottle.request.environ.get('beaker.session')
+    if "user" not in session1:
+        session1["user"] = "guest"
+        session1.save()
     logid = {"id": session1["user"]}
     message = ""
     res = {}
@@ -41,33 +44,44 @@ def select():
         "data": res
     },
     indent=4)
-# ペン設定変更 TODO 未完成
+# ペン設定変更
 def update(key, payload, createnew=True):
     message = ""
     res = {}
-    postjson = json.load(payload)
-
     try:
+        session1 = bottle.request.environ.get('beaker.session')
+        if "user" not in session1:
+            session1["user"] = "guest"
+            session1.save()
+        if session1["user"] == "guest":
+            raise Exception(session1["user"])
+
+        postjson = json.load(payload)
+        postjson["id"] = session1["user"]
         conn = mysql.connector.connect(host="db", port=3306, user="db_user", password="pass", database="db_canvas")
+        conn.autocommit = False
         cur = conn.cursor()
-        query = """
-            UPDATE UserConfig 
-            SET color1=%(one)s, color2=%(two)s, color3=%(three)s, color4=%(four)s, color5=%(five)s, 
-            marker_size=%()s, thinPen_size=%()s, thickPen_size=%()s, eraser_size=%()s, 
-            marker_alpha=%()s, thinPen_alpha=%()s, thickPen_alpha=%()s, eraser_alpha=%()s 
-            WHERE uid=%(id)s;
-        """
-        cur.execute(query, postjson)
-        result = cur.fetchall()
+        try:
+            query = """
+                UPDATE UserConfig 
+                SET color1=%(one)s, color2=%(two)s, color3=%(three)s, color4=%(four)s, color5=%(five)s, 
+                marker_size=%(markerS)s, thinPen_size=%(thinPenS)s, thickPen_size=%(thickPenS)s, eraser_size=%(eraserS)s, 
+                marker_alpha=%(markerA)s, thinPen_alpha=%(thinPenA)s, thickPen_alpha=%(thickPenA)s, eraser_alpha=%(eraserA)s 
+                WHERE uid=%(id)s;
+            """
+            cur.execute(query, postjson)
+            conn.commit()
+            message = "OK"
+        except Exception as e:
+            conn.rollback()
+            raise
         cur.close()
         conn.close()
-
-        message = "OK"
     except Exception as e:
-        message = e;
-
-    return json.dumps({
-        "message": message,
-        "data": res
-    },
-    indent=4)
+        message = str(e)
+    finally:
+        return json.dumps({
+            "message": message,
+            "data": res
+        },
+        indent=4)
