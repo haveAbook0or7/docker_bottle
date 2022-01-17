@@ -15,10 +15,14 @@
             <label for="five" class="upper" :style="'background: '+colorPalette.five+';'" @dblclick="showColorConf()"></label>
         </span>
         <span id="pens">
-            <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen"><label for="marker" @dblclick="showPenConf()"></label>
-            <input id="thinPen"  name="pens" type="radio" v-model="pen" value="thinPen"  @change="changePen"><label for="thinPen" @dblclick="showPenConf()"></label>
-            <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen"><label for="thickPen" @dblclick="showPenConf()"></label>
-            <input id="eraser"   name="pens" type="radio" v-model="pen" value="eraser"   @change="changePen"><label for="eraser" @dblclick="showPenConf()"></label>
+            <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen">
+            <span><label for="marker" @dblclick="showPenConf()"></label></span>
+            <input id="thinPen"  name="pens" type="radio" v-model="pen" value="thinPen"  @change="changePen">
+            <span><label for="thinPen" @dblclick="showPenConf()"></label></span>
+            <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen">
+            <span><label for="thickPen" @dblclick="showPenConf()"></label></span>
+            <input id="eraser"   name="pens" type="radio" v-model="pen" value="eraser"   @change="changePen">
+            <span><label for="eraser" @dblclick="showPenConf()"></label></span>
         </span>
         <span id="config">
             <my-colors-config v-show="this.configShowColor" 
@@ -176,59 +180,56 @@ module.exports = {
 	}
     /* カラー */
 	#colors input[type=radio] + label{
+        box-sizing: border-box;
 		position: relative;
 		display: inline-block;
         margin: 15px 2px 5px 2px;
         border-radius: 50%;
         width: 30px;
         height: 30px;
+        border: 2px solid #e6b422;
 	}
     .upper{
         margin: 5px 2px 15px 2px !important;
     }
     /* ペン */
-    #pens input[type=radio] + label{
+    #pens input[type=radio] + span > label{
 		position: relative;
-		display: inline-block;
-        margin: 2.5px 2px;
+		display: block;
         width: 40px;
         height: 40px;
 	}
-    #pens #marker + label{
-        mask: no-repeat center/100%;
-        -webkit-mask: no-repeat center/100%;
-        background: var(--dynamic-color);
-        border: solid 2px #cfd982;
-        mask-image: url(../../../img/pen12.png);
-        -webkit-mask-image: url(../../../img/pen12.png);
+    #pens input[type=radio] + span{
+        position: relative;
+        display: inline-block;
+        margin: 2.5px 2px;
+        width: 40px;
+        height: 40px;
+        border: 2px solid transparent;
     }
-    #pens #thinPen + label{
-        mask: no-repeat center/100%;
-        -webkit-mask: no-repeat center/100%;
+    #pens #marker + span > label{
+        mask: url(../../../img/pen15.png) no-repeat center/100%;
+        -webkit-mask: url(../../../img/pen15.png) no-repeat center/100%;
         background: var(--dynamic-color);
-        border: solid 2px #cfd982;
-        mask-image: url(../../../img/pen10.png);
-        -webkit-mask-image: url(../../../img/pen10.png);
     }
-    #pens #thickPen + label{
-        mask: no-repeat center/100%;
-        -webkit-mask: no-repeat center/100%;
+    #pens #thinPen + span > label{
+        mask: url(../../../img/pen13.png) no-repeat center/100%;
+        -webkit-mask: url(../../../img/pen13.png) no-repeat center/100%;
         background: var(--dynamic-color);
-        border: solid 2px #cfd982;
-        mask-image: url(../../../img/pen11.png);
-        -webkit-mask-image: url(../../../img/pen11.png);
     }
-    #pens #eraser + label{
-        mask: no-repeat center/100%;
-        -webkit-mask: no-repeat center/100%;
+    #pens #thickPen + span > label{
+        mask: url(../../../img/pen14.png) no-repeat center/100%;
+        -webkit-mask: url(../../../img/pen14.png) no-repeat center/100%;
+        background: var(--dynamic-color);
+    }
+    #pens #eraser + span > label{
+        mask: url(../../../img/ere3.png) no-repeat center/100%;
+        -webkit-mask: url(../../../img/ere3.png) no-repeat center/100%;
         background: #fff;
-        border: solid 2px #cfd982;
-        mask-image: url(../../../img/ere2.png);
-        -webkit-mask-image: url(../../../img/ere2.png);
     }
-    #pens input[type=radio]:checked + label{
+    #pens input[type=radio]:checked + span{
         border: solid 2px #1c305c !important;
-	}
+    }
     /* 詳細設定 */
     #config{
         z-index: 5;

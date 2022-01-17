@@ -23,7 +23,6 @@ module.exports = {
     computed: {
 		variable() {
 			return {
-				"--dynamic-color": this.isOpen ? "#da3c41" : "#1b2538",
                 "--top": this.isOpen ? "0px" : "12px",
                 "--bottom": this.isOpen ? "12px" : "0px",
 			}
@@ -71,8 +70,8 @@ module.exports = {
         right: 3.5px;
         width: 0;
         height: 0;
-        border-top: var(--top) solid #da3c41;
-        border-bottom: var(--bottom) solid #da3c41;
+        border-top: var(--top) solid #1c305c;
+        border-bottom: var(--bottom) solid #1c305c;
         border-left: 7px solid transparent;
         border-right: 7px solid transparent;
 	}
@@ -84,11 +83,11 @@ module.exports = {
         color: #fff;
         text-decoration: none;
         text-align: center;
-        background: #da3c41;
+        background: #1c305c;
         box-sizing: border-box;
         cursor: default;
     }
     a:active{
-		border: 2px inset #c0353a;
+		border: 2px inset #4c505a;
 	}
 </style>

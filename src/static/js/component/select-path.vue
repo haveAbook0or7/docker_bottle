@@ -40,7 +40,7 @@ module.exports = {
 	computed: {
 		variable() {
 			return {
-				"--dynamic-color": this.isOpen ? "#da3c41" : "#1b2538",
+				"--dynamic-color": this.isOpen ? "#0f2350" : "#cfd982",
                 "--top": this.isOpen ? "0px" : "8px",
                 "--bottom": this.isOpen ? "8px" : "0px",
                 "--open": this.isOpen ? "auto" : "0px"

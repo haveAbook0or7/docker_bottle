@@ -125,12 +125,12 @@ module.exports = {
 		padding: 0.3em;
 		color: #aaaaaa;
 		border: none;
-		border-bottom: 2px solid #1b2538;
+		border-bottom: 2px solid #cfd982;
 		background: transparent;
 	}
 	input[type=text]:read-write:focus {
 		color: #1b2538;
-		border-bottom: 2px solid #da3c41;
+		border-bottom: 2px solid #0f2350;
 		outline: none;
 	}
 	.path{
@@ -148,11 +148,11 @@ module.exports = {
 		width: 100px;
 		height: 30px;
 		color: #fff;
-		background: #da3c41;
+		background: #0f2350;
 		z-index: 2;
 	}
-	#save:active{
+	#download:active,#save:active,#save_new:active{
 		box-sizing: border-box;
-		border: 2px inset #c0353a;
+		border: 2px inset #1c305c;
 	}
 </style>

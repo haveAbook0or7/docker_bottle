@@ -61,7 +61,7 @@ module.exports = {
 		padding: 0;
 		border: 0;
 		font-size: 13px;
-		background: #777777;
+		background: #cfd982;
 	}
 	div{
 		display: inline-block;
@@ -72,8 +72,11 @@ module.exports = {
 		width: 125px;
 	}
 	input[type=text]{
-		border: solid 1px goldenrod;
+		border: solid 1px #e6b422;
 		box-sizing: border-box;
 		width: 25px;
 	}
+	input[type=text]:focus{
+        outline-color: #928c36;
+    }
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<div :style="variable">
+	<div>
         <meta v-if="reloadFlg" http-equiv="refresh" content=" 0; url=/">
         <meta v-if="signinFlg" http-equiv="refresh" content=" 0; url=/signin.html">
         <a class="menuitem" v-for="menu in menu" :key="menu.name" :href="menu.url" target="_blank" v-show="menu.show">{{menu.name}}</a>
@@ -11,15 +11,6 @@
 module.exports = {
     props: {
 		login_user: {default:null},
-	},
-    computed: {
-		variable() {
-			return {
-				"--dynamic-color": this.isOpen ? "#da3c41" : "#1b2538",
-                "--top": this.isOpen ? "0px" : "15px",
-                "--bottom": this.isOpen ? "15px" : "0px",
-			}
-		},
 	},
 	data: function () {
 		return {
@@ -88,11 +79,11 @@ module.exports = {
     input[type=button]{
 		height: 25px;
 		color: #fff;
-		background: #da3c41;
+		background: #1c305c;
         box-sizing: border-box;
     }
     input[type=button]:active{
 		box-sizing: border-box;
-		border: 2px inset #c0353a;
+		border: 2px inset #4c505a;
 	}
 </style>

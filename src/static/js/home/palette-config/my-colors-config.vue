@@ -128,10 +128,13 @@ module.exports = {
 		width: 180px;
 	}
 	input[type=text]{
-		border: solid 1px goldenrod;
+		border: solid 1px #e6b422;
 		box-sizing: border-box;
 		width: 25px;
 	}
+    input[type=text]:focus{
+        outline-color: #928c36;
+    }
     #rgb16{
         width: 75px;
     }

@@ -30,7 +30,6 @@ module.exports = {
             this.$emit('back-next', id);
         },
         clickSaveModalOpen(){
-            console.log(this.file_name);
             this.$refs.modal.openModal(this.file_name, this.file_path);
         },
         clickSave(mode, path, filename){
@@ -67,14 +66,14 @@ module.exports = {
     #backnext #back + label{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
-        background: steelblue;
+        background: #1c305c;
         mask-image: url(../../../img/back.png);
         -webkit-mask-image: url(../../../img/back.png);
     }
     #backnext #next + label{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
-        background: steelblue;
+        background: #1c305c;
         mask-image: url(../../../img/next.png);
         -webkit-mask-image: url(../../../img/next.png);
     }
@@ -82,7 +81,7 @@ module.exports = {
     #saves #save + label{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
-        background: steelblue;
+        background: #1c305c;
         mask-image: url(../../../img/save.png);
         -webkit-mask-image: url(../../../img/save.png);
     }
