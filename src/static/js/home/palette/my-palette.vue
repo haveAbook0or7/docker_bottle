@@ -2,27 +2,27 @@
 	<div class="my-palette" :style="variables">
         <span id="colors">
             <input id="black" name="colors" type="radio" v-model="color" value="black" @change="changeColor">
-            <label for="black" :style="'background: '+colorPalette.black+';'"></label>
+                <label for="black" :style="'background: '+colorPalette.black+';'"></label>
             <input id="one"   name="colors" type="radio" v-model="color" value="one" @change="changeColor">
-            <label for="one" class="upper" :style="'background: '+colorPalette.one+';'" @dblclick="showColorConf()"></label>
+                <label for="one" class="upper" :style="'background: '+colorPalette.one+';'" v-longclick="() => showColorConf(true, 'one')" @dblclick="showColorConf(true, 'one')"></label>
             <input id="two"   name="colors" type="radio" v-model="color" value="two" @change="changeColor">
-            <label for="two" :style="'background: '+colorPalette.two+';'" @dblclick="showColorConf()"></label>
+                <label for="two" :style="'background: '+colorPalette.two+';'" v-longclick="() => showColorConf(true, 'two')" @dblclick="showColorConf(true, 'two')"></label>
             <input id="three" name="colors" type="radio" v-model="color" value="three" @change="changeColor">
-            <label for="three" class="upper" :style="'background: '+colorPalette.three+';'" @dblclick="showColorConf()"></label>
+                <label for="three" class="upper" :style="'background: '+colorPalette.three+';'" v-longclick="() => showColorConf(true, 'three')" @dblclick="showColorConf(true, 'three')"></label>
 			<input id="four"  name="colors" type="radio" v-model="color" value="four" @change="changeColor">
-            <label for="four" :style="'background: '+colorPalette.four+';'" @dblclick="showColorConf()"></label>
+                <label for="four" :style="'background: '+colorPalette.four+';'" v-longclick="() => showColorConf(true, 'four')" @dblclick="showColorConf(true, 'four')"></label>
             <input id="five"  name="colors" type="radio" v-model="color" value="five" @change="changeColor">
-            <label for="five" class="upper" :style="'background: '+colorPalette.five+';'" @dblclick="showColorConf()"></label>
+                <label for="five" class="upper" :style="'background: '+colorPalette.five+';'" v-longclick="() => showColorConf(true, 'five')" @dblclick="showColorConf(true, 'five')"></label>
         </span>
         <span id="pens">
             <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen">
-            <span><label for="marker" @dblclick="showPenConf()"></label></span>
+                <span><label for="marker" v-longclick="() => showPenConf(true, 'marker')" @dblclick="showPenConf(true, 'marker')"></label></span>
             <input id="thinPen"  name="pens" type="radio" v-model="pen" value="thinPen"  @change="changePen">
-            <span><label for="thinPen" @dblclick="showPenConf()"></label></span>
+                <span><label for="thinPen" v-longclick="() => showPenConf(true, 'thinPen')" @dblclick="showPenConf(true, 'thinPen')"></label></span>
             <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen">
-            <span><label for="thickPen" @dblclick="showPenConf()"></label></span>
+                <span><label for="thickPen" v-longclick="() => showPenConf(true, 'thickPen')" @dblclick="showPenConf(true, 'thickPen')"></label></span>
             <input id="eraser"   name="pens" type="radio" v-model="pen" value="eraser"   @change="changePen">
-            <span><label for="eraser" @dblclick="showPenConf()"></label></span>
+                <span><label for="eraser" v-longclick="() => showPenConf(true, 'eraser')" @dblclick="showPenConf(true, 'eraser')"></label></span>
         </span>
         <span id="config">
             <my-colors-config v-show="this.configShowColor" 
@@ -90,13 +90,14 @@ module.exports = {
             // my-convasに渡してペン色変える
             this.$emit('change-color', this.pen != "eraser" ? this.colorPalette[this.color] : "#ffffff");
         },
-        showColorConf(dbclick=true){
+        showColorConf(dbclick=true, color=this.color){
+            // v-longclick -> change の順で発火するのでcolorを作っている
             // ダブルクリックならウィンドウ開閉
             if(dbclick){
                 this.configShowColor = !this.configShowColor;
             }
             // 設定ウィンドウの値を選択したペンのものに変更
-            this.$refs.colorconfig.setInitValue(this.colorPalette[this.color]);
+            this.$refs.colorconfig.setInitValue(this.colorPalette[color]);
         },
         changeColorConf(color){
             // 設定ウィンドウで値を変更したら
@@ -118,13 +119,14 @@ module.exports = {
                 this.penCap[this.pen]
             );
         },
-        showPenConf(dbclick=true){
+        showPenConf(dbclick=true, pen=this.pen){
+            // v-longclick -> change の順で発火するのでpenを作っている
             // ダブルクリックならウィンドウ開閉
             if(dbclick){
                 this.configShowPen = !this.configShowPen;
             }
             // 設定ウィンドウの値を選択したペンのものに変更
-            this.$refs.penconfig.setInitValue(this.penSize[this.pen], this.penAlpha[this.pen]);
+            this.$refs.penconfig.setInitValue(this.penSize[pen], this.penAlpha[pen]);
         },
         changePenConf(size, alpha){
             // 設定ウィンドウで値を変更したら
