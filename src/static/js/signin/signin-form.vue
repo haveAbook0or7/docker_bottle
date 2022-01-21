@@ -27,7 +27,10 @@ module.exports = {
 						"--FS": "13px",
 						"--spanFS": "30px",
 						"--passT": "50px",
+						"--passerT": "50px",
+						"--iderT": "5px",
 						"--spanL": "80px",
+						"--spanW": "300px",
 						"--textW": "200px",
 						"--textH": "20px",
 						"--textM": "25px",
@@ -40,7 +43,10 @@ module.exports = {
 						"--FS": "18px",
 						"--spanFS": "30px",
 						"--passT": "75px",
+						"--passerT": "75px",
+						"--iderT": "5px",
 						"--spanL": "100px",
+						"--spanW": "400px",
 						"--textW": "300px",
 						"--textH": "40px",
 						"--textM": "30px",
@@ -52,11 +58,14 @@ module.exports = {
 					return {
 						"--FS": "35px",
 						"--spanFS": "45px",
-						"--passT": "140px",
-						"--spanL": "160px",
+						"--passT": "190px",
+						"--passerT": "230px",
+						"--iderT": "50px",
+						"--spanL": "0px",
+						"--spanW": "800px",
 						"--textW": "700px",
 						"--textH": "80px",
-						"--textM": "55px",
+						"--textM": "100px",
 						"--buttonW": "400px",
 						"--buttonH": "70px",
 						"--buttonMLR": "150px",
@@ -153,7 +162,7 @@ module.exports = {
 	}
 	.form{
 		position: relative;
-		height: 150px;
+		/* height: 150px; */
 		margin: 10px;
 	}
 	label{
@@ -167,14 +176,17 @@ module.exports = {
 	}
 	.form > span{
 		position: absolute;
-		top: 5px;
+		top: var(--spanT);
 		left: var(--spanL);
-		width: 300px;
+		width: var(--spanW);
 		height: 20px;
 		color: #d93a25;
 	}
+	#iderr{
+		top: var(--iderT);
+	}
 	#pserr{
-		top: var(--passT);
+		top: var(--passerT);
 	}
 	input[type=text], input[type=password]{
 		display: block;
