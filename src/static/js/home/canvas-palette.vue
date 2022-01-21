@@ -9,7 +9,7 @@
 			></my-control>
 			<my-menu :login_user="loginUser" id="menu"></my-menu>
 		</div>
-		<!-- <br><br><br> -->
+		<br><br><br>
         <my-canvas ref="myCanvas" @save_end="saveEnd"></my-canvas>
     </div>
 </template>
