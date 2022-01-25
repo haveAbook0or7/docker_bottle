@@ -12,6 +12,9 @@
 
 <script>
 module.exports = {
+    props: {
+        media: {default:"PC"},
+    },
 	mounted() {
         // キャンバスサイズを取得
         this.baseSize = document.querySelector('#canvasBase').getBoundingClientRect();

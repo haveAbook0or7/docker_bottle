@@ -1,14 +1,14 @@
 <template>
 	<div id="menubase" :style="variable">
 		<table border="0">
-		<tr style="height: 22px;">
-			<td style="cursor: default;" @click="openMenu">{{login_user}}</td>
-            <td><span id="mtoggle" @click="openMenu"></span></td>
-			<td><a id="tosignup" href="../../../signup-pre.html">サインアップ</a></td>
+		<tr class="menus">
+			<td class="menu" @click="openMenu">{{login_user}}</td>
+            <td class="menu"><span id="mtoggle" @click="openMenu"></span></td>
+			<td class="signup"><a id="tosignup" href="../../../signup-pre.html">サインアップ</a></td>
 		</tr>
-		<tr><td colspan="3" style="font-size: 22px;">らくがきちょう</td></tr>
+		<tr><td colspan="3" class="name">らくがきちょう</td></tr>
 		</table>
-        <menu-list :login_user="login_user" v-show="isOpen"></menu-list>
+        <menu-list :media="media" :login_user="login_user" v-show="isOpen"></menu-list>
 	</div>
 </template>
 
@@ -18,14 +18,63 @@ module.exports = {
 		'menu-list': httpVueLoader('../component/menu-list.vue'),
     },
     props: {
+        media: {default:"PC"},
 		login_user: {default:null},
 	},
     computed: {
 		variable() {
-			return {
+            let styles = {
                 "--top": this.isOpen ? "0px" : "12px",
                 "--bottom": this.isOpen ? "12px" : "0px",
+            };
+            switch(this.media){
+				case "PC":
+					Object.assign(styles, {
+                        "--FS": "13px",
+						"--nameDis": "table-cell",
+						"--signupW": "100px",
+						"--signupH": "20px",
+                        "--minW": "21px",
+						"--menuP": "relative",
+                        "--menuT": "0",
+                        "--menuR": "0",
+                        "--toggleT": "3.5px",
+                        "--toggleR": "3.5px",
+                        "--toggleS": "1",
+					});
+                    break;
+				case "TabletPC":
+					Object.assign(styles, {
+                        "--FS": "24px",
+						"--nameDis": "none",
+						"--signupW": "160px",
+						"--signupH": "35px",
+                        "--minW": "21px",
+						"--menuP": "absolute",
+                        "--menuT": "42px",
+                        "--menuR": "20px",
+                        "--toggleT": "8px",
+                        "--toggleR": "-18px",
+                        "--toggleS": "1",
+					});
+                    break;
+				case "SmartPhone":
+					Object.assign(styles, {
+                        "--FS": "38px",
+						"--nameDis": "none",
+						"--signupW": "230px",
+						"--signupH": "70px",
+                        "--minW": "48px",
+						"--menuP": "relative",
+                        "--menuT": "0",
+                        "--menuR": "0",
+                        "--toggleT": "15px",
+                        "--toggleR": "7.5px",
+                        "--toggleS": "2",
+					});
+                    break;
 			}
+			return styles;
 		},
 	},
 	data: function () {
@@ -47,7 +96,7 @@ module.exports = {
 		margin: 0;
 		padding: 0;
 		border: 0;
-		font-size: 13px;
+		font-size: var(--FS);
         z-index: 3;
 	}
     #menubase{
@@ -62,23 +111,23 @@ module.exports = {
     }
     td{
         position: relative;
-        min-width: 21px;
+        min-width: var(--minW);
     }
     #mtoggle{
         position: absolute;
-        top: 3.5px;
-        right: 3.5px;
+        top: var(--toggleT);
+        right: var(--toggleR);
         width: 0;
         height: 0;
-        border-top: var(--top) solid #1c305c;
-        border-bottom: var(--bottom) solid #1c305c;
-        border-left: 7px solid transparent;
-        border-right: 7px solid transparent;
+        border-top: calc(var(--top) * var(--toggleS)) solid #1c305c;
+        border-bottom: calc(var(--bottom) * var(--toggleS)) solid #1c305c;
+        border-left: calc(7px * var(--toggleS)) solid transparent;
+        border-right: calc(7px * var(--toggleS)) solid transparent;
 	}
     a{
-        width: 100px;
-        height: 20px;
-        line-height: 20px;
+        width: var(--signupW);
+        height: var(--signupH);
+        line-height: calc(var(--FS) + 7px);
         display: inline-block;
         color: #fff;
         text-decoration: none;
@@ -86,8 +135,24 @@ module.exports = {
         background: #1c305c;
         box-sizing: border-box;
         cursor: default;
+        display: table-cell;
+        vertical-align:middle;
     }
     a:active{
 		border: 2px inset #4c505a;
 	}
+    .menus{
+        height: 22px;
+        position: relative;
+    }
+    .menu{
+        cursor: default;
+        position: var(--menuP);
+        top: var(--menuT);
+        right: var(--menuR);
+    }
+    .name{
+        font-size: 22px;
+        display: var(--nameDis);
+    }
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<div class="my-colors-config">
+	<div class="my-colors-config" :style="variables">
         <table border="0">
             <tr>
                 <td colspan="3" style="text-align: right;">
@@ -27,7 +27,34 @@
 
 <script>
 module.exports = {
+    props: {
+        media: {default:"PC"},
+    },
 	computed: {
+        variables() {
+            switch(this.media){
+				case "PC":
+					return {
+                        "--FS": "13px",
+						"--W": "230px",
+                        "--H": "100px",
+                        "--rangeW": "180px",
+                        "--textW": "25px",
+                        "--text16W": "75px",
+					};
+				case "TabletPC":
+					return {
+                        "--FS": "24px",
+						"--W": "350px",
+                        "--H": "180px",
+                        "--rangeW": "270px",
+                        "--textW": "50px",
+                        "--text16W": "100px",
+					};
+				case "SmartPhone":
+					return {};
+			}
+        },
         rgbhex: {
 			get(){
 				return this.dectohex(this.red)+this.dectohex(this.green)+this.dectohex(this.blue);
@@ -116,26 +143,26 @@ module.exports = {
 		margin: 0;
 		padding: 0;
 		border: 0;
-		font-size: 13px;
+		font-size: var(--FS);
 		background: #cfd982;
 	}
 	div{
 		display: inline-block;
-		width: 230px;
-		height: 100px;
+		width: var(--W);
+		height: var(--H);
 	}
 	input[type=range]{
-		width: 180px;
+		width: var(--rangeW);
 	}
 	input[type=text]{
 		border: solid 1px #e6b422;
 		box-sizing: border-box;
-		width: 25px;
+		width: var(--textW);
 	}
     input[type=text]:focus{
         outline-color: #928c36;
     }
     #rgb16{
-        width: 75px;
+        width: var(--text16W);
     }
 </style>

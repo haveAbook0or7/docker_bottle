@@ -1,16 +1,14 @@
 <template>
 	<div id="Base" :style="variables" @wheel="scroll">
 		<div id="tools">
-			<my-palette :login_user="loginUser" @change-color="changeColor" @change-pen="changePen" @back-next="backNext"></my-palette>
-			<my-control :login_user="loginUser" @back-next="backNext"  
-				:file_name="initfileName" 
-				:file_path="initfilepath" 
-				@save="saves" ref="control"
-			></my-control>
-			<my-menu :login_user="loginUser" id="menu"></my-menu>
+			<my-palette v-if="media != 'SmartPhone'" :media="media" :login_user="loginUser" 
+				@change-color="changeColor" @change-pen="changePen" @back-next="backNext"></my-palette>
+			<my-control v-if="media != 'SmartPhone'" :media="media" :login_user="loginUser" :file_name="initfileName" :file_path="initfilepath" 
+				@back-next="backNext"  @save="saves" ref="control"></my-control>
+			<my-menu :media="media" :login_user="loginUser" id="menu"></my-menu>
 		</div>
-		<br><br><br>
-        <my-canvas ref="myCanvas" @save_end="saveEnd"></my-canvas>
+		<div class="space"></div>
+        <my-canvas :media="media" ref="myCanvas" @save_end="saveEnd"></my-canvas>
     </div>
 </template>
 
@@ -36,6 +34,9 @@ module.exports = {
 		});
 	},
 	mounted() {
+		// 端末の種類取得
+		this.media = getMedia();
+		console.log(this.media);
 		// キャンバスサイズを取得
 		this.baseheight = document.documentElement.clientHeight;
 		this.canvasheight = document.documentElement.clientHeight;
@@ -65,13 +66,35 @@ module.exports = {
 	},
 	computed: {
 		variables() {
-			return {
+			let styles = {
 				"--height": this.canvasheight+"px",
+			};
+            switch(this.media){
+				case "PC":
+					Object.assign(styles, {
+						"--paletteH": "50px",
+						"--space": "60px"
+					});
+					break;
+				case "TabletPC":
+					Object.assign(styles, {
+						"--paletteH": "80px",
+						"--space": "90px"
+					});
+					break;
+				case "SmartPhone":
+					Object.assign(styles, {
+						"--paletteH": "100px",
+						"--space": "110px"
+					});
+					break;
 			}
+			return styles;
 		},
 	},
 	data: function () {
 		return {
+			media: "PC",
 			loginUser: null,
 			baseheight: null,
 			canvasheight: null,
@@ -132,7 +155,7 @@ module.exports = {
 	#tools{
 		background: #cfd982;
         width: 100%;
-        height: 50px;
+        height: var(--paletteH);
         position: fixed;
         box-sizing: border-box;
 		z-index: 3;
@@ -141,5 +164,8 @@ module.exports = {
 		position: absolute;
 		top: 0;
 		right: 0;
-		}
+	}
+	.space{
+		height: var(--space);
+	}
 </style>

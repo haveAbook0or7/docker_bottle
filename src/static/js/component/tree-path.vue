@@ -62,6 +62,7 @@ module.exports = {
 		padding: 0;
 		border: 0;
 		font-size: 13px;
+        font-size: var(--pathFS);
         cursor: default;
     }
     div{
@@ -69,9 +70,11 @@ module.exports = {
     }
     input[type=button]{
         padding: 3px;
-        padding-left: 15px;
+        padding-left: calc(18px * var(--toggleS));
         height: 20px;
-        width: 200px;
+        height: var(--buttonH);
+        min-width: 200px;
+        width: 500px;
         background: #fff;
         color: darkslategrey;
         box-shadow: 1px 2px 4px #aaa;
@@ -81,12 +84,16 @@ module.exports = {
     }
     
     .toggle{
-        top: 5px;
-        left: 3px;
+        top: calc(5px * var(--toggleS));
+        left: 5px;
         border-top: var(--top) solid #aaa;
         border-bottom: var(--bottom) solid #aaa;
         border-left: 5px solid transparent;
         border-right: 5px solid transparent;
+        border-top: calc(var(--top) * var(--toggleS)) solid #aaa;
+        border-bottom: calc(var(--bottom) * var(--toggleS)) solid #aaa;
+        border-left: calc(5px * var(--toggleS)) solid transparent;
+        border-right: calc(5px * var(--toggleS)) solid transparent;
         width: 0;
         height: 0;
     }

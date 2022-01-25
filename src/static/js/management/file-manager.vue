@@ -45,13 +45,13 @@ module.exports = {
          * <body>に<script>を生成して無理やり読み込む。
          * ファイルパスはhtmlファイルがある位置からの相対パスなので注意。
          */
-        let script = document.createElement('script');
-        script.src = "../static/js/component/regularExpression.js"; //ファイルパス
-        document.body.appendChild(script);
+        // let script = document.createElement('script');
+        // script.src = "../static/js/component/regularExpression.js"; //ファイルパス
+        // document.body.appendChild(script);
     },
     updated(){
         // ここで外部jsの関数を読み込む。
-        this.renameRegex = window.getREGEX("FILE_NAME_REGEX");
+        this.renameRegex = getREGEX("FILE_NAME_REGEX");
     },
     mounted() {
         axios.get("/mngfiles/getnowdir")

@@ -26,9 +26,9 @@
         </span>
         <span id="config">
             <my-colors-config v-show="this.configShowColor" 
-                ref="colorconfig" @change="changeColorConf"></my-colors-config>
+                ref="colorconfig" :media="media" @change="changeColorConf"></my-colors-config>
             <my-pens-config v-show="this.configShowPen" 
-                ref="penconfig" @change="changePenConf"></my-pens-config>
+                ref="penconfig" :media="media" @change="changePenConf"></my-pens-config>
         </span>
     </div>
 </template>
@@ -39,17 +39,39 @@ module.exports = {
 		'my-pens-config': httpVueLoader('../palette-config/my-pens-config.vue'),
         'my-colors-config': httpVueLoader('../palette-config/my-colors-config.vue'),
     },
+    props: {
+        media: {default:"PC"},
+		login_user: {default:null},
+	},
 	created() {
         this.loading();
 	},
-    props: {
-		login_user: {default:null},
-	},
 	computed: {
-		variables() {
-			return {
+        variables() {
+            let styles = {
 				"--dynamic-color": this.colorPalette[this.color],
+			};
+            switch(this.media){
+				case "PC":
+					Object.assign(styles, {
+						"--colorS": "30px",
+						"--penS": "40px",
+                        "--configT": "50px",
+                        "--configW": "450px",
+					});
+                    break;
+				case "TabletPC":
+					Object.assign(styles, {
+						"--colorS": "50px",
+						"--penS": "55px",
+                        "--configT": "80px",
+                        "--configW": "700px",
+					});
+                    break;
+				case "SmartPhone":
+                    break;
 			}
+			return styles;
 		},
 	},
 	data: function () {
@@ -187,8 +209,8 @@ module.exports = {
 		display: inline-block;
         margin: 15px 2px 5px 2px;
         border-radius: 50%;
-        width: 30px;
-        height: 30px;
+        width: var(--colorS);
+        height: var(--colorS);
         border: 2px solid #e6b422;
 	}
     .upper{
@@ -198,15 +220,15 @@ module.exports = {
     #pens input[type=radio] + span > label{
 		position: relative;
 		display: block;
-        width: 40px;
-        height: 40px;
+        width: var(--penS);
+        height: var(--penS);
 	}
     #pens input[type=radio] + span{
         position: relative;
         display: inline-block;
         margin: 2.5px 2px;
-        width: 40px;
-        height: 40px;
+        width: var(--penS);
+        height: var(--penS);
         border: 2px solid transparent;
     }
     #pens #marker + span > label{
@@ -237,9 +259,9 @@ module.exports = {
         z-index: 5;
         display: inline-flex;
         position: absolute;
-		top: 50px;
+		top: var(--configT);
 		left: 0;
-        width:450px;
+        width: var(--configW);
     }
     .my-colors-config{
         position: absolute;

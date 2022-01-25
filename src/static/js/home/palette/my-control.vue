@@ -1,12 +1,12 @@
 <template>
-	<div id="controlBase">
+	<div id="controlBase" :style="variables">
         <span id="backnext">
             <input id="back" type="button" @click="clickBackNext('back')"><label for="back"></label>
             <input id="next" type="button" @click="clickBackNext('next')"><label for="next"></label>
         </span>
         <span id="saves">
             <input id="save" type="button" @click="clickSaveModalOpen"><label for="save"></label>
-            <save-window ref="modal" :login_user="login_user" @save="clickSave"></save-window>
+            <save-window ref="modal" :media="media" :login_user="login_user" @save="clickSave"></save-window>
         </span>
     </div>
 </template>
@@ -17,13 +17,28 @@ module.exports = {
 		'save-window': httpVueLoader('../component/save-window.vue'),
     },
     props: {
+        media: {default:"PC"},
 		login_user: {default:null},
         file_name: {default:null},
         file_path: {default:null},
 	},
-	data: function () {
-		return {
-		}
+    computed: {
+        variables() {
+            switch(this.media){
+				case "PC":
+					return {
+						"--buttonS": "30px",
+					};
+				case "TabletPC":
+					return {
+						"--buttonS": "45px",
+					};
+				case "SmartPhone":
+					return {
+						"--buttonS": "40px",
+					};
+			}
+        }
 	},
 	methods: {
         clickBackNext(id){
@@ -60,8 +75,8 @@ module.exports = {
 		position: relative;
 		display: inline-block;
         margin: 10px 2px;
-        width: 30px;
-        height: 30px;
+        width: var(--buttonS);
+        height: var(--buttonS);
 	}
     #backnext #back + label{
         mask: no-repeat center/100%;

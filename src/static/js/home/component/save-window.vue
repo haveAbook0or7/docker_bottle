@@ -1,6 +1,6 @@
 <template>
-	<div id="overlay" :class="this.modalClass" @click="closeModal()">
-        <div id="modal" :class="this.modalClass" @click="stop()">
+	<div id="overlay" v-show="showFlg" @click="closeModal()" :style="variables">
+        <div id="modal" v-show="showFlg" @click="$event.stopPropagation();">
             <table border="0">
             <tr>
                 <td>ファイル名</td>
@@ -33,6 +33,7 @@ module.exports = {
 		'select-path': httpVueLoader('../../component/select-path.vue'),
     },
 	props: {
+		media: {default:"PC"},
 		login_user: {default:null},
 	},
 	created() {
@@ -47,9 +48,45 @@ module.exports = {
 			console.log(error);
 		});
 	},
+	computed: {
+        variables() {
+            switch(this.media){
+				case "PC":
+					return {
+						"--FS": "15px",
+						"--W": "485px",
+						"--H": "300px",
+						"--tdminW": "70px",
+						"--tdH": "40px",
+						"--inputW": "200px",
+						"--inputH": "20px",
+						"--pathFS": "14px",
+						"--toggleS": "1",
+						"--saveW": "100px",
+						"--saveH": "30px",
+					};
+				case "TabletPC":
+					return {
+						"--FS": "24px",
+						"--W": "700px",
+						"--H": "360px",
+						"--tdminW": "150px",
+						"--tdH": "75px",
+						"--inputW": "260px",
+						"--inputH": "35px",
+						"--pathFS": "20px",
+						"--toggleS": "2",
+						"--saveW": "150px",
+						"--saveH": "45px",
+					};
+				case "SmartPhone":
+					return {};
+			}
+        }
+	},
 	data: function () {
 		return {
-			modalClass: "hidden",
+			showFlg: false,
 			ifGuest: true,
             filename: null,
 			filepath: "",
@@ -60,16 +97,13 @@ module.exports = {
 	},
 	methods: {
 		openModal(filename, filepath){
-			this.modalClass = "";
+			this.showFlg = true;
             this.filename = filename;
 			this.filepath = filepath;
 			console.log(this.filepath)
 		},
 		closeModal(){
-			this.modalClass = "hidden";
-		},
-		stop(){
-			event.stopPropagation();
+			this.showFlg = false;
 		},
 		clickSave(buttonMode){
 			// my-controlへ渡す
@@ -85,9 +119,7 @@ module.exports = {
 		margin: 0;
 		padding: 0;
 		border: 0;
-	}
-	.hidden{
-		display: none !important;
+		font-size: calc(var(--FS) - 2px);
 	}
 	#overlay{
 		/*　要素を重ねた時の順番　*/
@@ -106,8 +138,8 @@ module.exports = {
 	}
 	#modal{
 		z-index:4;
-		width: 485px;
-		height: 300px;
+		width: var(--W);
+		height: var(--H);
 		background-color: #fff;
 		position: absolute;
         display: flex;
@@ -115,13 +147,13 @@ module.exports = {
 		justify-content: center;
 	}
 	td{
-		height: 40px;
-		min-width: 70px;
+		height: var(--tdH);
+		min-width: var(--tdminW);
 	}
 	input[type=text]:read-write{
-		font: 15px sans-serif;
+		font: var(--FS) sans-serif;
 		box-sizing: border-box;
-		width: 200px;
+		width: var(--inputW);
 		padding: 0.3em;
 		color: #aaaaaa;
 		border: none;
@@ -139,14 +171,17 @@ module.exports = {
 	.select-path{
 		position: absolute;
 		top: 5px;
+		width: var(--inputW);
+		--pathFS: var(--pathFS);
+		--buttonH: var(--inputH);
 	}
 	.buttons{
 		height: 60px;
 		vertical-align: bottom;
 	}
 	#download,#save,#save_new{
-		width: 100px;
-		height: 30px;
+		width: var(--saveW);
+		height: var(--saveH);
 		color: #fff;
 		background: #0f2350;
 		z-index: 2;
