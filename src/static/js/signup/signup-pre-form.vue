@@ -42,8 +42,7 @@ module.exports = {
 						"--textM": "25px",
 						"--buttonW": "100px",
 						"--buttonH": "30px",
-						"--buttonMTB": "20px",
-						"--buttonMLR": "50px",
+						"--buttonM": "20px 50px",
 					};
 				case "TabletPC":
 					return {
@@ -58,8 +57,7 @@ module.exports = {
 						"--textM": "35px",
 						"--buttonW": "200px",
 						"--buttonH": "50px",
-						"--buttonMTB": "35px",
-						"--buttonMLR": "50px",
+						"--buttonM": "35px 50px",
 					};
 				case "SmartPhone":
 					return {
@@ -73,9 +71,8 @@ module.exports = {
 						"--textH": "80px",
 						"--textM": "60px",
 						"--buttonW": "400px",
-						"--buttonH": "70px",
-						"--buttonMTB": "60px",
-						"--buttonMLR": "150px",
+						"--buttonH": "90px",
+						"--buttonM": "40px 150px",
 					};
 			}
 		},
@@ -184,7 +181,7 @@ module.exports = {
 	input[type=button]{
 		width: var(--buttonW);
 		height: var(--buttonH);
-		margin: var(--buttonMTB) var(--buttonMLR);
+		margin: var(--buttonM);
 		background: #c3d825;
 	}
 	input[type=button]:active{

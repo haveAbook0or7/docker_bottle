@@ -62,7 +62,7 @@ module.exports = {
 					Object.assign(styles, {
                         "--FS": "38px",
 						"--nameDis": "none",
-						"--signupW": "230px",
+						"--signupW": "280px",
 						"--signupH": "70px",
                         "--minW": "48px",
 						"--menuP": "relative",

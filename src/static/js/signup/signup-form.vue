@@ -2,7 +2,7 @@
 	<div class="signupBase" :style="variable">
 		<span>らくがきちょう</span>
 		<!-- トークン照合クリア -->
-		<div class="form" v-show="tokenflg && !signupflg">
+		<div class="form">
 			<label id="id">ユーザーID</label><span id="iderr">{{this.idErr}}</span>
 			<input type="text" v-model="id" @input="inputId" @keydown.enter="signup">
 			<label id="pass">パスワード</label><span id="passerr">{{this.psErr}}</span>
@@ -12,9 +12,9 @@
 			<input type="button" value="サインアップ" :disabled="!errFlg" @click="signup" @keydown.enter="signup">
 		</div>
 		<!-- エラー -->
-		<div class="form" v-show="!tokenflg">
+		<!-- <div class="form" v-show="!tokenflg">
 			{{this.msg}}
-		</div>
+		</div> -->
 		<!-- 登録完了 -->
 		<div class="form" v-show="signupflg">
 			{{this.msg}}下記リンクからログインを行ってください。<br>
@@ -71,7 +71,8 @@ module.exports = {
 						"--textM": "25px",
 						"--buttonW": "100px",
 						"--buttonH": "30px",
-						"--buttonMLR": "50px",
+						"--buttonM": "20px 50px",
+						"--aFS": "17px",
 					};
 				case "TabletPC":
 					return {
@@ -89,7 +90,8 @@ module.exports = {
 						"--textM": "35px",
 						"--buttonW": "200px",
 						"--buttonH": "50px",
-						"--buttonMLR": "50px",
+						"--buttonM": "20px 50px",
+						"--aFS": "25px",
 					};
 				case "SmartPhone":
 					return {
@@ -106,8 +108,9 @@ module.exports = {
 						"--textH": "80px",
 						"--textM": "100px",
 						"--buttonW": "400px",
-						"--buttonH": "70px",
-						"--buttonMLR": "150px",
+						"--buttonH": "90px",
+						"--buttonM": "60px 150px",
+						"--aFS": "50px",
 					};
 			}
 		},
@@ -245,6 +248,7 @@ module.exports = {
 		position: relative;
 		/* height: 150px; */
 		margin: 10px;
+		text-align: center;
 	}
 	label{
 		position: absolute;
@@ -257,6 +261,7 @@ module.exports = {
 		left: var(--spanL);
 		width: var(--spanW);
 		color: #d93a25;
+		text-align: left;
 	}
 	#pass{
 		top: var(--passT);
@@ -285,11 +290,14 @@ module.exports = {
 	input[type=button]{
 		width: var(--buttonW);
 		height: var(--buttonH);
-		margin: 20px var(--buttonMLR);
+		margin: var(--buttonM);
 		background: #c3d825;
 	}
 	input[type=button]:active{
 		box-sizing: border-box;
 		border: 2px inset #cad957;
+	}
+	a{
+		font-size: var(--aFS);
 	}
 </style>
