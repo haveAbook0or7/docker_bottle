@@ -117,6 +117,9 @@ module.exports = {
             this.previewCxt.moveTo(this.mouse.x, this.mouse.y);
         },
 		mousedown(e){
+            if(this.media == "SmartPhone"){
+                return;
+            }
             e.preventDefault();
             // キャンバスの位置とサイズを取得
             var rect = e.target.getBoundingClientRect();
@@ -137,6 +140,9 @@ module.exports = {
             this.isClicked = true;
         },
         mousemove(e){
+            if(this.media == "SmartPhone"){
+                return;
+            }
             // クリック中以外の時は無視
             if(!this.isClicked) {return;}
             // キャンバスの位置とサイズを取得
@@ -161,6 +167,9 @@ module.exports = {
             this.previewCxt.stroke();
         },
         mouseup(){
+            if(this.media == "SmartPhone"){
+                return;
+            }
             // プレビューを消して、描画
             this.previewCxt.clearRect(0,0,this.baseSize.width,this.baseSize.height);
             this.drawCxt.stroke();
