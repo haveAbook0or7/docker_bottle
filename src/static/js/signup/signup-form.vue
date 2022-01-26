@@ -1,13 +1,13 @@
 <template>
-	<div class="signupBase">
+	<div class="signupBase" :style="variable">
 		<span>らくがきちょう</span>
 		<!-- トークン照合クリア -->
 		<div class="form" v-show="tokenflg && !signupflg">
 			<label id="id">ユーザーID</label><span id="iderr">{{this.idErr}}</span>
 			<input type="text" v-model="id" @input="inputId" @keydown.enter="signup">
-			<label id="pass">パスワード</label><span id="pass">{{this.psErr}}</span>
+			<label id="pass">パスワード</label><span id="passerr">{{this.psErr}}</span>
 			<input type="password" v-model="pass" @input="inputPass" @keydown.enter="signup">
-			<label id="email">メールアドレス</label><span id="email">{{this.emErr}}</span>
+			<label id="email">メールアドレス</label><span id="emailerr">{{this.emErr}}</span>
 			<input type="text" v-model="email" @input="inputEmail" @keydown.enter="signup">
 			<input type="button" value="サインアップ" :disabled="!errFlg" @click="signup" @keydown.enter="signup">
 		</div>
@@ -26,6 +26,9 @@
 <script>
 module.exports = {
 	mounted() {
+		// 端末の種類取得
+		this.media = getMedia();
+		console.log(this.media);
 		// URLを取得
 		var url = new URL(window.location.href);
 		// URLSearchParamsオブジェクトを取得
@@ -50,6 +53,64 @@ module.exports = {
 		});
 	},
 	computed: {
+		variable(){
+			switch(this.media){
+				case "PC":
+					return {
+						"--FS": "13px",
+						"--spanFS": "30px",
+						"--passT": "50px",
+						"--emailT": "95px",
+						"--passerT": "50px",
+						"--emailerT": "95px",
+						"--spanT": "5px",
+						"--spanL": "80px",
+						"--spanW": "300px",
+						"--textW": "200px",
+						"--textH": "20px",
+						"--textM": "25px",
+						"--buttonW": "100px",
+						"--buttonH": "30px",
+						"--buttonMLR": "50px",
+					};
+				case "TabletPC":
+					return {
+						"--FS": "18px",
+						"--spanFS": "30px",
+						"--passT": "80px",
+						"--emailT": "157px",
+						"--passerT": "80px",
+						"--emailerT": "157px",
+						"--spanT": "5px",
+						"--spanL": "130px",
+						"--spanW": "450px",
+						"--textW": "300px",
+						"--textH": "40px",
+						"--textM": "35px",
+						"--buttonW": "200px",
+						"--buttonH": "50px",
+						"--buttonMLR": "50px",
+					};
+				case "SmartPhone":
+					return {
+						"--FS": "35px",
+						"--spanFS": "45px",
+						"--passT": "190px",
+						"--emailT": "367px",
+						"--passerT": "230px",
+						"--emailerT": "407px",
+						"--spanT": "50px",
+						"--spanL": "0px",
+						"--spanW": "800px",
+						"--textW": "700px",
+						"--textH": "80px",
+						"--textM": "100px",
+						"--buttonW": "400px",
+						"--buttonH": "70px",
+						"--buttonMLR": "150px",
+					};
+			}
+		},
 		errFlg: {
             get(){
 				console.log(this.idFlg && this.psFlg && this.emFlg ? true : false);
@@ -59,6 +120,7 @@ module.exports = {
 	},
 	data: function () {
 		return {
+			media: "PC",
 			token: null,
 			tokenflg: false,
             signupflg: false,
@@ -155,7 +217,7 @@ module.exports = {
 		margin: 0;
 		padding: 0;
 		border: 0;
-		font-size: 13px;
+		font-size: var(--FS);
 		background: #0f2350;
 		color: #fff;
 		height: initial;
@@ -177,11 +239,11 @@ module.exports = {
 		background: #1c305c;
 		line-height: 50px;
 		text-align: center;
-		font-size: 30px;
+		font-size: var(--spanFS);
 	}
 	.form{
 		position: relative;
-		height: 150px;
+		/* height: 150px; */
 		margin: 10px;
 	}
 	label{
@@ -191,22 +253,28 @@ module.exports = {
 	}
 	.form > span{
 		position: absolute;
-		top: 5px;
-		left: 85px;
-		width: 300px;
+		top: var(--spanT);
+		left: var(--spanL);
+		width: var(--spanW);
 		color: #d93a25;
 	}
 	#pass{
-		top: 50px;
+		top: var(--passT);
 	}
 	#email{
-		top: 95px;
+		top: var(--emailT);
+	}
+	#passerr{
+		top: var(--passerT);
+	}
+	#emailerr{
+		top: var(--emailerT);
 	}
 	input[type=text], input[type=password]{
 		display: block;
-		width: 200px;
-		height: 20px;
-		margin: 25px 0 0 0;
+		width: var(--textW);
+		height: var(--textH);
+		margin-top: var(--textM);
 		padding-left: 3px;
 		background: #fff;
 		color: #2b2b2b;
@@ -215,9 +283,9 @@ module.exports = {
 		outline: none;
 	}
 	input[type=button]{
-		width: 100px;
-		height: 30px;
-		margin: 20px 50px;
+		width: var(--buttonW);
+		height: var(--buttonH);
+		margin: 20px var(--buttonMLR);
 		background: #c3d825;
 	}
 	input[type=button]:active{

@@ -1,55 +1,34 @@
 <template>
-	<div id="paletteBase" :style="variables">
+	<div class="my-palette" :style="variables">
         <span id="colors">
             <input id="black" name="colors" type="radio" v-model="color" value="black" @change="changeColor">
-            <label for="black" :style="'background: '+colorPalette.black+';'"></label>
+                <label for="black" :style="'background: '+colorPalette.black+';'"></label>
             <input id="one"   name="colors" type="radio" v-model="color" value="one" @change="changeColor">
-            <label for="one" class="upper" :style="'background: '+colorPalette.one+';'" @dblclick="showColorConf('one')"></label>
+                <label for="one" class="upper" :style="'background: '+colorPalette.one+';'" v-longclick="() => showColorConf(true, 'one')" @dblclick="showColorConf(true, 'one')"></label>
             <input id="two"   name="colors" type="radio" v-model="color" value="two" @change="changeColor">
-            <label for="two" :style="'background: '+colorPalette.two+';'" @dblclick="showColorConf('two')"></label>
+                <label for="two" :style="'background: '+colorPalette.two+';'" v-longclick="() => showColorConf(true, 'two')" @dblclick="showColorConf(true, 'two')"></label>
             <input id="three" name="colors" type="radio" v-model="color" value="three" @change="changeColor">
-            <label for="three" class="upper" :style="'background: '+colorPalette.three+';'" @dblclick="showColorConf('three')"></label>
+                <label for="three" class="upper" :style="'background: '+colorPalette.three+';'" v-longclick="() => showColorConf(true, 'three')" @dblclick="showColorConf(true, 'three')"></label>
 			<input id="four"  name="colors" type="radio" v-model="color" value="four" @change="changeColor">
-            <label for="four" :style="'background: '+colorPalette.four+';'" @dblclick="showColorConf('four')"></label>
+                <label for="four" :style="'background: '+colorPalette.four+';'" v-longclick="() => showColorConf(true, 'four')" @dblclick="showColorConf(true, 'four')"></label>
             <input id="five"  name="colors" type="radio" v-model="color" value="five" @change="changeColor">
-            <label for="five" class="upper" :style="'background: '+colorPalette.five+';'" @dblclick="showColorConf('five')"></label>
+                <label for="five" class="upper" :style="'background: '+colorPalette.five+';'" v-longclick="() => showColorConf(true, 'five')" @dblclick="showColorConf(true, 'five')"></label>
         </span>
         <span id="pens">
-            <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen"><label for="marker" @dblclick="showPenConf('marker')"></label>
-            <input id="thinPen"  name="pens" type="radio" v-model="pen" value="thinPen"  @change="changePen"><label for="thinPen" @dblclick="showPenConf('thinPen')"></label>
-            <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen"><label for="thickPen" @dblclick="showPenConf('thickPen')"></label>
-            <input id="eraser"   name="pens" type="radio" v-model="pen" value="eraser"   @change="changePen"><label for="eraser" @dblclick="showPenConf('eraser')"></label>
+            <input id="marker"   name="pens" type="radio" v-model="pen" value="marker"   @change="changePen">
+                <span><label for="marker" v-longclick="() => showPenConf(true, 'marker')" @dblclick="showPenConf(true, 'marker')"></label></span>
+            <input id="thinPen"  name="pens" type="radio" v-model="pen" value="thinPen"  @change="changePen">
+                <span><label for="thinPen" v-longclick="() => showPenConf(true, 'thinPen')" @dblclick="showPenConf(true, 'thinPen')"></label></span>
+            <input id="thickPen" name="pens" type="radio" v-model="pen" value="thickPen" @change="changePen">
+                <span><label for="thickPen" v-longclick="() => showPenConf(true, 'thickPen')" @dblclick="showPenConf(true, 'thickPen')"></label></span>
+            <input id="eraser"   name="pens" type="radio" v-model="pen" value="eraser"   @change="changePen">
+                <span><label for="eraser" v-longclick="() => showPenConf(true, 'eraser')" @dblclick="showPenConf(true, 'eraser')"></label></span>
         </span>
-        <span id="colorsConfig">
-            <my-colors-config v-show="this.colorConfFlg.one" 
-                id_name="one" :init_rgbhex="colorPalette.one"
-                @change="changeColorConf"></my-colors-config>
-            <my-colors-config v-show="this.colorConfFlg.two" 
-                id_name="two" :init_rgbhex="colorPalette.two"
-                @change="changeColorConf"></my-colors-config>
-            <my-colors-config v-show="this.colorConfFlg.three" 
-                id_name="three" :init_rgbhex="colorPalette.three"
-                @change="changeColorConf"></my-colors-config>
-            <my-colors-config v-show="this.colorConfFlg.four" 
-                id_name="four" :init_rgbhex="colorPalette.four"
-                @change="changeColorConf"></my-colors-config>
-            <my-colors-config v-show="this.colorConfFlg.five" 
-                id_name="five" :init_rgbhex="colorPalette.five"
-                @change="changeColorConf"></my-colors-config>
-        </span>
-        <span id="penConfig">
-            <my-pens-config v-show="this.penConfFlg.marker" 
-                id_name="marker" :init_size="this.penSize.marker" :init_alpha="this.penAlpha.marker" 
-                @change-size="changePenConf" @change-alpha="changePenConf"></my-pens-config>
-            <my-pens-config v-show="this.penConfFlg.thinPen" 
-                id_name="thinPen" :init_size="this.penSize.thinPen" :init_alpha="this.penAlpha.thinPen" 
-                @change-size="changePenConf" @change-alpha="changePenConf"></my-pens-config>
-            <my-pens-config v-show="this.penConfFlg.thickPen" 
-                id_name="thickPen" :init_size="this.penSize.thickPen" :init_alpha="this.penAlpha.thickPen" 
-                @change-size="changePenConf" @change-alpha="changePenConf"></my-pens-config>
-            <my-pens-config v-show="this.penConfFlg.eraser" 
-                id_name="eraser" :init_size="this.penSize.eraser" :init_alpha="this.penAlpha.eraser" 
-                @change-size="changePenConf" @change-alpha="changePenConf"></my-pens-config>
+        <span id="config">
+            <my-colors-config v-show="this.configShowColor" 
+                ref="colorconfig" :media="media" @change="changeColorConf"></my-colors-config>
+            <my-pens-config v-show="this.configShowPen" 
+                ref="penconfig" :media="media" @change="changePenConf"></my-pens-config>
         </span>
     </div>
 </template>
@@ -60,27 +39,39 @@ module.exports = {
 		'my-pens-config': httpVueLoader('../palette-config/my-pens-config.vue'),
         'my-colors-config': httpVueLoader('../palette-config/my-colors-config.vue'),
     },
-	created() {
-        axios.get("/userconfig/select")
-		.then(response => {
-            if(response.data.message == "OK"){
-                this.colorPalette = response.data.data.palette;
-                this.penSize = response.data.data.size;
-                this.penAlpha = response.data.data.alpha;
-            }
-		})
-		.catch(function (error) {
-			console.log(error);
-		});
-	},
     props: {
+        media: {default:"PC"},
 		login_user: {default:null},
 	},
+	created() {
+        this.loading();
+	},
 	computed: {
-		variables() {
-			return {
+        variables() {
+            let styles = {
 				"--dynamic-color": this.colorPalette[this.color],
+			};
+            switch(this.media){
+				case "PC":
+					Object.assign(styles, {
+						"--colorS": "30px",
+						"--penS": "40px",
+                        "--configT": "50px",
+                        "--configW": "450px",
+					});
+                    break;
+				case "TabletPC":
+					Object.assign(styles, {
+						"--colorS": "50px",
+						"--penS": "55px",
+                        "--configT": "80px",
+                        "--configW": "700px",
+					});
+                    break;
+				case "SmartPhone":
+                    break;
 			}
+			return styles;
 		},
 	},
 	data: function () {
@@ -90,27 +81,59 @@ module.exports = {
             penAlpha: {marker: 0.3, thinPen: 0.9, thickPen: 0.9, eraser: 1.0},
             penCap: {marker: "butt", thinPen: "round", thickPen: "round", eraser: "round"},
 
-            penConfShow: {id: "marker", flg: false},
-            penConfFlg: {marker: false, thinPen: false, thickPen: false, eraser: false},
-            colorConfShow: {id: "one", flg: false},
-            colorConfFlg: {one: false, two: false, three: false, four: false, five: false},
+            configShowPen: false,
+            configShowColor: false,
+
             color: "black",
             pen: "marker",
 		}
 	},
 	methods: {
+        loading(){
+            // パレット設定を取得
+            axios.get("/userconfig/select")
+            .then(response => {
+                if(response.data.message == "OK"){
+                    this.colorPalette = response.data.data.palette;
+                    this.penSize = response.data.data.size;
+                    this.penAlpha = response.data.data.alpha;
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        },
 		changeColor(){
-            if(this.colorConfShow.flg){
-                this.colorConfFlg[this.colorConfShow.id] = false;
-                this.showColorConf(this.color);
+            // 設定ウィンドウが表示されている場合
+            if(this.configShowColor){
+                // 設定ウィンドウの値を選択したペンのものに変更(黒は変更できないのでウィンドウ閉じる)
+                this.showColorConf((this.color == "black"));
             }
+            // my-convasに渡してペン色変える
             this.$emit('change-color', this.pen != "eraser" ? this.colorPalette[this.color] : "#ffffff");
         },
-        changePen(){
-            if(this.penConfShow.flg){
-                this.penConfFlg[this.penConfShow.id] = false;
-                this.showPenConf(this.pen);
+        showColorConf(dbclick=true, color=this.color){
+            // v-longclick -> change の順で発火するのでcolorを作っている
+            // ダブルクリックならウィンドウ開閉
+            if(dbclick){
+                this.configShowColor = !this.configShowColor;
             }
+            // 設定ウィンドウの値を選択したペンのものに変更
+            this.$refs.colorconfig.setInitValue(this.colorPalette[color]);
+        },
+        changeColorConf(color){
+            // 設定ウィンドウで値を変更したら
+            this.colorPalette[this.color] = color;
+            this.changeColor();
+            this.updateUserConf();
+        },
+        changePen(){
+            // 設定ウィンドウが表示されている場合
+            if(this.configShowPen){
+                // 設定ウィンドウの値を選択したペンのものに変更
+                this.showPenConf(false);
+            }
+            // my-convasに渡してペンを変える
             this.$emit('change-pen', 
                 this.pen != "eraser" ? this.colorPalette[this.color] : "#ffffff", 
                 this.penSize[this.pen], 
@@ -118,46 +141,43 @@ module.exports = {
                 this.penCap[this.pen]
             );
         },
-        showPenConf(id){
-            for(k in this.penConfFlg){
-                if(k == id){
-                    continue;
-                }
-                this.penConfFlg[k] = false;
+        showPenConf(dbclick=true, pen=this.pen){
+            // v-longclick -> change の順で発火するのでpenを作っている
+            // ダブルクリックならウィンドウ開閉
+            if(dbclick){
+                this.configShowPen = !this.configShowPen;
             }
-            this.penConfFlg[id] = !this.penConfFlg[id];
-            this.penConfShow.id = id;
-            this.penConfShow.flg = this.penConfFlg[id];
+            // 設定ウィンドウの値を選択したペンのものに変更
+            this.$refs.penconfig.setInitValue(this.penSize[pen], this.penAlpha[pen]);
         },
-        changePenConf(id, lbl, value){
-            switch(lbl){
-                case "size":
-                    this.penSize[id] = value;
-                    break;
-                case "alpha":
-                    this.penAlpha[id] = value;
-                    break;
-            }
+        changePenConf(size, alpha){
+            // 設定ウィンドウで値を変更したら
+            this.penSize[this.pen] = parseInt(size);
+            this.penAlpha[this.pen] = parseFloat(alpha);
             this.changePen();
+            this.updateUserConf();
         },
-        showColorConf(id){
-            for(k in this.colorConfFlg){
-                if(k == id){
-                    continue;
-                }
-                this.colorConfFlg[k] = false;
+        updateUserConf(){
+            // パレット設定を一つの配列にまとめる
+            let conf = this.colorPalette;
+            for(let key in this.penSize){
+                conf[key+"S"] = this.penSize[key];
             }
-            this.colorConfFlg[id] = !this.colorConfFlg[id];
-            this.colorConfShow.id = id;
-            this.colorConfShow.flg = this.colorConfFlg[id];
-        },
-        changeColorConf(id, color){
-            this.colorPalette[id] = color;
-            this.changeColor();
-        },
-        clickBackNext(id){
-            this.$emit('back-next', id);
-        },
+            for(let key in this.penAlpha){
+                conf[key+"A"] = this.penAlpha[key];
+            }
+            // データベースを更新
+            axios.post("/userconfig/update",
+                conf
+            )
+            .then(response => {
+                console.log(response.data);
+                this.loading();
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        }
 	},
 }
 // export default { Node.jsじゃないから、これだとダメだった。 }
@@ -171,8 +191,10 @@ module.exports = {
 		font-size: 13px;
         z-index: 3;
 	}
-    #paletteBase{
+    .my-palette{
         display: inline-block;
+        position: relative;
+        height: 50px;
     }
     /* ラジオボタン */
 	input[type=radio]{
@@ -182,75 +204,71 @@ module.exports = {
 	}
     /* カラー */
 	#colors input[type=radio] + label{
+        box-sizing: border-box;
 		position: relative;
 		display: inline-block;
         margin: 15px 2px 5px 2px;
         border-radius: 50%;
-        width: 30px;
-        height: 30px;
+        width: var(--colorS);
+        height: var(--colorS);
+        border: 2px solid #e6b422;
 	}
     .upper{
         margin: 5px 2px 15px 2px !important;
     }
     /* ペン */
-    #pens input[type=radio] + label{
+    #pens input[type=radio] + span > label{
 		position: relative;
-		display: inline-block;
+		display: block;
+        width: var(--penS);
+        height: var(--penS);
+	}
+    #pens input[type=radio] + span{
+        position: relative;
+        display: inline-block;
         margin: 2.5px 2px;
-        width: 40px;
-        height: 40px;
-	}
-    #pens #marker + label{
-        mask: no-repeat center/100%;
-        -webkit-mask: no-repeat center/100%;
-        background: var(--dynamic-color);
-        border: solid 2px #777777;
-        mask-image: url(../../../img/pen12.png);
-        -webkit-mask-image: url(../../../img/pen12.png);
+        width: var(--penS);
+        height: var(--penS);
+        border: 2px solid transparent;
     }
-    #pens #thinPen + label{
-        mask: no-repeat center/100%;
-        -webkit-mask: no-repeat center/100%;
+    #pens #marker + span > label{
+        mask: url(../../../img/pen15.png) no-repeat center/100%;
+        -webkit-mask: url(../../../img/pen15.png) no-repeat center/100%;
         background: var(--dynamic-color);
-        border: solid 2px #777777;
-        mask-image: url(../../../img/pen10.png);
-        -webkit-mask-image: url(../../../img/pen10.png);
     }
-    #pens #thickPen + label{
-        mask: no-repeat center/100%;
-        -webkit-mask: no-repeat center/100%;
+    #pens #thinPen + span > label{
+        mask: url(../../../img/pen13.png) no-repeat center/100%;
+        -webkit-mask: url(../../../img/pen13.png) no-repeat center/100%;
         background: var(--dynamic-color);
-        border: solid 2px #777777;
-        mask-image: url(../../../img/pen11.png);
-        -webkit-mask-image: url(../../../img/pen11.png);
     }
-    #pens #eraser + label{
-        mask: no-repeat center/100%;
-        -webkit-mask: no-repeat center/100%;
+    #pens #thickPen + span > label{
+        mask: url(../../../img/pen14.png) no-repeat center/100%;
+        -webkit-mask: url(../../../img/pen14.png) no-repeat center/100%;
+        background: var(--dynamic-color);
+    }
+    #pens #eraser + span > label{
+        mask: url(../../../img/ere3.png) no-repeat center/100%;
+        -webkit-mask: url(../../../img/ere3.png) no-repeat center/100%;
         background: #fff;
-        border: solid 2px #777777;
-        mask-image: url(../../../img/ere2.png);
-        -webkit-mask-image: url(../../../img/ere2.png);
     }
-    #pens input[type=radio]:checked + label{
-        border: solid 2px palevioletred !important;
-	}
+    #pens input[type=radio]:checked + span{
+        border: solid 2px #1c305c !important;
+    }
     /* 詳細設定 */
-    #penConfig{
+    #config{
         z-index: 5;
-    }
-    #colorsConfig{
-        z-index: 5;
-    }
-    /* パレット移動 */
-    #paletteMove{
-        background: #ffff00;
+        display: inline-flex;
         position: absolute;
-		display: inline-block;
+		top: var(--configT);
+		left: 0;
+        width: var(--configW);
+    }
+    .my-colors-config{
+        position: absolute;
+        left: 0;
+    }
+    .my-pens-config{
+        position: absolute;
         right: 0;
-        /* margin: 15px 2px 5px 2px;
-        border-radius: 50%; */
-        width: 20px;
-        height: 50px;
     }
 </style>

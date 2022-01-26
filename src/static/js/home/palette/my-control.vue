@@ -1,12 +1,12 @@
 <template>
-	<div id="controlBase">
+	<div id="controlBase" :style="variables">
         <span id="backnext">
             <input id="back" type="button" @click="clickBackNext('back')"><label for="back"></label>
             <input id="next" type="button" @click="clickBackNext('next')"><label for="next"></label>
         </span>
         <span id="saves">
             <input id="save" type="button" @click="clickSaveModalOpen"><label for="save"></label>
-            <save-window ref="modal" :login_user="login_user" @save="clickSave"></save-window>
+            <save-window ref="modal" :media="media" :login_user="login_user" @save="clickSave"></save-window>
         </span>
     </div>
 </template>
@@ -17,20 +17,34 @@ module.exports = {
 		'save-window': httpVueLoader('../component/save-window.vue'),
     },
     props: {
+        media: {default:"PC"},
 		login_user: {default:null},
         file_name: {default:null},
         file_path: {default:null},
 	},
-	data: function () {
-		return {
-		}
+    computed: {
+        variables() {
+            switch(this.media){
+				case "PC":
+					return {
+						"--buttonS": "30px",
+					};
+				case "TabletPC":
+					return {
+						"--buttonS": "45px",
+					};
+				case "SmartPhone":
+					return {
+						"--buttonS": "40px",
+					};
+			}
+        }
 	},
 	methods: {
         clickBackNext(id){
             this.$emit('back-next', id);
         },
         clickSaveModalOpen(){
-            console.log(this.file_name);
             this.$refs.modal.openModal(this.file_name, this.file_path);
         },
         clickSave(mode, path, filename){
@@ -61,20 +75,20 @@ module.exports = {
 		position: relative;
 		display: inline-block;
         margin: 10px 2px;
-        width: 30px;
-        height: 30px;
+        width: var(--buttonS);
+        height: var(--buttonS);
 	}
     #backnext #back + label{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
-        background: steelblue;
+        background: #1c305c;
         mask-image: url(../../../img/back.png);
         -webkit-mask-image: url(../../../img/back.png);
     }
     #backnext #next + label{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
-        background: steelblue;
+        background: #1c305c;
         mask-image: url(../../../img/next.png);
         -webkit-mask-image: url(../../../img/next.png);
     }
@@ -82,7 +96,7 @@ module.exports = {
     #saves #save + label{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
-        background: steelblue;
+        background: #1c305c;
         mask-image: url(../../../img/save.png);
         -webkit-mask-image: url(../../../img/save.png);
     }

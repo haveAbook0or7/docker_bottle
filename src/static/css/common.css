@@ -1,0 +1,11 @@
+*{
+    margin: 0;
+    height: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+input[type=text], select{
+    -webkit-appearance: none;
+    -webkit-touch-callout: none;
+    -webkit-text-size-adjust: 100%;
+    border-radius: 0;
+}

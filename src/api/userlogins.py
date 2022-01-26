@@ -64,9 +64,11 @@ def sign_in(key, payload, createnew=True):
 
 
 def sign_out():
-    # セッションを取得
+    # セッションをリセット
     session1 = bottle.request.environ.get('beaker.session')
+    session1.delete()
     session1["user"] = "guest"
+    session1["openfile"] = None
     session1.save()
     res = {}
     res["user"] = session1["user"]

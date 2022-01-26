@@ -1,5 +1,5 @@
 <template>
-	<div class="signinBase">
+	<div class="signinBase" :style="variable">
 		<meta v-if="reFlg" http-equiv="refresh" content=" 0; url=/">
 		<span>らくがきちょう</span>
 		<div class="form">
@@ -7,14 +7,71 @@
 			<input type="text" v-model="id" @input="inputId" @keydown.enter="signin">
 			<label id="pass">パスワード</label><span id="pserr">{{this.psErr}}</span>
 			<input type="password" v-model="pass" @input="inputPass" @keydown.enter="signin">
-			<input type="button" value="サインイン" :disabled="!errFlg" @click="signin" @keydown.enter="signin">
+			<input type="button" value="サインイン" :disabled="!errFlg" @touchend="signin" @click="signin" @keydown.enter="signin">
 		</div>
     </div>
 </template>
 
 <script>
 module.exports = {
+	mounted(){
+		// 端末の種類取得
+		this.media = getMedia();
+		console.log(this.media);
+	},
 	computed: {
+		variable(){
+			switch(this.media){
+				case "PC":
+					return {
+						"--FS": "13px",
+						"--spanFS": "30px",
+						"--passT": "50px",
+						"--passerT": "50px",
+						"--iderT": "5px",
+						"--spanL": "80px",
+						"--spanW": "300px",
+						"--textW": "200px",
+						"--textH": "20px",
+						"--textM": "25px",
+						"--buttonW": "100px",
+						"--buttonH": "30px",
+						"--buttonMLR": "50px",
+					};
+				case "TabletPC":
+					return {
+						"--FS": "18px",
+						"--spanFS": "30px",
+						"--passT": "75px",
+						"--passerT": "75px",
+						"--iderT": "5px",
+						"--spanL": "100px",
+						"--spanW": "400px",
+						"--textW": "300px",
+						"--textH": "40px",
+						"--textM": "30px",
+						"--buttonW": "200px",
+						"--buttonH": "50px",
+						"--buttonMLR": "50px",
+					};
+				case "SmartPhone":
+					return {
+						"--FS": "35px",
+						"--spanFS": "45px",
+						"--passT": "190px",
+						"--passerT": "230px",
+						"--iderT": "50px",
+						"--spanL": "0px",
+						"--spanW": "800px",
+						"--textW": "700px",
+						"--textH": "80px",
+						"--textM": "100px",
+						"--buttonW": "400px",
+						"--buttonH": "70px",
+						"--buttonMLR": "150px",
+					};
+			}
+		},
 		errFlg: {
             get(){
 				console.log(this.id);
@@ -24,6 +81,7 @@ module.exports = {
 	},
 	data: function () {
 		return {
+			media: "PC",
 			id: "",
 			pass: "",
 			reFlg: false,
@@ -78,7 +136,7 @@ module.exports = {
 		margin: 0;
 		padding: 0;
 		border: 0;
-		font-size: 13px;
+		font-size: var(--FS);
 		background: #0f2350;
 		color: #fff;
 		height: initial;
@@ -100,36 +158,41 @@ module.exports = {
 		background: #1c305c;
 		line-height: 50px;
 		text-align: center;
-		font-size: 30px;
+		font-size: var(--spanFS);
 	}
 	.form{
 		position: relative;
-		height: 150px;
+		/* height: 150px; */
 		margin: 10px;
 	}
 	label{
 		position: absolute;
 		left: -10px;
 		top: 5px;
+		background: transparent;
 	}
 	#pass{
-		top: 50px;
+		top: var(--passT);
 	}
 	.form > span{
 		position: absolute;
-		top: 5px;
-		left: 80px;
-		width: 300px;
+		top: var(--spanT);
+		left: var(--spanL);
+		width: var(--spanW);
+		height: 20px;
 		color: #d93a25;
 	}
+	#iderr{
+		top: var(--iderT);
+	}
 	#pserr{
-		top: 50px;
+		top: var(--passerT);
 	}
 	input[type=text], input[type=password]{
 		display: block;
-		width: 200px;
-		height: 20px;
-		margin: 25px 0 0 0;
+		width: var(--textW);
+		height: var(--textH);
+		margin-top: var(--textM);
 		padding-left: 3px;
 		background: #fff;
 		color: #2b2b2b;
@@ -138,9 +201,9 @@ module.exports = {
 		outline: none;
 	}
 	input[type=button]{
-		width: 100px;
-		height: 30px;
-		margin: 20px 50px;
+		width: var(--buttonW);
+		height: var(--buttonH);
+		margin: 20px var(--buttonMLR);
 		background: #c3d825;
 	}
 	input[type=button]:active{

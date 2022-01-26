@@ -3,9 +3,9 @@
 	<div id="canvasBase">
         <canvas id="drawCanvas"></canvas>
         <canvas id="previewCanvas" 
-            @mousedown="mousedown" 
-            @mousemove="mousemove" 
-            @mouseup="mouseup"></canvas>
+            @mousedown="mousedown" @touchstart="mousedown" 
+            @mousemove="mousemove" @touchmove="mousemove" 
+            @mouseup="mouseup" @touchend="mouseup"></canvas>
     </div>
     </span>
 </template>
@@ -13,7 +13,7 @@
 <script>
 module.exports = {
     props: {
-		open_file: {default:null},
+        media: {default:"PC"},
     },
 	mounted() {
         // キャンバスサイズを取得
@@ -32,17 +32,6 @@ module.exports = {
         this.myStorage = localStorage;
         this.myStorage.setItem("__log", JSON.stringify([]));
         this.setLocalStoreage();
-        // // 既存ファイルを開く処理
-        console.log(this.open_file)
-        if(this.open_file != null){
-            var img = new Image();
-            img.src = this.open_file;
-            img.onload = () => {
-                this.drawCxt.globalAlpha = 1.0;
-                this.drawCxt.drawImage(img, 0, 0);
-                this.setLocalStoreage();
-            }
-        }
 	},
 	data: function () {
 		return {
@@ -55,6 +44,7 @@ module.exports = {
             currentCanvas: 0,
 
             mouse: {x:0, y:0},
+            nn: "",
             color: "#000000",
             pen: 15,
             alpha: 0.3,
@@ -127,11 +117,20 @@ module.exports = {
             this.previewCxt.moveTo(this.mouse.x, this.mouse.y);
         },
 		mousedown(e){
+            e.preventDefault();
             // キャンバスの位置とサイズを取得
             var rect = e.target.getBoundingClientRect();
             // マウスの位置
-            this.mouse.x = e.clientX - rect.left;
-            this.mouse.y = e.clientY - rect.top;
+            switch(e.type){
+                case "mousedown":
+                    this.mouse.x = e.clientX - rect.left;
+                    this.mouse.y = e.clientY - rect.top;
+                    break;
+                case "touchstart":
+                    this.mouse.x = e.touches[0].clientX - rect.left;
+                    this.mouse.y = e.touches[0].clientY - rect.top;
+                    break;
+            }
             // 描画の開始
             this.drarLineStart();
             // クリック中フラグ
@@ -143,8 +142,16 @@ module.exports = {
             // キャンバスの位置とサイズを取得
             var rect = e.target.getBoundingClientRect();
             // マウスの位置
-            this.mouse.x = e.clientX - rect.left;
-            this.mouse.y = e.clientY - rect.top;
+            switch(e.type){
+                case "mousemove":
+                    this.mouse.x = e.clientX - rect.left;
+                    this.mouse.y = e.clientY - rect.top;
+                    break;
+                case "touchmove":
+                    this.mouse.x = e.touches[0].clientX - rect.left;
+                    this.mouse.y = e.touches[0].clientY - rect.top;
+                    break;
+            }
             // クリック中なら線を引く
             // 指定の位置までパスを引く
             this.drawCxt.lineTo(this.mouse.x, this.mouse.y);
@@ -212,12 +219,15 @@ module.exports = {
                 }, 0);
             }
         },
-        drawImg(src){
+        drawImg(src, firstset = false){
             var img = new Image();
             img.src = src;
             img.onload = () => {
                 this.drawCxt.globalAlpha = 1.0;
                 this.drawCxt.drawImage(img, 0, 0);
+                if(firstset){
+                    this.setLocalStoreage();
+                }
             }
         },
         // ペン設定変更
