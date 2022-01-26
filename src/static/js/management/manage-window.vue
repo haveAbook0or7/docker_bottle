@@ -2,7 +2,7 @@
     <div v-show="this.showFlg" class="manage-window" :style="variables" @click="$event.stopPropagation()">
         <input type="button" v-show="this.modeFlg == null" value="フォルダを作成" @click="createFolder">
 		<input type="button" v-show="this.modeFlg" value="削除" @click="$refs.alert.openModal(mode, item)">
-		<alert-modal ref="alert" @cancel="closeModal" @delete="deleteItem"></alert-modal>
+		<alert-modal ref="alert" :media="media" @cancel="closeModal" @delete="deleteItem"></alert-modal>
 		<input type="button" v-show="this.modeFlg" value="名前を変更" @click="changeItemName">
     </div>
 </template>
@@ -13,15 +13,42 @@ module.exports = {
 		'alert-modal': httpVueLoader('./alert-modal.vue'),
     },
 	props: {
+		media: {default:"PC"},
 		login_user: {default:null},
 	},
 	computed: {
 		variables() {
-			return {
-				"--width": this.width+"px",
+			let styles = {
 				"--mouse-x": this.mouse.x+"px",
 				"--mouse-y": this.mouse.y+"px",
+			};
+			switch(this.media){
+				case "PC":
+					this.width = 180;
+					Object.assign(styles, {
+                        "--FS": "13px",
+						"--W": this.width+"px",
+						"--H": "35px",
+					});
+                    break;
+				case "TabletPC":
+					this.width = 210;
+					Object.assign(styles, {
+                        "--FS": "18px",
+						"--W": this.width+"px",
+						"--H": "50px",
+					});
+                    break;
+				case "SmartPhone":
+					this.width = 350;
+					Object.assign(styles, {
+                        "--FS": "38px",
+						"--W": this.width+"px",
+						"--H": "90px",
+					});
+                    break;
 			}
+			return styles;
 		},
 	},
 	data: function () {
@@ -40,13 +67,16 @@ module.exports = {
 		openModal(mode, mouse, pathArray, item, index){
 			this.showFlg = true;
 			this.mode = mode;
+			height = 0;
 			switch(mode){
 				case "default":
 					this.modeFlg = null;
+					height = 35;
 					break;
 				case "folder":
 				case "file":
 					this.modeFlg = true;
+					height = 70;
 					break;
 				case "none":
 					this.modeFlg = false;
@@ -57,11 +87,11 @@ module.exports = {
 			this.itemIndex = index;
 			let screenW = document.documentElement.clientWidth;
 			let screenH = document.documentElement.clientHeight;
-			if(mouse.x+this.width > screenW){
+			if(mouse.x + this.width > screenW){
 				mouse.x -= this.width;
 			}
-			if(mouse.y+this.height > screenH){
-				mouse.y -= this.height;
+			if(mouse.y + height > screenH){
+				mouse.y -= height;
 			}
 			this.mouse.x = mouse.x;
 			this.mouse.y = mouse.y;
@@ -110,12 +140,12 @@ module.exports = {
 		margin: 0;
 		padding: 0;
 		border: 0;
-		font-size: 13px;
+		font-size: var(--FS);
 		color: #fff;
 	}
 	div{
 		z-index:4;
-		width: var(--width);
+		width: var(--W);
 		background-color: #fff;
 		position: absolute;
 		top: var(--mouse-y);
@@ -123,8 +153,8 @@ module.exports = {
 	}
 	input[type=button]{
 		box-sizing: border-box;
-		width: var(--width);
-		height: 35px;
+		width: var(--W);
+		height: var(--H);
 		padding: 0 5px;
 		background: #cfd982;
 		border-bottom: 1px solid #0f2350;
