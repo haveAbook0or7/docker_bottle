@@ -1,8 +1,8 @@
 <template>
-	<div class="filemanagerBase" @contextmenu="openMinWindow($event, 'default', null, null)" @click="$refs.minwin.closeModal()">
-        <manage-window ref="minwin" @reload="reload" @rename="reNameStart"></manage-window>
+	<div ontouchstart="" class="filemanagerBase" :style="variables" @contextmenu="openMinWindow($event, 'default')" @click="$refs.minwin.closeModal()">
+        <manage-window ref="minwin" :media="media" @reload="reload" @rename="reNameStart"></manage-window>
         <div class="overlay" v-show="renameShowFlg" @click="$event.stopPropagation()" @contextmenu="$event.stopPropagation();$event.preventDefault();"></div>
-		<div id="nowdir" @contextmenu="openMinWindow($event, 'none', null, null)">
+		<div id="nowdir" @contextmenu="openMinWindow($event, 'none')">
             <!-- パス -->
             <span v-show="isLogin" v-for="(path, index) in [loginUser].concat(pathlist)" :key="index" @click="clickFolder(path)">
                 {{path}} > 
@@ -10,11 +10,11 @@
             <!-- エラーメッセージ -->
             <span id="error" v-show="!this.isLogin">{{message}}</span>
             <!-- ログインユーザー -->
-            <table border="0">
-            <tr style="height: 22px;">
-                <td>{{this.loginUser}}</td>
-            </tr>
-            <tr><td colspan="3" style="font-size: 22px;">らくがきちょう</td></tr>
+            <table border="0" class="loguser">
+                <tr style="height: 22px;">
+                    <td>{{this.loginUser}}</td>
+                </tr>
+                <tr><td colspan="3" style="font-size: 22px;">らくがきちょう</td></tr>
             </table>
         </div>
         <div id="filelist">
@@ -31,6 +31,7 @@
                     <label class="action" @click="openMinWindow($event, file.split('.').length == 1 ? 'folder' : 'file', file, index)"></label>
             </span>
         </div>
+        <button id="dirAdd" v-show="this.media != 'PC'" @touchend="openMinWindow($event, 'default', null, null, {x: variables['--addR'],y: variables['--addB']})">+</button>
     </div>
 </template>
 
@@ -39,21 +40,14 @@ module.exports = {
     components: {
 		'manage-window': httpVueLoader('./manage-window.vue'),
     },
-    beforeCreate(){
-        /** 
-         * 正規表現のフォーマットファイル(js)読み込み。
-         * <body>に<script>を生成して無理やり読み込む。
-         * ファイルパスはhtmlファイルがある位置からの相対パスなので注意。
-         */
-        // let script = document.createElement('script');
-        // script.src = "../static/js/component/regularExpression.js"; //ファイルパス
-        // document.body.appendChild(script);
-    },
-    updated(){
-        // ここで外部jsの関数を読み込む。
-        this.renameRegex = getREGEX("FILE_NAME_REGEX");
-    },
     mounted() {
+        // ファイル名に関する正規表現取得
+        this.renameRegex = getREGEX("FILE_NAME_REGEX");
+        // 端末の種類取得
+		this.media = getMedia();
+        console.log(this.renameRegex);
+		console.log(this.media);
+        this.renameRegex = getREGEX("FILE_NAME_REGEX");
         axios.get("/mngfiles/getnowdir")
 		.then(response => {
             this.resProcess(response.data);
@@ -62,8 +56,63 @@ module.exports = {
 			console.log(error);
 		});
     },
+    computed: {
+		variables() {
+            switch(this.media){
+				case "PC":
+					return {
+                        "--FS": "13px",
+                        "--headerH": "50px",
+                        "--userDis": "initial",
+						"--listbuttonH": "40px",
+                        "--textH": "30px",
+                        "--textML": "55px",
+                        "--filelistH": "65%",
+                        "--filelistM": "90px 0",
+						"--scrollberW": "1",
+                        "--iconS": "30px",
+                        "--addS": "0px",
+                        "--addB": 140,
+                        "--addR": 20,
+					};
+				case "TabletPC":
+					return {
+                        "--FS": "18px",
+                        "--headerH": "65px",
+                        "--userDis": "initial",
+						"--listbuttonH": "60px",
+                        "--textH": "40px",
+                        "--textML": "60px",
+                        "--filelistH": "85%",
+                        "--filelistM": "50px 0",
+						"--scrollberW": "1.4",
+                        "--iconS": "35px",
+                        "--addS": "0px",
+                        "--addB": 160,
+                        "--addR": 20,
+					};
+				case "SmartPhone":
+					return {
+                        "--FS": "38px",
+                        "--headerH": "130px",
+                        "--userDis": "none",
+						"--listbuttonH": "120px",
+                        "--textH": "80px",
+                        "--textML": "100px",
+                        "--filelistH": "100%",
+                        "--filelistM": "0",
+						"--scrollberW": "2.3",
+                        "--iconS": "70px",
+                        "--addS": "60px",
+                        "--addB": 300,
+                        "--addR": 40,
+					};
+			}
+		},
+	},
 	data: function () {
 		return {
+            media: "PC",
             isLogin: true,
             message: "",
             loginUser: "guest",
@@ -140,13 +189,18 @@ module.exports = {
             // 名前変更処理時にクリック動作を止める。
             if(!flg){ e.stopPropagation()}
         },
-        openMinWindow(e, mode, item, index){
+        openMinWindow(e, mode, item=null, index=null, fixed=null){
             // 下敷きになってるコンポーネントの動作を拾わないようにする。
             e.stopPropagation();
             // デフォルトの右クリックメニューを止める。
             e.preventDefault();
+            // 座標調整
+            let screenW = document.documentElement.clientWidth;
+			let screenH = document.documentElement.clientHeight;
+            x = fixed != null ? screenW - fixed.x : e.pageX;
+            y = fixed != null ? screenH - fixed.y : e.pageY;
             // カスタム右クリックメニュー表示。
-            this.$refs.minwin.openModal(mode, {x: e.pageX, y: e.pageY}, this.pathlist, item, index);
+            this.$refs.minwin.openModal(mode, {x: x, y: y}, this.pathlist, item, index);
         },
         reNameStart(index, mode){
             // ファイルかフォルダか記録
@@ -202,7 +256,7 @@ module.exports = {
 		margin: 0;
 		padding: 0;
 		border: 0;
-		font-size: 13px;
+		font-size: var(--FS);
 		color: #fff;
 		height: initial;
 	}
@@ -213,21 +267,22 @@ module.exports = {
     /* 現在のパス */
     #nowdir{
         position: relative;
-        height: 50px;
+        height: var(--headerH);
         background: #cfd982;
     }
     span{
         cursor: default;
-        font-size: 18px;
+        font-size: calc(var(--FS) + 5px);
         color: #000;
     }
     /* エラーメッセージ */
     #error{
         white-space: pre-line;
-        font-size: 16px;
+        font-size: calc(var(--FS) + 3px);;
     }
     /* ユーザー名表示 */
     table{
+        display: var(--userDis);
         position: absolute;
         top: 0;
         right: 0;
@@ -240,8 +295,8 @@ module.exports = {
     /* アイテム表示スペース */
     #filelist{
         box-sizing: border-box;
-        height: 400px;
-        margin: 90px 0;
+        height: var(--filelistH);
+        margin: var(--filelistM);
         border: 1.5px inset #0e121a;
         border-left: 0;
         border-right: 0;
@@ -250,7 +305,7 @@ module.exports = {
     /* アイテム表示スペースのスクロールバー */
     #filelist::-webkit-scrollbar {
         display: auto;
-        width: 12px;
+        width: calc(12px * var(--scrollberW));
     }
     #filelist::-webkit-scrollbar-track {
         background-color: #e4e4e4;
@@ -265,11 +320,12 @@ module.exports = {
     /* 各アイテム名(名前変更時のデザイン) */
     input[type=text]{
         text-align: left;
-        margin: 5px auto 5px 55px;
-        height: 30px;
+        margin-left: var(--textML);
+        height: var(--textH);
         outline: none;
     }
     input[type=text]:read-only{
+        text-overflow: ellipsis;
         background: transparent;
         border: none;
         cursor: default;
@@ -298,10 +354,11 @@ module.exports = {
     /* 各アイテム */
     .listbutton{
         position: relative;
-        display: block;
+        display: flex;
+        align-items: center;
         box-sizing: border-box;
         width: 100%;
-        height: 40px;
+        height: var(--listbuttonH);
         background: transparent;
         border-bottom: 1px solid #cfd982;
     }
@@ -313,8 +370,8 @@ module.exports = {
         position: absolute;
 		display: inline-block;
         margin: 5px;
-        width: 30px;
-        height: 30px;
+        width: var(--iconS);
+        height: var(--iconS);
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
     }
@@ -335,5 +392,40 @@ module.exports = {
         background: #c3d825;
         mask-image: url(../../img/action.png);
         -webkit-mask-image: url(../../img/action.png);
+    }
+    /* ディレクトリ追加ボタン */
+    #dirAdd{
+        position: absolute;
+        bottom: calc(30px + var(--addS) * 0.7);
+        right: calc(30px + var(--addS) * 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: yellowgreen;
+        border-radius: 50%;
+        height: calc(70px + var(--addS));
+        width: calc(70px + var(--addS));
+        overflow: hidden;
+    }
+    #dirAdd:after {
+        content: "";
+        /*絶対配置で波紋位置を決める*/
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        /*波紋の形状*/
+        background: radial-gradient(circle, #000 10%, transparent 10%) no-repeat 50%;
+        transform: scale(10, 10);
+        /*はじめは透過0に*/
+        opacity: 0;
+        /*アニメーションの設定*/
+        transition: transform 0.3s, opacity 1s;
+    }
+    #dirAdd:active:after {
+        transform: scale(0, 0);
+        transition: 0s;
+        opacity: 0.3;
     }
 </style>

@@ -1,5 +1,5 @@
 <template>
-	<div id="overlay" class="alert-modal" v-show="this.showFlg" @click="showFlg = false;$emit('cancel')" @contextmenu="$event.stopPropagation();$event.preventDefault();">
+	<div id="overlay" class="alert-modal" :style="variables" v-show="this.showFlg" @click="showFlg = false;$emit('cancel')" @contextmenu="$event.stopPropagation();$event.preventDefault();">
         <div id="modal" v-show="this.showFlg" @click="$event.stopPropagation()">
 			<table border="0">
             <tr>
@@ -21,7 +21,41 @@
 <script>
 module.exports = {
 	props: {
+		media: {default:"PC"},
 		login_user: {default:null},
+	},
+	computed: {
+		variables() {
+            switch(this.media){
+				case "PC":
+					return {
+                        "--FS": "13px",
+						"--W": "485px",
+						"--H": "300px",
+						"--tableH": "50px",
+                        "--buttonW": "100px",
+						"--buttonH": "30px",
+					};
+				case "TabletPC":
+					return {
+                        "--FS": "18px",
+						"--W": "485px",
+						"--H": "300px",
+						"--tableH": "60px",
+                        "--buttonW": "130px",
+						"--buttonH": "45px",
+					};
+				case "SmartPhone":
+					return {
+                        "--FS": "38px",
+						"--W": "765px",
+						"--H": "800px",
+						"--tableH": "300px",
+                        "--buttonW": "270px",
+						"--buttonH": "90px",
+					};
+			}
+		},
 	},
 	data: function () {
 		return {
@@ -30,8 +64,8 @@ module.exports = {
                 folder: "を削除しますか。\nフォルダの中身ごと削除されます。",
                 file: "を削除しますか。"
             },
-            item: "",
-            mode: null,
+            item: "dddddddddddd",
+            mode: "folder",
 			data: [],
 		}
 	},
@@ -68,8 +102,8 @@ module.exports = {
 	#modal{
         all: initial;
 		z-index:4;
-		width: 485px;
-		height: 300px;
+		width: var(--W);
+		height: var(--H);
 		background-color: #fff;
 		position: absolute;
         display: flex;
@@ -77,16 +111,19 @@ module.exports = {
 		justify-content: center;
 	}
 	table{
+		display: inline-table;
 		position: relative;
 		min-width: 250px;
+		height: var(--tableH);
+		margin: auto;
 	}
 	.buttons{
 		height: 60px;
 		vertical-align: bottom;
 	}
 	input[type=button]{
-		width: 100px;
-		height: 30px;
+		width: var(--buttonW);
+		height: var(--buttonH);
 		z-index: 2;
 		text-align: center;
 		border: none;
