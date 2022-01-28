@@ -101,7 +101,7 @@ def save_new(jsondata):
                 temp_name = save_name.split(".")[0]+ "_"+str(cnt)+"." +save_name.split(".")[1]
             cnt += 1
             split_name = temp_name.split(".")
-            temp_name = split_name[0][0:len(split_name[0])-1]+str(cnt)+"." +split_name[1]
+            temp_name = split_name[0].split("_")[0]+"_"+str(cnt)+"." +split_name[1]
         else :
             if cnt != 0 : # 最初の名前と同じファイルがあったら上書きする
                 save_name = temp_name
