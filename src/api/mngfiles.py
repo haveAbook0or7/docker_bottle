@@ -148,7 +148,7 @@ def create_folder(key, payload, createnew=True):
                 if cnt == 0 : # 最初だけ形式を揃えるために入れる
                     temp_name = save_name+ "_"+str(cnt)
                 cnt += 1
-                temp_name = temp_name[0:len(temp_name)-1]+str(cnt)
+                temp_name = temp_name.split("_")[0]+"_"+str(cnt)
             else :
                 if cnt != 0 : # 最初の名前と同じファイルがあったら上書きする
                     save_name = temp_name

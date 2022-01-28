@@ -159,6 +159,9 @@ module.exports = {
         },
         updateUserConf(){
             // パレット設定を一つの配列にまとめる
+            if(this.login_user == "guest"){
+                return;
+            }
             let conf = this.colorPalette;
             for(let key in this.penSize){
                 conf[key+"S"] = this.penSize[key];
@@ -172,7 +175,9 @@ module.exports = {
             )
             .then(response => {
                 console.log(response.data);
-                this.loading();
+                if(response.data.message != "guest"){
+                    this.loading();
+                }
             })
             .catch(function (error) {
                 console.log(error);
