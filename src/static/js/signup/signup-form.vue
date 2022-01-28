@@ -2,7 +2,7 @@
 	<div class="signupBase" :style="variable">
 		<span>らくがきちょう</span>
 		<!-- トークン照合クリア -->
-		<div class="form">
+		<div class="form" v-show="tokenflg && !signupflg">
 			<label id="id">ユーザーID</label><span id="iderr">{{this.idErr}}</span>
 			<input type="text" v-model="id" @input="inputId" @keydown.enter="signup">
 			<label id="pass">パスワード</label><span id="passerr">{{this.psErr}}</span>
@@ -12,9 +12,9 @@
 			<input type="button" value="サインアップ" :disabled="!errFlg" @click="signup" @keydown.enter="signup">
 		</div>
 		<!-- エラー -->
-		<!-- <div class="form" v-show="!tokenflg">
+		<div class="form" v-show="!tokenflg">
 			{{this.msg}}
-		</div> -->
+		</div>
 		<!-- 登録完了 -->
 		<div class="form" v-show="signupflg">
 			{{this.msg}}下記リンクからログインを行ってください。<br>
