@@ -119,6 +119,10 @@ module.exports = {
         vertical-align:middle;
     }
     input[type=button]{
+        -webkit-appearance: none;
+        -webkit-touch-callout: none;
+        -webkit-text-size-adjust: 100%;
+        border-radius: 0;
 		height: var(--H);
         width: var(--W);
 		color: #fff;
