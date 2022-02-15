@@ -1,11 +1,11 @@
 <template>
 	<div id="controlBase" :style="variables">
         <span id="backnext">
-            <input id="back" type="button" @click="clickBackNext('back')"><label for="back"></label>
-            <input id="next" type="button" @click="clickBackNext('next')"><label for="next"></label>
+            <div id="back" type="button" @click="clickBackNext('back')"></div>
+            <div id="next" type="button" @click="clickBackNext('next')"></div>
         </span>
         <span id="saves">
-            <input id="save" type="button" @click="clickSaveModalOpen"><label for="save"></label>
+            <div id="save" type="button" @click="clickSaveModalOpen"></div>
             <save-window ref="modal" :media="media" :login_user="login_user" @save="clickSave"></save-window>
         </span>
     </div>
@@ -71,21 +71,21 @@ module.exports = {
         display: inline-block;
     }
     /* 戻る進む */
-    input[type=button] + label{
+    #back, #next, #save{
 		position: relative;
 		display: inline-block;
         margin: 10px 2px;
         width: var(--buttonS);
         height: var(--buttonS);
 	}
-    #backnext #back + label{
+    #backnext #back{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
         background: #1c305c;
         mask-image: url(../../../img/back.png);
         -webkit-mask-image: url(../../../img/back.png);
     }
-    #backnext #next + label{
+    #backnext #next{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
         background: #1c305c;
@@ -93,7 +93,7 @@ module.exports = {
         -webkit-mask-image: url(../../../img/next.png);
     }
     /* 保存 */
-    #saves #save + label{
+    #saves #save{
         mask: no-repeat center/100%;
         -webkit-mask: no-repeat center/100%;
         background: #1c305c;

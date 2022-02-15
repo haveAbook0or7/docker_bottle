@@ -31,7 +31,7 @@
                     <label class="action" @click="openMinWindow($event, file.split('.').length == 1 ? 'folder' : 'file', file, index)"></label>
             </span>
         </div>
-        <button id="dirAdd" v-show="this.media != 'PC'" @touchend="openMinWindow($event, 'default', null, null, {x: variables['--addR'],y: variables['--addB']})">+</button>
+        <button id="dirAdd" @touchend="openMinWindow($event, 'default', null, null, {x: variables['--addR'],y: variables['--addB']})">+</button>
     </div>
 </template>
 
@@ -40,7 +40,7 @@ module.exports = {
     components: {
 		'manage-window': httpVueLoader('./manage-window.vue'),
     },
-    mounted() {
+    beforeCreate(){
         // ファイル名に関する正規表現取得
         this.renameRegex = getREGEX("FILE_NAME_REGEX");
         // 端末の種類取得
@@ -48,6 +48,22 @@ module.exports = {
         console.log(this.renameRegex);
 		console.log(this.media);
         this.renameRegex = getREGEX("FILE_NAME_REGEX");
+        axios.get("/mngfiles/getnowdir")
+		.then(response => {
+            this.resProcess(response.data);
+		})
+		.catch(function (error) {
+			console.log(error);
+		});
+    },
+    mounted() {
+        // ファイル名に関する正規表現取得
+        // this.renameRegex = getREGEX("FILE_NAME_REGEX");
+        // 端末の種類取得
+		this.media = getMedia();
+        // console.log(this.renameRegex);
+		// console.log(this.media);
+        // this.renameRegex = getREGEX("FILE_NAME_REGEX");
         axios.get("/mngfiles/getnowdir")
 		.then(response => {
             this.resProcess(response.data);

@@ -29,6 +29,7 @@ module.exports = {
                         "--FS": "13px",
 						"--W": this.width+"px",
 						"--H": "35px",
+						"--divH": this.h,
 					});
                     break;
 				case "TabletPC":
@@ -37,6 +38,7 @@ module.exports = {
                         "--FS": "18px",
 						"--W": this.width+"px",
 						"--H": "50px",
+						"--divH": this.h,
 					});
                     break;
 				case "SmartPhone":
@@ -45,6 +47,7 @@ module.exports = {
                         "--FS": "38px",
 						"--W": this.width+"px",
 						"--H": "90px",
+						"--divH": this.h,
 					});
                     break;
 			}
@@ -55,6 +58,7 @@ module.exports = {
 		return {
 			showFlg: false,
 			width: 180,
+			h: 3,
 			mouse: {x: 0, y:0},
 			mode: null,
 			modeFlg: null,
@@ -68,15 +72,18 @@ module.exports = {
 			this.showFlg = true;
 			this.mode = mode;
 			height = 0;
+			this.h = 0;
 			switch(mode){
 				case "default":
 					this.modeFlg = null;
 					height = 35;
+					this.h = 1;
 					break;
 				case "folder":
 				case "file":
 					this.modeFlg = true;
 					height = 70;
+					this.h = 2;
 					break;
 				case "none":
 					this.modeFlg = false;
@@ -146,12 +153,17 @@ module.exports = {
 	div{
 		z-index:4;
 		width: var(--W);
+		height: var(--divH);
 		background-color: #fff;
 		position: absolute;
 		top: var(--mouse-y);
 		left: var(--mouse-x);
 	}
 	input[type=button]{
+		-webkit-appearance: none;
+		-webkit-touch-callout: none;
+		-webkit-text-size-adjust: 100%;
+		border-radius: 0;
 		box-sizing: border-box;
 		width: var(--W);
 		height: var(--H);
